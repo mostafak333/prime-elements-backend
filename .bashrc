@@ -1,0 +1,5 @@
+alias serve='php artisan serve'
+alias mands='php artisan migrate && php artisan db:seed'
+alias optimize='php artisan optimize:clear'
+alias wipe='php artisan db:wipe'
+alias docs='php artisan scramble:export'
