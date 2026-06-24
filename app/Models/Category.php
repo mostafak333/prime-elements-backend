@@ -3,42 +3,91 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
-
-#[\Attribute]
-class Fillable
-{
-    public function __construct(public array $fields) {}
-}
+use App\Models\Admin;
+use App\Models\Title;
+use App\Models\Image;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Category extends Model
 {
-    #[Fillable(['name', 'slug', 'description', 'status'])]
-    protected $fillable = ['name', 'slug', 'description', 'status'];
+    use HasFactory;
+
+    protected $fillable = [
+        'parent_id',
+        'title_id',
+        'image_id',
+        'name_en',
+        'name_ar',
+        'status',
+        'created_by',
+        'updated_by',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
+    ];
 
     /**
-     * Auto-generate slug on create/update
+     * Get the parent category (self-referential).
      */
-    protected static function boot(): void
+    public function parent()
     {
-        parent::boot();
-
-        static::creating(function ($category) {
-            $category->slug = $category->slug ?? Str::slug($category->name);
-        });
-
-        static::updating(function ($category) {
-            if ($category->isDirty('name')) {
-                $category->slug = Str::slug($category->name);
-            }
-        });
+        return $this->belongsTo(Category::class, 'parent_id');
     }
 
     /**
-     * Scope: active categories only
+     * Get all child categories (self-referential).
+     */
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
+    }
+
+    /**
+     * Get the title associated with this category.
+     */
+    public function title()
+    {
+        return $this->belongsTo(Title::class, 'title_id');
+    }
+
+    /**
+     * Get the image associated with this category.
+     */
+    public function image()
+    {
+        return $this->belongsTo(Image::class, 'image_id');
+    }
+
+    /**
+     * Get all descendant categories (recursive).
+     */
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
+
+    /**
+     * Scope to filter active categories only.
      */
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', true);
+    }
+
+    /**
+     * Administrator who created the record.
+     */
+    public function createdBy()
+    {
+        return $this->belongsTo(Admin::class, 'created_by');
+    }
+
+    /**
+     * Administrator who last updated the record.
+     */
+    public function updatedBy()
+    {
+        return $this->belongsTo(Admin::class, 'updated_by');
     }
 }
