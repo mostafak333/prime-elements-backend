@@ -24,5 +24,7 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::post('/logout', [AdminAuthController::class, 'logout']);
     Route::apiResource('categories', AdminCategoryController::class);
 
+    Route::apiResource('titles', TitleController::class);
+
     // Future Admin modules (Catalog Management, Analytics, Roles) go here
 });
