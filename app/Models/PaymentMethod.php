@@ -2,20 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-
-class Title extends Model
-{
-    protected $fillable = [
-        'name_en',
-        'name_ar',
-    ];
-=======
-use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Title extends Model
+class PaymentMethod extends Model
 {
     use HasFactory;
 
@@ -41,5 +31,4 @@ class Title extends Model
     {
         return $this->belongsTo(Admin::class, 'updated_by');
     }
->>>>>>> 29aa41cccf57f462cf108d648784dfd2b77a20b7
 }

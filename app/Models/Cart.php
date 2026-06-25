@@ -3,19 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-
-class Title extends Model
-{
-    protected $fillable = [
-        'name_en',
-        'name_ar',
-    ];
-=======
-use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Title extends Model
+class Cart extends Model
 {
     use HasFactory;
 
@@ -31,7 +21,7 @@ class Title extends Model
      */
     public function createdBy()
     {
-        return $this->belongsTo(Admin::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     /**
@@ -39,7 +29,6 @@ class Title extends Model
      */
     public function updatedBy()
     {
-        return $this->belongsTo(Admin::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
->>>>>>> 29aa41cccf57f462cf108d648784dfd2b77a20b7
 }

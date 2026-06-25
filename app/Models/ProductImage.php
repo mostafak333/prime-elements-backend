@@ -3,28 +3,28 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-
-class Title extends Model
-{
-    protected $fillable = [
-        'name_en',
-        'name_ar',
-    ];
-=======
 use App\Models\Admin;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Title extends Model
+class ProductImage extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name_en',
-        'name_ar',
+        'product_id',
+        'image_path',
         'created_by',
         'updated_by',
     ];
+
+    /**
+     * Get the product that owns this image.
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'product_id');
+    }
 
     /**
      * Administrator who created the record.
@@ -41,5 +41,4 @@ class Title extends Model
     {
         return $this->belongsTo(Admin::class, 'updated_by');
     }
->>>>>>> 29aa41cccf57f462cf108d648784dfd2b77a20b7
 }
