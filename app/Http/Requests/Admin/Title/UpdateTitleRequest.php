@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Title;
+namespace App\Http\Requests\Admin\Title;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreTitleRequest extends FormRequest
+class UpdateTitleRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('name_ar');
             $table->boolean('status')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

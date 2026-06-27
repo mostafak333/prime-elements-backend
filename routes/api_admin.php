@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminApi\Auth\AdminAuthController;
-use App\Http\Controllers\AdminApi\Category\AdminCategoryController;
+use App\Http\Controllers\AdminApi\Category\CategoryController;
+use App\Http\Controllers\AdminApi\Product\ProductController;
+use App\Http\Controllers\AdminApi\Title\TitleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -22,9 +24,10 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     });
 
     Route::post('/logout', [AdminAuthController::class, 'logout']);
-    Route::apiResource('categories', AdminCategoryController::class);
+    Route::apiResource('categories', CategoryController::class);
 
-   // Route::apiResource('titles', TitleController::class);
+    Route::apiResource('titles', TitleController::class);
+    Route::apiResource('products', ProductController::class);
 
     // Future Admin modules (Catalog Management, Analytics, Roles) go here
 });

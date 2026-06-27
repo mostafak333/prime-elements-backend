@@ -26,6 +26,7 @@ return new class extends Migration
             $table->boolean('is_e_copy')->default(false);
             $table->string('publisher')->nullable(false);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

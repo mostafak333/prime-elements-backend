@@ -30,8 +30,9 @@ return new class extends Migration
             $table->string('user_full_name');
             $table->string('email');
             $table->string('phone_to_number');
-             $table->text('notes')->nullable();
+            $table->text('notes')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

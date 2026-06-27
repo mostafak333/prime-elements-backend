@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Title extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name_en',
@@ -17,6 +18,10 @@ class Title extends Model
         'updated_by',
     ];
 
+    public function categories()
+    {
+        return $this->hasMany(Category::class, 'title_id');
+    }
     /**
      * Administrator who created the record.
      */

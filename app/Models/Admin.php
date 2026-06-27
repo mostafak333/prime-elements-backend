@@ -4,15 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 #[Fillable(['name', 'email', 'password', 'is_super'])]
 #[Hidden(['password', 'remember_token'])]
 class Admin extends Authenticatable implements JWTSubject
 {
-    use HasRoles;
+    use HasRoles, SoftDeletes;
 
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

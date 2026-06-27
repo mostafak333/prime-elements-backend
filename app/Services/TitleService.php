@@ -22,7 +22,7 @@ class TitleService
 
         return $title->refresh();
     }
-    
+
     public function find(int $id): ?array
     {
         $title = Title::find($id);
@@ -36,6 +36,10 @@ class TitleService
 
     public function delete(Title $title): void
     {
+        if ($title->categories()->exists()) {
+            throw new \Exception("Cannot delete title because it is linked to categories.");
+        }
+
         $title->delete();
     }
 }
