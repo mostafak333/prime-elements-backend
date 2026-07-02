@@ -10,6 +10,11 @@ class TitleService
     {
         return Title::latest()->paginate(15);
     }
+    
+    public function getAllForUser()
+    {
+        return Title::orderBy('name_en')->get();
+    }
 
     public function create(array $data): Title
     {
