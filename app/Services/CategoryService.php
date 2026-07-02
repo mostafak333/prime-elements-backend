@@ -39,4 +39,22 @@ class CategoryService
 
         $category->delete();
     }
+
+    public function getAllForUser()
+    {
+        return Category::with('children')
+            ->whereNull('parent_id')
+            ->where('status', true)
+            ->orderBy('name_en')
+            ->get();
+    }
+
+    public function getSubCategories(Category $category)
+    {
+        return Category::query()
+            ->where('parent_id', $category->id)
+            ->where('status', true)
+            ->orderBy('name_en')
+            ->get();
+    }
 }
