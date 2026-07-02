@@ -10,7 +10,7 @@ class CategoryService
 {
     public function getAll(int $perPage = 15): LengthAwarePaginator
     {
-        return Category::query()->paginate($perPage);
+        return Category::query()->latest()->paginate($perPage);
     }
 
     public function create(array $data): Category

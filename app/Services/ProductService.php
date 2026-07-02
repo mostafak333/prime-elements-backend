@@ -11,6 +11,7 @@ class ProductService
     public function getAll(int $perPage = 15): LengthAwarePaginator
     {
         return Product::with(['images', 'detail'])
+            ->latest()
             ->paginate($perPage);
     }
 
@@ -32,6 +33,8 @@ class ProductService
                 'is_best_seller'    => $data['is_best_seller'] ?? false,
                 'is_e_copy'         => $data['is_e_copy'] ?? false,
                 'publisher'         => $data['publisher'] ?? null,
+                'created_by'        => auth()->id() ?? $data['created_by'] ?? null,
+                'updated_by'        => auth()->id() ?? $data['updated_by'] ?? null,
             ]);
 
             // 2. Save images (hasMany)
@@ -58,8 +61,6 @@ class ProductService
                     'format'            => $data['detail']['format'] ?? null,
                     'publication_date'  => $data['detail']['publication_date'] ?? null,
                     'is_active'         => $data['detail']['is_active'] ?? true,
-                    'created_by'        => $data['created_by'] ?? null,
-                    'updated_by'        => $data['updated_by'] ?? null,
                 ]);
             }
 

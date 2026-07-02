@@ -17,8 +17,8 @@ class CategoryResource extends JsonResource
             'name_en'    => $this->name_en,
             'name_ar'    => $this->name_ar,
             'status'     => $this->status,
-            'created_by' => $this->created_by,
-            'updated_by' => $this->updated_by,
+            'created_by'        => $this->createdBy->name ?? null,
+            'updated_by'        => $this->updatedBy->name ?? null,
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
         ];

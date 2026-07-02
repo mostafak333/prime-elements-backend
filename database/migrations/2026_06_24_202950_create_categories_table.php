@@ -21,6 +21,15 @@ return new class extends Migration
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('admins')
+                ->nullOnDelete();
+
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('admins')
+                ->nullOnDelete();
         });
     }
 

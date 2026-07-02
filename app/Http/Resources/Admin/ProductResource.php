@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Http\Resources\Admin\ProductDetailResource;
+use App\Http\Resources\Admin\ProductImageResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,11 +25,13 @@ class ProductResource extends JsonResource
             'is_best_seller'    => $this->is_best_seller,
             'is_e_copy'         => $this->is_e_copy,
             'publisher'         => $this->publisher,
-            'created_by'        => $this->created_by,
-            'updated_by'        => $this->updated_by,
+            'created_by'        => $this->createdBy->name ?? null,
+            'updated_by'        => $this->updatedBy->name ?? null,
             'created_at'        => $this->created_at?->toDateTimeString(),
             'updated_at'        => $this->updated_at?->toDateTimeString(),
             'deleted_at'        => $this->deleted_at?->toDateTimeString(),
+            'images' => ProductImageResource::collection($this->whenLoaded('images')),
+            'detail' => new ProductDetailResource($this->whenLoaded('detail')),
         ];
     }
 }

@@ -15,6 +15,8 @@ class TitleResource extends JsonResource
             'name_ar' => $this->name_ar,
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
+            'created_by'        => $this->createdBy->name ?? null,
+            'updated_by'        => $this->updatedBy->name ?? null,
         ];
     }
 }

@@ -24,9 +24,7 @@ class ProductDetail extends Model
         'publication_date',
         'name_en',
         'name_ar',
-        'is_active',
-        'created_by',
-        'updated_by',
+        'is_active'
     ];
 
     protected $casts = [
@@ -41,22 +39,6 @@ class ProductDetail extends Model
     public function product()
     {
         return $this->belongsTo(Product::class);
-    }
-
-    /**
-     * Administrator who created the record.
-     */
-    public function createdBy()
-    {
-        return $this->belongsTo(Admin::class, 'created_by');
-    }
-
-    /**
-     * Administrator who last updated the record.
-     */
-    public function updatedBy()
-    {
-        return $this->belongsTo(Admin::class, 'updated_by');
     }
 
     /**
