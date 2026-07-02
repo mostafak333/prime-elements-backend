@@ -10,7 +10,7 @@ class TitleService
     {
         return Title::latest()->paginate(15);
     }
-    
+
     public function getAllForUser()
     {
         return Title::orderBy('name_en')->get();
@@ -18,11 +18,16 @@ class TitleService
 
     public function create(array $data): Title
     {
+        $adminId = auth()->guard('api-admin')->id();
+        $data['created_by'] = $adminId;
+        $data['updated_by'] = $adminId;
         return Title::create($data);
     }
 
     public function update(Title $title, array $data): Title
     {
+        $adminId = auth()->guard('api-admin')->id();
+        $data['updated_by'] = $adminId;
         $title->update($data);
 
         return $title->refresh();

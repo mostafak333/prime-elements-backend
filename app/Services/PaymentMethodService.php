@@ -14,15 +14,17 @@ class PaymentMethodService
 
     public function create(array $data): PaymentMethod
     {
-        $data['created_by'] = auth('admin')->id();
-        $data['updated_by'] = auth('admin')->id();
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['created_by'] = $adminId;
+        $data['updated_by'] = $adminId;
 
         return PaymentMethod::create($data);
     }
 
     public function update(PaymentMethod $paymentMethod, array $data): PaymentMethod
     {
-        $data['updated_by'] = auth('admin')->id();
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['updated_by'] = $adminId;
 
         $paymentMethod->update($data);
 

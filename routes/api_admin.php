@@ -21,15 +21,10 @@ Route::post('/login', [AdminAuthController::class, 'login']);
 // URL: /api/admin/profile, /api/admin/logout, etc.
 // =========================================================================
 Route::group(['middleware' => ['auth:api-admin']], function () {
-
-    Route::get('/profile', function () {
-        return response()->json(auth()->user());
-    });
-
     Route::post('/logout', [AdminAuthController::class, 'logout']);
-    Route::apiResource('categories', CategoryController::class);
 
     Route::apiResource('titles', TitleController::class);
+    Route::apiResource('categories', CategoryController::class);
     Route::apiResource('products', ProductController::class);
     Route::apiResource('delivery-methods', DeliveryMethodController::class);
     Route::apiResource('payment-methods', PaymentMethodController::class);

@@ -14,15 +14,17 @@ class DeliveryMethodService
 
     public function create(array $data): DeliveryMethod
     {
-        $data['created_by'] = auth('admin')->id();
-        $data['updated_by'] = auth('admin')->id();
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['created_by'] = $adminId;
+        $data['updated_by'] = $adminId;
 
         return DeliveryMethod::create($data);
     }
 
     public function update(DeliveryMethod $deliveryMethod, array $data): DeliveryMethod
     {
-        $data['updated_by'] = auth('admin')->id();
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['updated_by'] = $adminId;
 
         $deliveryMethod->update($data);
 

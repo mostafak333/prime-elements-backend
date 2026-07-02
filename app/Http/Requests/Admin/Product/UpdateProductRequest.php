@@ -45,8 +45,6 @@ class UpdateProductRequest extends FormRequest
             'detail.format'           => ['nullable', 'string', 'max:50'],
             'detail.publication_date' => ['nullable', 'date'],
             'detail.is_active'        => ['nullable', 'boolean'],
-
-            'updated_by' => ['nullable', 'integer', 'exists:admins,id'],
         ];
     }
 }

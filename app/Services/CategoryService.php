@@ -15,11 +15,16 @@ class CategoryService
 
     public function create(array $data): Category
     {
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['created_by'] = $adminId;
+        $data['updated_by'] = $adminId;
         return Category::query()->create($data);
     }
 
     public function update(Category $category, array $data): Category
     {
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['updated_by'] = $adminId;
         $category->update($data);
         return $category->refresh();
     }

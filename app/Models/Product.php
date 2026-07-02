@@ -75,7 +75,7 @@ class Product extends Model
     /**
      * Scope to filter active products only.
      */
-    public function scopeActive($query)
+    public function  scopeActive($query)
     {
         return $query->where('status', true);
     }
