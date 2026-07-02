@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\AdminApi\Title;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreTitleRequest;
-use App\Http\Requests\UpdateTitleRequest;
-use App\Http\Resources\TitleResource;
+use App\Http\Requests\Admin\Title\{ StoreTitleRequest, UpdateTitleRequest };
+use App\Http\Resources\Admin\TitleResource;
 use App\Models\Title;
 use App\Services\TitleService;
 use App\Traits\ApiResponse;
+use Illuminate\Validation\ValidationException;
 
 class TitleController extends Controller
 {
@@ -16,8 +16,7 @@ class TitleController extends Controller
 
     public function __construct(
         private TitleService $titleService
-    ) {
-    }
+    ) {}
 
     public function index()
     {
@@ -71,11 +70,18 @@ class TitleController extends Controller
 
     public function destroy(Title $title)
     {
-        $this->titleService->delete($title);
+        try {
+            $this->titleService->delete($title);
 
-        return $this->success(
-            null,
-            'Title deleted successfully'
-        );
+            return $this->success(
+                null,
+                'Title deleted successfully'
+            );
+        } catch (ValidationException $e) {
+            return $this->error(
+                'Cannot delete title because it is linked to categories',
+                422
+            );
+        }
     }
 }

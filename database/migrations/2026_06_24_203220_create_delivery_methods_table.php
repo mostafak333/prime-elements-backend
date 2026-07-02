@@ -16,6 +16,17 @@ return new class extends Migration
             $table->string('name_en');
             $table->string('name_ar');
             $table->timestamps();
+            $table->softDeletes();
+
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('admins')
+                ->nullOnDelete();
+
+            $table->foreignId('updated_by')
+                ->nullable()
+                ->constrained('admins')
+                ->nullOnDelete();
         });
     }
 
