@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\UserApi\Auth\UserAuthController;
 use App\Http\Controllers\UserApi\Title\TitleController;
+use App\Http\Controllers\UserApi\Category\CategoryController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,11 @@ Route::group(['middleware' => ['auth:api-user']], function () {
     });
 
     Route::get('titles', [TitleController::class, 'index']);
-    
+    Route::get('categories', [CategoryController::class, 'index']);
+    Route::get(
+        'categories/{category}/subcategories',
+        [CategoryController::class, 'subCategories']
+    );
     Route::post('/logout', [UserAuthController::class, 'logout']);
 
     // Future Customer modules (Cart, Wishlist, Orders) go here
