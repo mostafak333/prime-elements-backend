@@ -17,6 +17,8 @@ class CategoryResource extends JsonResource
             'name_en'    => $this->name_en,
             'name_ar'    => $this->name_ar,
             'status'     => $this->status,
+            'is_filter'  => $this->is_filter,
+            'children'   => CategoryResource::collection($this->whenLoaded('children')),
             'created_by'        => $this->createdBy->name ?? null,
             'updated_by'        => $this->updatedBy->name ?? null,
             'created_at' => $this->created_at?->toDateTimeString(),

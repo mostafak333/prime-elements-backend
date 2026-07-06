@@ -6,6 +6,16 @@ use App\Models\Title;
 
 class TitleService
 {
+    // In TitleService.php
+    public function getNavigationTree()
+    {
+
+        return Title::with(['categories' => function ($query) {
+            $query->whereNull('parent_id')->with('children.children.children');
+        }])->get();
+    }
+
+    // Keep your existing getAll if you need it for a separate dropdown or admin panel
     public function getAll()
     {
         return Title::latest()->paginate(15);

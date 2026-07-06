@@ -13,6 +13,7 @@ class TitleResource extends JsonResource
             'id' => $this->id,
             'name_en' => $this->name_en,
             'name_ar' => $this->name_ar,
+            'categories' => SimpleCategoryResource::collection($this->whenLoaded('categories')),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
             'created_by'        => $this->createdBy->name ?? null,
