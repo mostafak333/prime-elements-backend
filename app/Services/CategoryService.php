@@ -3,14 +3,19 @@
 namespace App\Services;
 
 use App\Models\Category;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Validation\ValidationException;
 
 class CategoryService
 {
-    public function getAll(int $perPage = 15): LengthAwarePaginator
+
+
+
+    public function getAll(array $filters = [], int $perPage = 15)
     {
-        return Category::query()->latest()->paginate($perPage);
+        return Category::with('children.children.children')
+            ->whereNull('parent_id')
+            ->filter($filters)
+            ->paginate($perPage);
     }
 
     public function create(array $data): Category

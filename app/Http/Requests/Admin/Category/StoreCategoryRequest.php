@@ -15,11 +15,12 @@ class StoreCategoryRequest extends FormRequest
     {
         return [
             'parent_id'  => ['nullable', 'integer', 'exists:categories,id'],
-            'title_id'   => ['nullable', 'integer', 'exists:titles,id'],
+            'title_id'   => ['required', 'integer', 'exists:titles,id'],
             'image_id'   => ['nullable', 'integer', 'exists:images,id'],
             'name_en'    => ['required', 'string', 'max:255'],
             'name_ar'    => ['required', 'string', 'max:255'],
-            'status'     => ['required', 'boolean']
+            'status'     => ['required', 'boolean'],
+            'is_filter'     => ['required', 'boolean'],
         ];
     }
 }

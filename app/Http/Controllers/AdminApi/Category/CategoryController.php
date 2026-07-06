@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\AdminApi\Category;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Category\{ StoreCategoryRequest, UpdateCategoryRequest };
+use App\Http\Requests\Admin\Category\{StoreCategoryRequest, UpdateCategoryRequest};
+use App\Http\Requests\Admin\Category\FilterCategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
 use App\Models\Category;
 use App\Services\CategoryService;
@@ -23,18 +24,22 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    public function index(Request $request): JsonResponse
+
+    // In your CategoryController.php
+    public function index(FilterCategoryRequest $request): JsonResponse
     {
-        $perPage = (int) $request->get('per_page', 15);
-        $paginatedData = $this->categoryService->getAll($perPage);
+        $filters = $request->validated();
+        $perPage = $request->get('per_page', 15);
+
+        $categories = $this->categoryService->getAll($filters, $perPage);
 
         $responseData = [
-            'categories' => CategoryResource::collection($paginatedData),
+            'categories' => CategoryResource::collection($categories),
             'pagination' => [
-                'current_page' => $paginatedData->currentPage(),
-                'last_page'    => $paginatedData->lastPage(),
-                'per_page'     => $paginatedData->perPage(),
-                'total'        => $paginatedData->total(),
+                'total' => $categories->total(),
+                'per_page' => $categories->perPage(),
+                'current_page' => $categories->currentPage(),
+                'last_page' => $categories->lastPage()
             ]
         ];
 

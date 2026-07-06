@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\AdminApi\Title;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Title\{ StoreTitleRequest, UpdateTitleRequest };
+use App\Http\Requests\Admin\Title\{StoreTitleRequest, UpdateTitleRequest};
 use App\Http\Resources\Admin\TitleResource;
 use App\Models\Title;
 use App\Services\TitleService;
@@ -18,18 +18,15 @@ class TitleController extends Controller
         private TitleService $titleService
     ) {}
 
+    // In TitleController.php
     public function index()
     {
-        $titles = $this->titleService->getAll();
+        // 1. Fetch the full nested tree for the frontend UI
+        $navigationTree = $this->titleService->getNavigationTree();
 
+        // 2. Return it using your TitleResource
         return $this->success([
-            'titles' => TitleResource::collection($titles),
-            'pagination' => [
-                'current_page' => $titles->currentPage(),
-                'last_page' => $titles->lastPage(),
-                'per_page' => $titles->perPage(),
-                'total' => $titles->total(),
-            ],
+            'titles' => TitleResource::collection($navigationTree),
         ]);
     }
 

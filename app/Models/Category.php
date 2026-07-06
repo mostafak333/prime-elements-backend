@@ -20,12 +20,14 @@ class Category extends Model
         'name_en',
         'name_ar',
         'status',
+        'is_filter',
         'created_by',
         'updated_by',
     ];
 
     protected $casts = [
         'status' => 'boolean',
+        'is_filter' => 'boolean',
     ];
 
     /**
@@ -90,5 +92,39 @@ class Category extends Model
     public function updatedBy()
     {
         return $this->belongsTo(Admin::class, 'updated_by');
+    }
+
+    public function recursiveChildren()
+    {
+        return $this->children()->with('recursiveChildren');
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        if (isset($filters['parent_id'])) {
+            $query->where('parent_id', $filters['parent_id']);
+        }
+
+        if (isset($filters['title_id'])) {
+            $query->where('title_id', $filters['title_id']);
+        }
+
+        if (isset($filters['name_en'])) {
+            $query->where('name_en', 'LIKE', '%' . $filters['name_en'] . '%');
+        }
+
+        if (isset($filters['name_ar'])) {
+            $query->where('name_ar', 'LIKE', '%' . $filters['name_ar'] . '%');
+        }
+
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (isset($filters['is_filter'])) {
+            $query->where('is_filter', $filters['is_filter']);
+        }
+
+        return $query;
     }
 }

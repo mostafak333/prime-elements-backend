@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('name_en');
             $table->string('name_ar');
             $table->boolean('status')->default(true);
+            $table->boolean('is_filter')->default(false);
             $table->timestamps();
             $table->softDeletes();
             $table->foreignId('created_by')
