@@ -21,6 +21,7 @@ Route::post('/login', [UserAuthController::class, 'login']);
 Route::group(['middleware' => ['auth:api-user']], function () {
     Route::get('products', [ProductController::class, 'index']);
     Route::get('products/filter-options', [ProductController::class, 'filterOptions']);
+    Route::get('products/{product}', [ProductController::class, 'show']);
     Route::get('titles', [TitleController::class, 'index']);
     Route::get('categories', [CategoryController::class, 'index']);
     Route::get(
