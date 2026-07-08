@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\AddressDetail;
 use App\Models\CartItem;
 use App\Models\Order;
-use App\Models\OrderItem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;

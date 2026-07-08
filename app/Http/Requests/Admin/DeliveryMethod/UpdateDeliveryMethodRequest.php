@@ -14,7 +14,7 @@ class UpdateDeliveryMethodRequest extends FormRequest
 
     public function rules(): array
     {
-        $deliveryMethod = $this->route('deliveryMethod');
+        $deliveryMethod = $this->route('delivery_method');
 
         return [
             'name_en' => [

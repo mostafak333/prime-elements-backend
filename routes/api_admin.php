@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\AdminApi\Auth\AdminAuthController;
 use App\Http\Controllers\AdminApi\Category\CategoryController;
-use App\Http\Controllers\AdminApi\Product\ProductController;
-use App\Http\Controllers\AdminApi\Title\TitleController;
 use App\Http\Controllers\AdminApi\DeliveryMethod\DeliveryMethodController;
 use App\Http\Controllers\AdminApi\PaymentMethod\PaymentMethodController;
-
+use App\Http\Controllers\AdminApi\Product\ProductController;
+use App\Http\Controllers\AdminApi\Settings\SettingsController;
+use App\Http\Controllers\AdminApi\Title\TitleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -25,6 +25,9 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::post('/logout', [AdminAuthController::class, 'logout']);
     Route::post('/admins', [AdminAuthController::class, 'createAdmin']);
     Route::post('/change-password', [AdminAuthController::class, 'changePassword']);
+
+    Route::get('/settings', [SettingsController::class, 'index']);
+    Route::put('/settings', [SettingsController::class, 'update']);
 
     Route::apiResource('titles', TitleController::class);
     Route::apiResource('categories', CategoryController::class);

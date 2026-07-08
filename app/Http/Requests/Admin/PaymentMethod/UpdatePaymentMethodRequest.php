@@ -14,7 +14,7 @@ class UpdatePaymentMethodRequest extends FormRequest
 
     public function rules(): array
     {
-        $paymentMethod = $this->route('paymentMethod');
+        $paymentMethod = $this->route('payment_method');
 
         return [
             'name_en' => [
