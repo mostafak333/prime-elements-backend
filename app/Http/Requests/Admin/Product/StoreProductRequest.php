@@ -28,7 +28,7 @@ class StoreProductRequest extends FormRequest
             'is_new_arrival'    => ['required', 'boolean'],
             'is_best_seller'    => ['required', 'boolean'],
             'is_e_copy'         => ['required', 'boolean'],
-            'publisher'         => ['nullable', 'string', 'max:255'],
+            'publisher'         => ['required', 'string', 'max:255'],
 
             // --------------------
             // Images

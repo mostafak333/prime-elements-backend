@@ -9,40 +9,43 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-#[Fillable(['name', 'email', 'password', 'is_super'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable([
+    'name',
+    'email',
+    'password',
+    'is_super',
+    'invitation_token',
+    'invitation_token_expires_at',
+    'password_reset_token',
+    'password_reset_token_expires_at',
+    'is_active',
+])]
+#[Hidden(['password', 'remember_token', 'invitation_token', 'password_reset_token'])]
 class Admin extends Authenticatable implements JWTSubject
 {
     use HasRoles, SoftDeletes;
 
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     */
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // Returns the Admin ID
+        return $this->getKey();
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     */
     public function getJWTCustomClaims()
     {
         return [
-            'guard' => 'api-admin' // Identifies this token as an admin token
+            'guard' => 'api-admin',
         ];
     }
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'email_verified_at'           => 'datetime',
+            'password'                    => 'hashed',
+            'is_super'                    => 'boolean',
+            'is_active'                   => 'boolean',
+            'invitation_token_expires_at'  => 'datetime',
+            'password_reset_token_expires_at' => 'datetime',
         ];
     }
 }

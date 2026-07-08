@@ -11,9 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class UserAuthController extends Controller
 {
-    /**
-     * Customer Registration Endpoint
-     */
+
     public function register(UserRegisterRequest $request)
     {
         $user = User::create([

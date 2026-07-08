@@ -5,6 +5,9 @@ use App\Http\Controllers\UserApi\Product\ProductController;
 use App\Http\Controllers\UserApi\Auth\UserAuthController;
 use App\Http\Controllers\UserApi\Category\CategoryController;
 use App\Http\Controllers\UserApi\Title\TitleController;
+use App\Http\Controllers\UserApi\Wishlist\WishlistController;
+use App\Http\Controllers\UserApi\Cart\CartController;
+use App\Http\Controllers\UserApi\Order\OrderController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,5 +33,17 @@ Route::group(['middleware' => ['auth:api-user']], function () {
     );
     Route::post('/logout', [UserAuthController::class, 'logout']);
 
-    // Future Customer modules (Cart, Wishlist, Orders) go here
+    Route::get('wishlist', [WishlistController::class, 'index']);
+    Route::post('wishlist', [WishlistController::class, 'store']);
+    Route::delete('wishlist/{wishlist}', [WishlistController::class, 'destroy']);
+
+    Route::get('cart', [CartController::class, 'index']);
+    Route::post('cart', [CartController::class, 'store']);
+    Route::put('cart/{cart_item}', [CartController::class, 'update']);
+    Route::delete('cart', [CartController::class, 'clear']);
+    Route::delete('cart/{cart_item}', [CartController::class, 'destroy']);
+
+    Route::get('orders', [OrderController::class, 'index']);
+    Route::post('orders', [OrderController::class, 'store']);
+    Route::get('orders/{order}', [OrderController::class, 'show']);
 });
