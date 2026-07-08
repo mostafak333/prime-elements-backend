@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Route;
 // =========================================================================
 Route::post('/register', [UserAuthController::class, 'register']);
 Route::post('/login', [UserAuthController::class, 'login']);
+Route::get('/verify-email/{token}', [UserAuthController::class, 'verifyEmail']);
+Route::post('/forgot-password', [UserAuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [UserAuthController::class, 'resetPassword']);
 
 // =========================================================================
 // PROTECTED CUSTOMER ENDPOINTS (Guard: api-user)
-// URL: /api/user, /api/logout, etc.
 // =========================================================================
 Route::group(['middleware' => ['auth:api-user']], function () {
     Route::get('products', [ProductController::class, 'index']);
@@ -32,6 +34,9 @@ Route::group(['middleware' => ['auth:api-user']], function () {
         [CategoryController::class, 'subCategories']
     );
     Route::post('/logout', [UserAuthController::class, 'logout']);
+    Route::post('/change-password', [UserAuthController::class, 'changePassword']);
+    Route::get('/profile', [UserAuthController::class, 'profile']);
+    Route::put('/profile', [UserAuthController::class, 'updateProfile']);
 
     Route::get('wishlist', [WishlistController::class, 'index']);
     Route::post('wishlist', [WishlistController::class, 'store']);
