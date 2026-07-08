@@ -304,6 +304,13 @@ class ProductService
         return Product::with(['images', 'detail'])->find($id);
     }
 
+    public function findForUser(int $id): ?Product
+    {
+        return Product::with(['images', 'detail'])
+            ->active()
+            ->find($id);
+    }
+
     public function delete(Product $product): void
     {
         DB::transaction(function () use ($product) {
