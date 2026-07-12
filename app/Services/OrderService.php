@@ -5,12 +5,84 @@ namespace App\Services;
 use App\Models\AddressDetail;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\User;
+use App\Services\EbookDeliveryService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class OrderService
 {
+    public function getAll(array $filters = [], int $perPage = 15)
+    {
+        $query = Order::with('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user');
+
+        if (!empty($filters['search'])) {
+            $query->where('order_number', 'like', "%{$filters['search']}%");
+        }
+
+        if (!empty($filters['user_id'])) {
+            $query->where('user_id', $filters['user_id']);
+        }
+
+        if (!empty($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        if (!empty($filters['date_from'])) {
+            $query->whereDate('created_at', '>=', $filters['date_from']);
+        }
+
+        if (!empty($filters['date_to'])) {
+            $query->whereDate('created_at', '<=', $filters['date_to']);
+        }
+
+        return $query->latest()->paginate($perPage);
+    }
+
+    public function find(int $id): Order
+    {
+        return Order::with('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user')
+            ->findOrFail($id);
+    }
+
+    public function updateStatus(Order $order, string $status): Order
+    {
+        $this->validateStatusTransition($order->status, $status);
+
+        $order->update(['status' => $status]);
+
+        if ($status === 'confirmed' && $this->hasEbookItems($order)) {
+            app(EbookDeliveryService::class)->deliverEbooks($order->fresh());
+        }
+
+        return $order->fresh()->load('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user');
+    }
+
+    private function hasEbookItems(Order $order): bool
+    {
+        return $order->orderItems()->whereHas('product', function ($q) {
+            $q->where('is_e_copy', true);
+        })->exists();
+    }
+
+    private function validateStatusTransition(string $current, string $new): void
+    {
+        $flow = [
+            'pending' => ['confirmed', 'cancelled'],
+            'confirmed' => ['out_for_delivery', 'cancelled'],
+            'out_for_delivery' => ['delivered'],
+            'delivered' => [],
+            'cancelled' => [],
+        ];
+
+        if (!in_array($new, $flow[$current] ?? [])) {
+            throw ValidationException::withMessages([
+                'status' => ["Cannot change status from \"{$current}\" to \"{$new}\"."],
+            ]);
+        }
+    }
+
     public function getUserOrders(int $perPage = 15)
     {
         $userId = auth()->guard('api-user')->id();

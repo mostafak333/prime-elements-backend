@@ -18,11 +18,15 @@ class OrderItem extends Model
         'quantity',
         'price',
         'discount',
+        'download_token',
+        'download_url',
+        'download_expire_at',
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
         'discount' => 'decimal:2',
+        'download_expire_at' => 'datetime',
     ];
 
     public function order()

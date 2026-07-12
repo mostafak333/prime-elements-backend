@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Http\Resources\Admin\SimpleCategoryResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -13,9 +14,11 @@ class TitleResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'      => $this->id,
+            'id' => $this->id,
             'name_en' => $this->name_en,
             'name_ar' => $this->name_ar,
+            'categories' => SimpleCategoryResource::collection($this->whenLoaded('categories')),
+            'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }
 }

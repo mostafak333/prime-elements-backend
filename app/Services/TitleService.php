@@ -15,15 +15,9 @@ class TitleService
         }])->get();
     }
 
-    // Keep your existing getAll if you need it for a separate dropdown or admin panel
-    public function getAll()
-    {
-        return Title::latest()->paginate(15);
-    }
-
     public function getAllForUser()
     {
-        return Title::orderBy('name_en')->get();
+        return $this->getNavigationTree();
     }
 
     public function create(array $data): Title
