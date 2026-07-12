@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Mail\UserPasswordResetMail;
+use App\Jobs\SendEmailJob;
 use App\Mail\UserVerificationMail;
+use App\Mail\UserPasswordResetMail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -28,7 +28,8 @@ class UserAuthService
 
             $user->assignRole('Customer');
 
-            Mail::to($user->email)->send(
+            SendEmailJob::dispatch(
+                $user->email,
                 new UserVerificationMail($user, $token, 2880)
             );
 
@@ -70,7 +71,8 @@ class UserAuthService
             'password_reset_token_expires_at' => now()->addHour(),
         ]);
 
-        Mail::to($user->email)->send(
+        SendEmailJob::dispatch(
+            $user->email,
             new UserPasswordResetMail($user, $token, 60)
         );
     }
@@ -109,31 +111,6 @@ class UserAuthService
         $user->update([
             'password' => Hash::make($data['password']),
         ]);
-    }
-
-    public function updateProfile(array $data): User
-    {
-        $user = auth()->guard('api-user')->user();
-
-        $updateData = [];
-
-        if (isset($data['name'])) {
-            $updateData['name'] = $data['name'];
-        }
-
-        if (isset($data['phone'])) {
-            $updateData['phone'] = $data['phone'];
-        }
-
-        if (isset($data['avatar'])) {
-            $updateData['avatar'] = $data['avatar'];
-        }
-
-        if (! empty($updateData)) {
-            $user->update($updateData);
-        }
-
-        return $user->fresh();
     }
 
     public function checkEmailVerification(User $user): bool

@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Jobs\SendEmailJob;
 use App\Mail\AdminInvitationMail;
 use App\Mail\AdminPasswordResetMail;
 use App\Models\Admin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -29,7 +29,8 @@ class AuthService
 
             $admin->syncRoles($data['roles']);
 
-            Mail::to($admin->email)->send(
+            SendEmailJob::dispatch(
+                $admin->email,
                 new AdminInvitationMail($admin, $token, 2880)
             );
 
@@ -74,7 +75,8 @@ class AuthService
             'password_reset_token_expires_at' => now()->addHour(),
         ]);
 
-        Mail::to($admin->email)->send(
+        SendEmailJob::dispatch(
+            $admin->email,
             new AdminPasswordResetMail($admin, $token, 60)
         );
     }

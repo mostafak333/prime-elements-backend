@@ -20,6 +20,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
     'phone',
     'avatar',
     'email_verified_at',
+    'status',
 ])]
 #[Hidden([
     'password',

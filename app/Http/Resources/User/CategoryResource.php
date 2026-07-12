@@ -13,12 +13,16 @@ class CategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'        => $this->id,
-            'parent_id' => $this->parent_id,
-            'title_id'  => $this->title_id,
-            'image_id'  => $this->image_id,
-            'name_en'   => $this->name_en,
-            'name_ar'   => $this->name_ar,
+            'id'         => $this->id,
+            'parent_id'  => $this->parent_id,
+            'title_id'   => $this->title_id,
+            'image_id'   => $this->image_id,
+            'name_en'    => $this->name_en,
+            'name_ar'    => $this->name_ar,
+            'status'     => $this->status,
+            'is_filter'  => $this->is_filter,
+            'children'   => CategoryResource::collection($this->whenLoaded('children')),
+            'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }
 }

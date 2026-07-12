@@ -6,14 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\Auth\ChangePasswordRequest;
 use App\Http\Requests\User\Auth\ForgotPasswordRequest;
 use App\Http\Requests\User\Auth\ResetPasswordRequest;
-use App\Http\Requests\User\Auth\UpdateProfileRequest;
 use App\Http\Requests\User\Auth\UserLoginRequest;
 use App\Http\Requests\User\Auth\UserRegisterRequest;
 use App\Http\Resources\User\UserResource;
-use App\Models\User;
 use App\Services\UserAuthService;
 use App\Traits\ApiResponse;
-use Illuminate\Validation\ValidationException;
 
 class UserAuthController extends Controller
 {
@@ -42,6 +39,12 @@ class UserAuthController extends Controller
         }
 
         $user = auth()->guard('api-user')->user();
+
+        if ($user->status === 'blocked') {
+            auth()->guard('api-user')->logout();
+            return $this->error('Your account has been blocked. Please contact support.', 403);
+        }
+
         $check =  $this->userAuthService->checkEmailVerification($user);
         if ($check) {
             return $this->error('email not verified, please verify your email before logging in.', 401);
@@ -97,25 +100,6 @@ class UserAuthController extends Controller
 
         return $this->success([
             'message' => 'Password changed successfully',
-        ], 200);
-    }
-
-    public function profile()
-    {
-        $user = auth()->guard('api-user')->user();
-
-        return $this->success([
-            'user' => new UserResource($user),
-        ], 200);
-    }
-
-    public function updateProfile(UpdateProfileRequest $request)
-    {
-        $user = $this->userAuthService->updateProfile($request->validated());
-
-        return $this->success([
-            'message' => 'Profile updated successfully',
-            'user'    => new UserResource($user),
         ], 200);
     }
 }
