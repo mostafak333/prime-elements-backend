@@ -19,7 +19,7 @@ class UpdateProductRequest extends FormRequest
             'name_ar'           => ['sometimes', 'required', 'string', 'max:255'],
             'short_description' => ['sometimes', 'required', 'string'],
             'price'             => ['sometimes', 'required', 'numeric', 'min:0'],
-            'discount'          => ['sometimes', 'required', 'numeric', 'min:0'],
+            'discount'          => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'stock'             => ['sometimes', 'required', 'integer', 'min:0'],
             'status'            => ['sometimes', 'required', 'boolean'],
             'is_new_arrival'    => ['sometimes', 'required', 'boolean'],

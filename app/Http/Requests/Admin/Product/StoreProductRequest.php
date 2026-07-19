@@ -22,7 +22,7 @@ class StoreProductRequest extends FormRequest
             'name_ar'           => ['required', 'string', 'max:255'],
             'short_description' => ['required', 'string'],
             'price'             => ['required', 'numeric', 'min:0'],
-            'discount'          => ['required', 'numeric', 'min:0'],
+            'discount'          => ['nullable', 'numeric', 'min:0'],
             'stock'             => ['required', 'integer', 'min:0'],
             'status'            => ['required', 'boolean'],
             'is_new_arrival'    => ['required', 'boolean'],
