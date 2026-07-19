@@ -33,6 +33,8 @@ class PermissionSeeder extends Seeder
             'view_reviews','delete_reviews',
 
             'view_payment_methods','create_payment_methods','edit_payment_methods','delete_payment_methods','notifications',
+
+            'view_permissions','create_permissions','delete_permissions',
         ];
 
         foreach ($adminPermissions as $permission) {

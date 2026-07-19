@@ -2,14 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Admin;
+use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\OrderItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'category_id',
@@ -52,7 +55,15 @@ class Product extends Model
     {
         return $this->hasMany(CartItem::class);
     }
+    public function images()
+    {
+        return $this->hasMany(ProductImage::class);
+    }
 
+    public function detail()
+    {
+        return $this->hasOne(ProductDetail::class);
+    }
     /**
      * Get all order items for this product.
      */
@@ -64,7 +75,7 @@ class Product extends Model
     /**
      * Scope to filter active products only.
      */
-    public function scopeActive($query)
+    public function  scopeActive($query)
     {
         return $query->where('status', true);
     }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->integer('quantity')->default(1);
             $table->timestamps();
+            $table->softDeletes();
 
             // Index for faster queries
             $table->index(['user_id', 'product_id']);

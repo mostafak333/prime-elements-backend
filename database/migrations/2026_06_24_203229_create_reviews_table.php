@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('comment');
             $table->boolean('status')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

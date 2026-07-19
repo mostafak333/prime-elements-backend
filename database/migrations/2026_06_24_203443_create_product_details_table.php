@@ -13,9 +13,27 @@ return new class extends Migration
     {
         Schema::create('product_details', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+
+            $table->text('description')->nullable();
+
+            // Product Details (from the image)
+            $table->string('book_title')->nullable();
+            $table->string('author')->nullable();
+            $table->string('publisher')->nullable();
+            $table->string('language')->nullable();
+            $table->integer('pages')->nullable();
+            $table->string('isbn')->nullable();
+            $table->string('format')->nullable();
+            $table->date('publication_date')->nullable();
+
+            // Additional fields
             $table->string('name_en');
             $table->string('name_ar');
+            $table->boolean('is_active')->default(true);
+
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

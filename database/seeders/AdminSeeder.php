@@ -20,6 +20,7 @@ class AdminSeeder extends Seeder
             'name' => 'System Super Admin',
             'password' => Hash::make('password123'),
             'is_super' => true,
+            'is_active' => true,
         ]);
 
         $admin->assignRole($superAdminRole);
@@ -29,6 +30,7 @@ class AdminSeeder extends Seeder
         ], [
             'name' => 'Store Manager',
             'password' => Hash::make('password123'),
+            'is_active' => true,
         ]);
 
         $manager->assignRole($managerRole);

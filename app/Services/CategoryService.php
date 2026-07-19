@@ -3,32 +3,59 @@
 namespace App\Services;
 
 use App\Models\Category;
-use App\DTO\Category\CategoryNameDTO;
+use Illuminate\Validation\ValidationException;
 
 class CategoryService
 {
-    public function listActiveNames(): array
-    {
-        $categories = Category::active()->get();
 
-        return CategoryNameDTO::collection($categories);
+
+
+    public function getAll(array $filters = [], int $perPage = 15)
+    {
+        return Category::with('children.children.children')
+            ->whereNull('parent_id')
+            ->filter($filters)
+            ->paginate($perPage);
     }
 
-    public function listAll(): array
+    public function create(array $data): Category
     {
-        return CategoryNameDTO::collection(
-            Category::latest()->get()
-        );
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['created_by'] = $adminId;
+        $data['updated_by'] = $adminId;
+        return Category::query()->create($data);
     }
 
-    public function find(int $id): ?array
+    public function update(Category $category, array $data): Category
     {
-        $category = Category::find($id);
+        $adminId = auth()->guard('api-admin')->id() ?? null;
+        $data['updated_by'] = $adminId;
+        $category->update($data);
+        return $category->refresh();
+    }
 
-        if (! $category) {
-            return null;
+    public function find(int $id): ?Category
+    {
+        return Category::query()->find($id);
+    }
+
+    public function delete(Category $category): void
+    {
+        if ($category->children()->exists()) {
+            throw ValidationException::withMessages([
+                'category' => ['Cannot delete a category that has child categories.'],
+            ]);
         }
 
-        return CategoryNameDTO::fromModel($category);
+        $category->delete();
+    }
+
+    public function getAllForUser()
+    {
+        return Category::with('children.children.children')
+            ->whereNull('parent_id')
+            ->where('status', true)
+            ->orderBy('name_en')
+            ->get();
     }
 }

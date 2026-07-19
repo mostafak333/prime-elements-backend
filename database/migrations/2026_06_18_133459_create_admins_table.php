@@ -19,6 +19,7 @@ return new class extends Migration
             $table->boolean('is_super')->default(false); // Quick flag for full access
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

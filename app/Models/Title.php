@@ -2,22 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-<<<<<<< HEAD
-
-class Title extends Model
-{
-    protected $fillable = [
-        'name_en',
-        'name_ar',
-    ];
-=======
 use App\Models\Admin;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Title extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name_en',
@@ -26,6 +18,10 @@ class Title extends Model
         'updated_by',
     ];
 
+    public function categories()
+    {
+        return $this->hasMany(Category::class, 'title_id');
+    }
     /**
      * Administrator who created the record.
      */
@@ -41,5 +37,4 @@ class Title extends Model
     {
         return $this->belongsTo(Admin::class, 'updated_by');
     }
->>>>>>> 29aa41cccf57f462cf108d648784dfd2b77a20b7
 }
