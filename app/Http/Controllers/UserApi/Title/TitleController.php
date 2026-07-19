@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\UserApi\Title;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\User\Title\FilterTitleRequest;
 use App\Http\Resources\User\TitleResource;
 use App\Services\TitleService;
 use App\Traits\ApiResponse;
@@ -16,11 +17,11 @@ class TitleController extends Controller
         private TitleService $titleService
     ) {}
 
-    public function index(): JsonResponse
+    public function index(FilterTitleRequest $request): JsonResponse
     {
         return $this->success([
             'titles' => TitleResource::collection(
-                $this->titleService->getAllForUser()
+                $this->titleService->getAllForUser($request->validated())
             ),
         ]);
     }
