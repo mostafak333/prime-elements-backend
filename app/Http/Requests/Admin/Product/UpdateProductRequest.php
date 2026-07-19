@@ -17,26 +17,27 @@ class UpdateProductRequest extends FormRequest
             'category_id'       => ['sometimes', 'required', 'integer', 'exists:categories,id'],
             'name_en'           => ['sometimes', 'required', 'string', 'max:255'],
             'name_ar'           => ['sometimes', 'required', 'string', 'max:255'],
-            'short_description' => ['nullable', 'string'],
+            'short_description' => ['sometimes', 'required', 'string'],
             'price'             => ['sometimes', 'required', 'numeric', 'min:0'],
-            'discount'          => ['nullable', 'numeric', 'min:0'],
+            'discount'          => ['sometimes', 'required', 'numeric', 'min:0'],
             'stock'             => ['sometimes', 'required', 'integer', 'min:0'],
             'status'            => ['sometimes', 'required', 'boolean'],
             'is_new_arrival'    => ['sometimes', 'required', 'boolean'],
             'is_best_seller'    => ['sometimes', 'required', 'boolean'],
             'is_e_copy'         => ['sometimes', 'required', 'boolean'],
-            'publisher'         => ['nullable', 'string', 'max:255'],
+            'publisher'         => ['sometimes', 'required', 'string', 'max:255'],
 
-            // images
+            // Images
             'images'   => ['nullable', 'array'],
             'images.*' => ['string'],
 
-            // detail (replace whole object)
+            // Product Detail
             'detail' => ['nullable', 'array'],
 
             'detail.name_en'          => ['required_with:detail', 'string', 'max:255'],
             'detail.name_ar'          => ['required_with:detail', 'string', 'max:255'],
             'detail.description'      => ['nullable', 'string'],
+            'detail.book_title'       => ['nullable', 'string', 'max:255'],
             'detail.author'           => ['nullable', 'string', 'max:255'],
             'detail.publisher'        => ['nullable', 'string', 'max:255'],
             'detail.language'         => ['nullable', 'string', 'max:50'],
