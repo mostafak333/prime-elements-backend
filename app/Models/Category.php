@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Admin;
 use App\Models\Image;
 use App\Models\Title;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -19,6 +20,9 @@ class Category extends Model
         'image_id',
         'name_en',
         'name_ar',
+        'slug',
+        'description_en',
+        'description_ar',
         'status',
         'is_filter',
         'created_by',
@@ -73,7 +77,7 @@ class Category extends Model
     /**
      * Scope to filter active categories only.
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query)
     {
         return $query->where('status', true);
     }
@@ -99,7 +103,7 @@ class Category extends Model
         return $this->children()->with('recursiveChildren');
     }
 
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter(Builder $query, array $filters)
     {
         if (isset($filters['parent_id'])) {
             $query->where('parent_id', $filters['parent_id']);
@@ -115,6 +119,18 @@ class Category extends Model
 
         if (isset($filters['name_ar'])) {
             $query->where('name_ar', 'LIKE', '%' . $filters['name_ar'] . '%');
+        }
+
+        if (isset($filters['slug'])) {
+            $query->where('slug', 'LIKE', '%' . $filters['slug'] . '%');
+        }
+
+        if (isset($filters['description_en'])) {
+            $query->where('description_en', 'LIKE', '%' . $filters['description_en'] . '%');
+        }
+
+        if (isset($filters['description_ar'])) {
+            $query->where('description_ar', 'LIKE', '%' . $filters['description_ar'] . '%');
         }
 
         if (isset($filters['status'])) {

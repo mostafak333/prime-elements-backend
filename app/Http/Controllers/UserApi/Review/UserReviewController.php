@@ -37,7 +37,7 @@ class UserReviewController extends Controller
     public function index(Request $request): JsonResponse
     {
         $filters = $request->only(['product_id', 'user_id', 'status']);
-        $perPage = $request->get('per_page', 15);
+        $perPage = (int) $request->get('per_page', 15);
 
         $reviews = $this->userReviewService->getAllForUsers($filters, $perPage);
 

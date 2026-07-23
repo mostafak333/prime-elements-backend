@@ -14,12 +14,15 @@ class FilterCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id'  => ['integer', 'exists:categories,id'],
-            'title_id'   => ['integer', 'exists:titles,id'],
-            'name_en'    => ['string', 'max:255'],
-            'name_ar'    => ['string', 'max:255'],
-            'status'     => ['boolean'],
-            'is_filter'     => ['boolean'],
+            'parent_id' => ['integer', 'exists:categories,id'],
+            'title_id'  => ['integer', 'exists:titles,id'],
+            'name_en'   => ['string', 'max:255'],
+            'name_ar'   => ['string', 'max:255'],
+            'slug' => ['string', 'max:255'],
+            'description_en' => ['string'],
+            'description_ar' => ['string'],
+            'status' => ['boolean'],
+            'is_filter' => ['boolean'],
         ];
     }
 }

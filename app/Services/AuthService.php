@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Jobs\SendEmailJob;
-use App\Mail\AdminInvitationMail;
 use App\Mail\AdminPasswordResetMail;
 use App\Models\Admin;
 use Illuminate\Support\Facades\DB;
@@ -13,30 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-    public function createAdminInvitation(array $data): Admin
-    {
-        return DB::transaction(function () use ($data) {
-            $token = Str::random(64);
 
-            $admin = Admin::create([
-                'name'                       => $data['name'],
-                'email'                      => $data['email'],
-                'password'                   => Hash::make(Str::random(40)),
-                'invitation_token'           => $token,
-                'invitation_token_expires_at' => now()->addHours(48),
-                'is_active'                  => false,
-            ]);
-
-            $admin->syncRoles($data['roles']);
-
-            SendEmailJob::dispatch(
-                $admin->email,
-                new AdminInvitationMail($admin, $token, 2880)
-            );
-
-            return $admin;
-        });
-    }
 
     public function setPassword(array $data): void
     {

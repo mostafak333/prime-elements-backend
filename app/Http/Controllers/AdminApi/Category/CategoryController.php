@@ -10,7 +10,6 @@ use App\Models\Category;
 use App\Services\CategoryService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller

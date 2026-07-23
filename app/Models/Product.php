@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\OrderItem;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,7 +19,8 @@ class Product extends Model
         'category_id',
         'name_en',
         'name_ar',
-        'short_description',
+        'short_description_en',
+        'short_description_ar',
         'price',
         'discount',
         'stock',
@@ -75,7 +77,7 @@ class Product extends Model
     /**
      * Scope to filter active products only.
      */
-    public function  scopeActive($query)
+    public function  scopeActive(Builder $query)
     {
         return $query->where('status', true);
     }
@@ -83,7 +85,7 @@ class Product extends Model
     /**
      * Scope to filter new arrivals only.
      */
-    public function scopeNewArrivals($query)
+    public function scopeNewArrivals(Builder $query)
     {
         return $query->where('is_new_arrival', true);
     }
@@ -91,7 +93,7 @@ class Product extends Model
     /**
      * Scope to filter best sellers only.
      */
-    public function scopeBestSellers($query)
+    public function scopeBestSellers(Builder $query)
     {
         return $query->where('is_best_seller', true);
     }
@@ -99,7 +101,7 @@ class Product extends Model
     /**
      * Scope to filter e-copy products only.
      */
-    public function scopeECopy($query)
+    public function scopeECopy(Builder $query)
     {
         return $query->where('is_e_copy', true);
     }
