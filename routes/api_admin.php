@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminApi\Admin\AdminRoleController;
+use App\Http\Controllers\AdminApi\Admin\AdminController;
 use App\Http\Controllers\AdminApi\Auth\AdminAuthController;
 use App\Http\Controllers\AdminApi\Category\CategoryController;
 use App\Http\Controllers\AdminApi\DeliveryMethod\DeliveryMethodController;
@@ -29,7 +30,6 @@ Route::post('/reset-password', [AdminAuthController::class, 'resetPassword']);
 // =========================================================================
 Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::post('/logout', [AdminAuthController::class, 'logout']);
-    Route::post('/admins', [AdminAuthController::class, 'createAdmin']);
     Route::post('/change-password', [AdminAuthController::class, 'changePassword']);
 
     Route::get('/settings', [SettingsController::class, 'index']);
@@ -67,6 +67,15 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::put('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.update-status');
+
+    // =========================================================================
+    // Admin MANAGEMENT
+    // =========================================================================
+    Route::post('/admins', [AdminController::class, 'createAdmin'])->name('admins.create');
+    Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
+    Route::get('/admins/{admin}', [AdminController::class, 'show'])->name('admins.show');
+    Route::put('/admins/{id}/status', [AdminController::class, 'updateStatus'])->name('admins.update-status');
+    Route::put('/admins/{admin}', [AdminController::class, 'update'])->name('admins.update');
 
     // =========================================================================
     // REVIEW MANAGEMENT

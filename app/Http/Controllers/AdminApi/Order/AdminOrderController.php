@@ -25,7 +25,7 @@ class AdminOrderController extends Controller
     public function index(Request $request): JsonResponse
     {
         $filters = $request->only(['search', 'user_id', 'status', 'date_from', 'date_to']);
-        $perPage = $request->get('per_page', 15);
+        $perPage = (int) $request->get('per_page', 15);
 
         $orders = $this->orderService->getAll($filters, $perPage);
 
@@ -51,21 +51,21 @@ class AdminOrderController extends Controller
     }
 
     public function updateStatus(UpdateOrderStatusRequest $request, int $order)
-{
-    $order = Order::find($order);
+    {
+        $order = Order::find($order);
 
-    if (!$order) {
-        return $this->error('Order not found.', 404);
+        if (!$order) {
+            return $this->error('Order not found.', 404);
+        }
+
+        $updatedOrder = $this->orderService->updateStatus(
+            $order,
+            $request->status
+        );
+
+        return $this->success(
+            new AdminOrderResource($updatedOrder),
+            'Order status updated successfully.'
+        );
     }
-
-    $updatedOrder = $this->orderService->updateStatus(
-        $order,
-        $request->status
-    );
-
-    return $this->success(
-        new AdminOrderResource($updatedOrder),
-        'Order status updated successfully.'
-    );
-}
 }

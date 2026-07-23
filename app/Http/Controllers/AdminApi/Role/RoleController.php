@@ -28,7 +28,7 @@ class RoleController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $perPage = $request->get('per_page', 15);
+        $perPage = (int) $request->get('per_page', 15);
         $roles = $this->roleService->getAll($perPage);
 
         return $this->success([

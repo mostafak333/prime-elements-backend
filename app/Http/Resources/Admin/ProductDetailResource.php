@@ -11,18 +11,16 @@ class ProductDetailResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'description' => $this->description,
-            'book_title' => $this->book_title,
+            'description_en' => $this->description_en,
+            'description_ar' => $this->description_ar,
+            'title_en' => $this->title_en,
+            'title_ar' => $this->title_ar,
             'author' => $this->author,
             'publisher' => $this->publisher,
             'language' => $this->language,
             'pages' => $this->pages,
             'isbn' => $this->isbn,
-            'format' => $this->format,
             'publication_date' => $this->publication_date,
-            'name_en' => $this->name_en,
-            'name_ar' => $this->name_ar,
-            'display_name' => $this->display_name,
         ];
     }
 }
