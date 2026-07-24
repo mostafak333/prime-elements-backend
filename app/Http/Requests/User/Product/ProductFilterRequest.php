@@ -3,7 +3,13 @@
 namespace App\Http\Requests\User\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Dedoc\Scramble\Attributes\QueryParameter;
+#[QueryParameter(
+    'search',
+    description: 'Searches across product name (EN/AR), short description (EN/AR), author, and title (EN/AR).',
+    type: 'string',
+    required: false
+)]
 class ProductFilterRequest extends FormRequest
 {
     public function authorize(): bool
@@ -24,6 +30,8 @@ class ProductFilterRequest extends FormRequest
             'per_page' => 'sometimes|integer|min:1|max:100',
             'sort_by' => 'sometimes|in:price_asc,price_desc,name_asc,name_desc,newest,best_seller',
             'search' => 'sometimes|string|max:255',
+            'page' => 'sometimes|integer|min:1',
+            'filter' => 'sometimes|in:new_arrival,best_seller',
         ];
     }
 

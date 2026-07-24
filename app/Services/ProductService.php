@@ -29,8 +29,9 @@ class ProductService
         $query = $this->applyFilters($query, $filters);
 
         $perPage = $filters['per_page'] ?? 15;
+        $page = $filters['page'] ?? 1;
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
@@ -77,6 +78,13 @@ class ProductService
                 $query->where('stock', '<=', 0);
             }
         }
+        if (!empty($filters['filter'])) {
+            if ($filters['filter'] === 'new_arrival') {
+                $query->where('is_new_arrival', true);
+            } elseif ($filters['filter'] === 'best_seller') {
+                $query->where('is_best_seller', true);
+            }
+        }
 
         // Search filter
         if (!empty($filters['search'])) {
@@ -86,14 +94,11 @@ class ProductService
                     ->orWhere('name_ar', 'LIKE', $searchTerm)
                     ->orWhere('short_description_en', 'LIKE', $searchTerm)
                     ->orWhere('short_description_ar', 'LIKE', $searchTerm)
-                    ->orWhere('title_en', 'LIKE', $searchTerm)
-                    ->orWhere('title_ar', 'LIKE', $searchTerm)
-                    ->orWhere('description_en', 'LIKE', $searchTerm)
-                    ->orWhere('description_ar', 'LIKE', $searchTerm)
+
                     ->orWhereHas('detail', function ($detailQuery) use ($searchTerm) {
-                        $detailQuery->where('book_title', 'LIKE', $searchTerm)
-                            ->orWhere('author', 'LIKE', $searchTerm)
-                            ->orWhere('description', 'LIKE', $searchTerm);
+                        $detailQuery->where('author', 'LIKE', $searchTerm)
+                            ->orWhere('title_en', 'LIKE', $searchTerm)
+                            ->orWhere('title_ar', 'LIKE', $searchTerm);
                     });
             });
         }
