@@ -30,7 +30,7 @@ class WishlistService
     public function delete(Wishlist $wishlist): void
     {
         $this->ensureOwnership($wishlist);
-        $wishlist->delete();
+        $wishlist->forceDelete();
     }
 
     private function ensureOwnership(Wishlist $wishlist): void
