@@ -25,12 +25,15 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
     'city',
     'street_address',
     'apartment',
+    'social_provider',
+    'social_id',
 ])]
 #[Hidden([
     'password',
     'remember_token',
     'email_verification_token',
     'password_reset_token',
+    'social_id',
 ])]
 class User extends Authenticatable implements JWTSubject
 {

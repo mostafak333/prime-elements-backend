@@ -11,13 +11,6 @@ class UserResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $statistics = [
-            'total_orders'    => Order::where('user_id', $this->id)->count(),
-            'delivered_orders' => Order::where('user_id', $this->id)->where('status', 'delivered')->count(),
-            'wishlist_items'  => Wishlist::where('user_id', $this->id)->count(),
-            'member_since'   => $this->created_at?->toDateString(),
-        ];
-
         return [
             'id'             => $this->id,
             'name'           => $this->name,
@@ -28,7 +21,12 @@ class UserResource extends JsonResource
             'city'           => $this->city,
             'street_address' => $this->street_address,
             'apartment'      => $this->apartment,
-            'statistics'     => $statistics,
+            'member_since'   => $this->created_at?->toDateString(),
+            'statistics'     => [
+                'total_orders'     => Order::where('user_id', $this->id)->count(),
+                'delivered_orders' => Order::where('user_id', $this->id)->where('status', 'delivered')->count(),
+                'wishlist_items'   => Wishlist::where('user_id', $this->id)->count(),
+            ],
         ];
     }
 }
