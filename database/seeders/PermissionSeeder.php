@@ -37,6 +37,8 @@ class PermissionSeeder extends Seeder
             'view_permissions','create_permissions','delete_permissions',
 
             'users.view','users.update_status',
+
+            'landing_banners.view','landing_banners.create','landing_banners.update','landing_banners.delete',
         ];
 
         foreach ($adminPermissions as $permission) {

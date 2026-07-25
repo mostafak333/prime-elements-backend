@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\AddressDetail;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\EbookDeliveryService;
 use Illuminate\Support\Facades\DB;
@@ -106,7 +107,7 @@ class OrderService
     {
         $userId = auth()->guard('api-user')->id();
         $user = auth()->guard('api-user')->user();
-
+        $setting = Setting::first();
         $cartItems = CartItem::with('product')
             ->where('user_id', $userId)
             ->get();
@@ -117,7 +118,7 @@ class OrderService
             ]);
         }
 
-        return DB::transaction(function () use ($data, $userId, $user, $cartItems) {
+        return DB::transaction(function () use ($data, $userId, $user, $cartItems, $setting) {
             $this->validateStock($cartItems);
 
             $address = AddressDetail::create([
@@ -151,8 +152,8 @@ class OrderService
                 ];
             }
 
-            $shipping = $data['shipping'] ?? 0;
-            $tax = $data['tax'] ?? 0;
+            $shipping = $data['shipping'] ?? $setting->delivery_fee;
+            $tax = $setting->vat_enabled ? $setting->vat_percentage : 0;
             $total = $subtotal - $totalDiscount + $shipping + $tax;
 
             $order = Order::create([

@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminApi\Product\ProductController;
 use App\Http\Controllers\AdminApi\Role\RoleController;
 use App\Http\Controllers\AdminApi\Settings\SettingsController;
 use App\Http\Controllers\AdminApi\Review\ReviewController;
+use App\Http\Controllers\AdminApi\LandingBanner\LandingBannerController;
 use App\Http\Controllers\AdminApi\Title\TitleController;
 use App\Http\Controllers\AdminApi\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +61,19 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::get('/admins/{admin}/roles', [AdminRoleController::class, 'show'])->name('admins.roles.show');
     Route::put('/admins/{admin}/roles', [AdminRoleController::class, 'sync'])->name('admins.roles.sync');
     Route::delete('/admins/{admin}/roles/{role}', [AdminRoleController::class, 'destroy'])->name('admins.roles.destroy');
+
+    // =========================================================================
+    // LANDING BANNERS
+    // =========================================================================
+
+    Route::get('/landing-banners', [LandingBannerController::class, 'index'])->name('landing-banners.index');
+    Route::get('/landing-banners/{landing_banner}', [LandingBannerController::class, 'show'])->name('landing-banners.show');
+    Route::post('/landing-banners', [LandingBannerController::class, 'store'])
+        ->name('landing-banners.store');
+    Route::put('/landing-banners/{landing_banner}', [LandingBannerController::class, 'update'])
+        ->name('landing-banners.update');
+    Route::delete('/landing-banners/{landing_banner}', [LandingBannerController::class, 'destroy'])
+        ->name('landing-banners.destroy');
 
     // =========================================================================
     // USER MANAGEMENT
