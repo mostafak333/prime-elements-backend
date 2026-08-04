@@ -5,7 +5,6 @@ namespace App\Http\Controllers\AdminApi\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\User\UpdateUserStatusRequest;
 use App\Http\Resources\Admin\AdminUserResource;
-use App\Http\Resources\User\ReviewResource;
 use App\Models\User;
 use App\Services\ReviewService;
 use App\Services\UserService;
@@ -27,20 +26,20 @@ class UserController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $filters = $request->only(['product_id', 'user_id', 'status']);
-        $perPage = $request->get('per_page', 15);
+        $filters = $request->only(['search', 'name', 'email', 'phone', 'status']);
+        $perPage = (int) $request->get('per_page', 15);
 
-        $reviews = $this->reviewService->getAllForUsers();
+        $users = $this->userService->getAll($filters, $perPage);
 
         return $this->success([
-            'reviews' => ReviewResource::collection($reviews),
+            'users' => AdminUserResource::collection($users),
             'pagination' => [
-                'total' => $reviews->total(),
-                'per_page' => $reviews->perPage(),
-                'current_page' => $reviews->currentPage(),
-                'last_page' => $reviews->lastPage(),
+                'total' => $users->total(),
+                'per_page' => $users->perPage(),
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
             ],
-        ], 'Reviews retrieved successfully.');
+        ], 'Users retrieved successfully.');
     }
 
     public function show(int $id): JsonResponse

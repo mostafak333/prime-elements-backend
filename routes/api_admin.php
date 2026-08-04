@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminApi\Admin\AdminRoleController;
+use App\Http\Controllers\AdminApi\Admin\AdminController;
 use App\Http\Controllers\AdminApi\Auth\AdminAuthController;
 use App\Http\Controllers\AdminApi\Category\CategoryController;
 use App\Http\Controllers\AdminApi\DeliveryMethod\DeliveryMethodController;
@@ -11,6 +12,7 @@ use App\Http\Controllers\AdminApi\Product\ProductController;
 use App\Http\Controllers\AdminApi\Role\RoleController;
 use App\Http\Controllers\AdminApi\Settings\SettingsController;
 use App\Http\Controllers\AdminApi\Review\ReviewController;
+use App\Http\Controllers\AdminApi\LandingBanner\LandingBannerController;
 use App\Http\Controllers\AdminApi\Title\TitleController;
 use App\Http\Controllers\AdminApi\User\UserController;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +31,6 @@ Route::post('/reset-password', [AdminAuthController::class, 'resetPassword']);
 // =========================================================================
 Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::post('/logout', [AdminAuthController::class, 'logout']);
-    Route::post('/admins', [AdminAuthController::class, 'createAdmin']);
     Route::post('/change-password', [AdminAuthController::class, 'changePassword']);
 
     Route::get('/settings', [SettingsController::class, 'index']);
@@ -62,11 +63,33 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::delete('/admins/{admin}/roles/{role}', [AdminRoleController::class, 'destroy'])->name('admins.roles.destroy');
 
     // =========================================================================
+    // LANDING BANNERS
+    // =========================================================================
+
+    Route::get('/landing-banners', [LandingBannerController::class, 'index'])->name('landing-banners.index');
+    Route::get('/landing-banners/{landing_banner}', [LandingBannerController::class, 'show'])->name('landing-banners.show');
+    Route::post('/landing-banners', [LandingBannerController::class, 'store'])
+        ->name('landing-banners.store');
+    Route::put('/landing-banners/{landing_banner}', [LandingBannerController::class, 'update'])
+        ->name('landing-banners.update');
+    Route::delete('/landing-banners/{landing_banner}', [LandingBannerController::class, 'destroy'])
+        ->name('landing-banners.destroy');
+
+    // =========================================================================
     // USER MANAGEMENT
     // =========================================================================
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::put('/users/{user}/status', [UserController::class, 'updateStatus'])->name('users.update-status');
+
+    // =========================================================================
+    // Admin MANAGEMENT
+    // =========================================================================
+    Route::post('/admins', [AdminController::class, 'createAdmin'])->name('admins.create');
+    Route::get('/admins', [AdminController::class, 'index'])->name('admins.index');
+    Route::get('/admins/{admin}', [AdminController::class, 'show'])->name('admins.show');
+    Route::put('/admins/{id}/status', [AdminController::class, 'updateStatus'])->name('admins.update-status');
+    Route::put('/admins/{admin}', [AdminController::class, 'update'])->name('admins.update');
 
     // =========================================================================
     // REVIEW MANAGEMENT

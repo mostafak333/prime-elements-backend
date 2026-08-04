@@ -19,6 +19,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
     'password_reset_token',
     'password_reset_token_expires_at',
     'is_active',
+    'phone',
+    'avatar',
 ])]
 #[Hidden(['password', 'remember_token', 'invitation_token', 'password_reset_token'])]
 class Admin extends Authenticatable implements JWTSubject

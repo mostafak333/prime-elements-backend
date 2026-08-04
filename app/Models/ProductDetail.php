@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -12,18 +14,17 @@ class ProductDetail extends Model
 
     protected $fillable = [
         'product_id',
-        'description',
+        'title_en',
+        'title_ar',
+        'description_en',
+        'description_ar',
         'book_title',
         'author',
         'publisher',
         'language',
         'pages',
         'isbn',
-        'format',
         'publication_date',
-        'name_en',
-        'name_ar',
-        'is_active'
     ];
 
     protected $casts = [
@@ -43,7 +44,7 @@ class ProductDetail extends Model
     /**
      * Scope a query to only include active product details.
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query)
     {
         return $query->where('is_active', true);
     }
@@ -62,13 +63,5 @@ class ProductDetail extends Model
     public function getFormattedPublicationDateAttribute()
     {
         return $this->publication_date ? $this->publication_date->format('F d, Y') : null;
-    }
-
-    /**
-     * Get display name based on locale.
-     */
-    public function getDisplayNameAttribute()
-    {
-        return app()->getLocale() === 'ar' ? $this->name_ar : $this->name_en;
     }
 }

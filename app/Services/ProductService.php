@@ -29,8 +29,9 @@ class ProductService
         $query = $this->applyFilters($query, $filters);
 
         $perPage = $filters['per_page'] ?? 15;
+        $page = $filters['page'] ?? 1;
 
-        return $query->paginate($perPage);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     /**
@@ -77,6 +78,13 @@ class ProductService
                 $query->where('stock', '<=', 0);
             }
         }
+        if (!empty($filters['filter'])) {
+            if ($filters['filter'] === 'new_arrival') {
+                $query->where('is_new_arrival', true);
+            } elseif ($filters['filter'] === 'best_seller') {
+                $query->where('is_best_seller', true);
+            }
+        }
 
         // Search filter
         if (!empty($filters['search'])) {
@@ -84,11 +92,13 @@ class ProductService
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name_en', 'LIKE', $searchTerm)
                     ->orWhere('name_ar', 'LIKE', $searchTerm)
-                    ->orWhere('short_description', 'LIKE', $searchTerm)
+                    ->orWhere('short_description_en', 'LIKE', $searchTerm)
+                    ->orWhere('short_description_ar', 'LIKE', $searchTerm)
+
                     ->orWhereHas('detail', function ($detailQuery) use ($searchTerm) {
-                        $detailQuery->where('book_title', 'LIKE', $searchTerm)
-                            ->orWhere('author', 'LIKE', $searchTerm)
-                            ->orWhere('description', 'LIKE', $searchTerm);
+                        $detailQuery->where('author', 'LIKE', $searchTerm)
+                            ->orWhere('title_en', 'LIKE', $searchTerm)
+                            ->orWhere('title_ar', 'LIKE', $searchTerm);
                     });
             });
         }
@@ -196,7 +206,8 @@ class ProductService
                 'category_id'       => $data['category_id'],
                 'name_en'           => $data['name_en'],
                 'name_ar'           => $data['name_ar'],
-                'short_description' => $data['short_description'] ?? null,
+                'short_description_en' => $data['short_description_en'] ?? null,
+                'short_description_ar' => $data['short_description_ar'] ?? null,
                 'price'             => $data['price'],
                 'discount'          => $data['discount'] ?? 0,
                 'stock'             => $data['stock'],
@@ -222,15 +233,15 @@ class ProductService
             if (!empty($data['detail'])) {
 
                 $product->detail()->create([
-                    'name_en'           => $data['detail']['name_en'],
-                    'name_ar'           => $data['detail']['name_ar'],
-                    'description'       => $data['detail']['description'] ?? null,
+                    'description_en'    => $data['detail']['description_en'] ?? null,
+                    'description_ar'    => $data['detail']['description_ar'] ?? null,
+                    'title_en'          => $data['detail']['title_en'] ?? null,
+                    'title_ar'          => $data['detail']['title_ar'] ?? null,
                     'author'            => $data['detail']['author'] ?? null,
                     'publisher'         => $data['detail']['publisher'] ?? null,
                     'language'          => $data['detail']['language'] ?? null,
                     'pages'             => $data['detail']['pages'] ?? null,
                     'isbn'              => $data['detail']['isbn'] ?? null,
-                    'format'            => $data['detail']['format'] ?? null,
                     'publication_date'  => $data['detail']['publication_date'] ?? null,
                     'is_active'         => $data['detail']['is_active'] ?? true,
                 ]);
@@ -250,7 +261,8 @@ class ProductService
                 'category_id'       => $data['category_id'] ?? $product->category_id,
                 'name_en'           => $data['name_en'] ?? $product->name_en,
                 'name_ar'           => $data['name_ar'] ?? $product->name_ar,
-                'short_description' => $data['short_description'] ?? $product->short_description,
+                'short_description_en' => $data['short_description_en'] ?? $product->short_description_en,
+                'short_description_ar' => $data['short_description_ar'] ?? $product->short_description_ar,
                 'price'             => $data['price'] ?? $product->price,
                 'discount'          => $data['discount'] ?? $product->discount,
                 'stock'             => $data['stock'] ?? $product->stock,
@@ -278,15 +290,15 @@ class ProductService
 
                 if ($product->detail) {
                     $product->detail->update([
-                        'name_en'           => $data['detail']['name_en'],
-                        'name_ar'           => $data['detail']['name_ar'],
-                        'description'       => $data['detail']['description'] ?? null,
+                        'description_en'    => $data['detail']['description_en'] ?? null,
+                        'description_ar'    => $data['detail']['description_ar'] ?? null,
+                        'title_en'          => $data['detail']['title_en'] ?? null,
+                        'title_ar'          => $data['detail']['title_ar'] ?? null,
                         'author'            => $data['detail']['author'] ?? null,
                         'publisher'         => $data['detail']['publisher'] ?? null,
                         'language'          => $data['detail']['language'] ?? null,
                         'pages'             => $data['detail']['pages'] ?? null,
                         'isbn'              => $data['detail']['isbn'] ?? null,
-                        'format'            => $data['detail']['format'] ?? null,
                         'publication_date'  => $data['detail']['publication_date'] ?? null,
                         'is_active'         => $data['detail']['is_active'] ?? true,
                     ]);

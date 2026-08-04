@@ -13,6 +13,10 @@ class AdminResource extends JsonResource
             'id'    => $this->id,
             'name'  => $this->name,
             'email' => $this->email,
+            'phone' => $this->phone,
+            'avatar' => $this->avatar,
+            'is_super' => $this->is_super,
+            'is_active' => $this->is_active,
             'roles' => $this->getRoleNames(),
         ];
     }

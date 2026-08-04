@@ -20,7 +20,8 @@ class StoreProductRequest extends FormRequest
             'category_id'       => ['required', 'integer', 'exists:categories,id'],
             'name_en'           => ['required', 'string', 'max:255'],
             'name_ar'           => ['required', 'string', 'max:255'],
-            'short_description' => ['nullable', 'string'],
+            'short_description_en' => ['required', 'string'],
+            'short_description_ar' => ['required', 'string'],
             'price'             => ['required', 'numeric', 'min:0'],
             'discount'          => ['nullable', 'numeric', 'min:0'],
             'stock'             => ['required', 'integer', 'min:0'],
@@ -41,17 +42,16 @@ class StoreProductRequest extends FormRequest
             // --------------------
             'detail' => ['nullable', 'array'],
 
-            'detail.name_en'          => ['required_with:detail', 'string', 'max:255'],
-            'detail.name_ar'          => ['required_with:detail', 'string', 'max:255'],
-            'detail.description'      => ['nullable', 'string'],
+            'detail.description_en'    => ['nullable', 'string'],
+            'detail.description_ar'    => ['nullable', 'string'],
+            'detail.title_en'       => ['nullable', 'string', 'max:255'],
+            'detail.title_ar'           => ['nullable', 'string', 'max:255'],
             'detail.author'           => ['nullable', 'string', 'max:255'],
             'detail.publisher'        => ['nullable', 'string', 'max:255'],
             'detail.language'         => ['nullable', 'string', 'max:50'],
             'detail.pages'            => ['nullable', 'integer', 'min:1'],
             'detail.isbn'             => ['nullable', 'string', 'max:50'],
-            'detail.format'           => ['nullable', 'string', 'max:50'],
             'detail.publication_date' => ['nullable', 'date'],
-            'detail.is_active'        => ['nullable', 'boolean'],
         ];
     }
 }

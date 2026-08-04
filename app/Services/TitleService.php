@@ -15,9 +15,15 @@ class TitleService
         }])->get();
     }
 
-    public function getAllForUser()
+    public function getAllForUser(array $filters)
     {
-        return $this->getNavigationTree();
+        $query = $this->getNavigationTree();
+
+        if (isset($filters['id'])) {
+            $query = $query->where('id', $filters['id']);
+        }
+
+        return $query;
     }
 
     public function create(array $data): Title

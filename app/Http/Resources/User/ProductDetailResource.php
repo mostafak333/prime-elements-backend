@@ -18,11 +18,7 @@ class ProductDetailResource extends JsonResource
             'language'         => $this->language,
             'pages'            => $this->pages,
             'isbn'             => $this->isbn,
-            'format'           => $this->format,
             'publication_date' => $this->publication_date?->format('Y-m-d'),
-            'name_en'          => $this->name_en,
-            'name_ar'          => $this->name_ar,
-            'display_name'     => $this->display_name,
         ];
     }
 }

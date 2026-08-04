@@ -26,7 +26,6 @@ class StoreOrderRequest extends FormRequest
             'payment_method_id'              => ['required', 'integer', 'exists:payment_methods,id'],
             'delivery_method_id'             => ['required', 'integer', 'exists:delivery_methods,id'],
             'shipping'                       => ['nullable', 'numeric', 'min:0'],
-            'tax'                            => ['nullable', 'numeric', 'min:0'],
             'notes'                          => ['nullable', 'string', 'max:1000'],
             'terms_and_condition_agreed'     => ['required', 'boolean', 'accepted'],
         ];

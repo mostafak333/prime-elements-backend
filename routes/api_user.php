@@ -2,7 +2,9 @@
 
 
 use App\Http\Controllers\UserApi\Auth\UserAuthController;
+use App\Http\Controllers\UserApi\Auth\UserSocialAuthController;
 use App\Http\Controllers\UserApi\Cart\CartController;
+use App\Http\Controllers\UserApi\HomeController;
 use App\Http\Controllers\UserApi\Category\CategoryController;
 use App\Http\Controllers\UserApi\Order\OrderController;
 use App\Http\Controllers\UserApi\Product\ProductController;
@@ -24,8 +26,18 @@ Route::post('/reset-password', [UserAuthController::class, 'resetPassword']);
 Route::get('titles', [TitleController::class, 'index']);
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('products', [ProductController::class, 'index']);
-Route::get('products/filter-options', [ProductController::class, 'filterOptions']);
+//Route::get('products/filter-options', [ProductController::class, 'filterOptions']);
 Route::get('reviews', [UserReviewController::class, 'index']);
+
+// =========================================================================
+// SOCIAL LOGIN
+// =========================================================================
+Route::post('/social/{provider}/login', [UserSocialAuthController::class, 'login']);
+
+// =========================================================================
+// HOME
+// =========================================================================
+Route::get('/home', [HomeController::class, 'index']);
 
 // =========================================================================
 // PROTECTED CUSTOMER ENDPOINTS (Guard: api-user)
