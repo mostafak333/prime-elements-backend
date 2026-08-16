@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests\User\Product;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Dedoc\Scramble\Attributes\QueryParameter;
+use Illuminate\Foundation\Http\FormRequest;
+
 #[QueryParameter(
     'search',
     description: 'Searches across product name (EN/AR), short description (EN/AR), author, and title (EN/AR).',

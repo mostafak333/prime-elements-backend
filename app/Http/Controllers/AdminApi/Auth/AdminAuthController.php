@@ -16,6 +16,7 @@ use App\Traits\ApiResponse;
 class AdminAuthController extends Controller
 {
     use ApiResponse;
+
     public function __construct(
         private AuthService $authService
     ) {}

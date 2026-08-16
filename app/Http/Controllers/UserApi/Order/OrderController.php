@@ -29,9 +29,9 @@ class OrderController extends Controller
             'orders' => OrderResource::collection($orders),
             'pagination' => [
                 'current_page' => $orders->currentPage(),
-                'last_page'    => $orders->lastPage(),
-                'per_page'     => $orders->perPage(),
-                'total'        => $orders->total(),
+                'last_page' => $orders->lastPage(),
+                'per_page' => $orders->perPage(),
+                'total' => $orders->total(),
             ],
         ], 'Orders retrieved successfully.');
     }

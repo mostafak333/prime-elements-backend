@@ -29,9 +29,9 @@ class WishlistController extends Controller
             'wishlist' => WishlistResource::collection($wishlistItems),
             'pagination' => [
                 'current_page' => $wishlistItems->currentPage(),
-                'last_page'    => $wishlistItems->lastPage(),
-                'per_page'     => $wishlistItems->perPage(),
-                'total'        => $wishlistItems->total(),
+                'last_page' => $wishlistItems->lastPage(),
+                'per_page' => $wishlistItems->perPage(),
+                'total' => $wishlistItems->total(),
             ],
         ], 'Wishlist retrieved successfully.');
     }

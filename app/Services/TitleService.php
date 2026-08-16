@@ -31,6 +31,7 @@ class TitleService
         $adminId = auth()->guard('api-admin')->id();
         $data['created_by'] = $adminId;
         $data['updated_by'] = $adminId;
+
         return Title::create($data);
     }
 
@@ -57,7 +58,7 @@ class TitleService
     public function delete(Title $title): void
     {
         if ($title->categories()->exists()) {
-            throw new \Exception("Cannot delete title because it is linked to categories.");
+            throw new \Exception('Cannot delete title because it is linked to categories.');
         }
 
         $title->delete();

@@ -17,7 +17,7 @@ class FilterTitleRequest extends FormRequest
             'id' => [
                 'nullable',
                 'integer',
-                'exists:titles,id'
+                'exists:titles,id',
             ],
         ];
     }

@@ -28,7 +28,7 @@ class LandingBanner extends Model
     {
         return [
             'button_enabled' => 'boolean',
-            'status'         => 'boolean',
+            'status' => 'boolean',
         ];
     }
 }

@@ -8,7 +8,7 @@ class SettingsService
 {
     public function getSettings(): ?Setting
     {
-        return Setting::first() ?? new Setting();
+        return Setting::first() ?? new Setting;
     }
 
     public function updateSettings(array $data): Setting

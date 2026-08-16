@@ -16,8 +16,8 @@ class TitleResource extends JsonResource
             'categories' => SimpleCategoryResource::collection($this->whenLoaded('categories')),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
-            'created_by'        => $this->createdBy->name ?? null,
-            'updated_by'        => $this->updatedBy->name ?? null,
+            'created_by' => $this->createdBy->name ?? null,
+            'updated_by' => $this->updatedBy->name ?? null,
         ];
     }
 }

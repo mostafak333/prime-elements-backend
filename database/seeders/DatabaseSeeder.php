@@ -2,10 +2,6 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\AdminSeeder;
-use Database\Seeders\PermissionSeeder;
-use Database\Seeders\RoleSeeder;
-use Database\Seeders\UserSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 

@@ -10,9 +10,9 @@ class CartResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'quantity'   => $this->quantity,
-            'product'    => new ProductResource($this->whenLoaded('product')),
+            'id' => $this->id,
+            'quantity' => $this->quantity,
+            'product' => new ProductResource($this->whenLoaded('product')),
             'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }

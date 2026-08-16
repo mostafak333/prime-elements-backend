@@ -9,10 +9,10 @@ use App\Services\SettingsService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
-
 class SettingsController extends Controller
 {
     use ApiResponse;
+
     public function __construct(
         protected SettingsService $settingsService
     ) {}

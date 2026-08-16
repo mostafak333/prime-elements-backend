@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Permission;
 
 class PermissionService
 {

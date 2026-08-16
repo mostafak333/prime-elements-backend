@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\AdminApi\Title;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Title\{StoreTitleRequest, UpdateTitleRequest};
+use App\Http\Requests\Admin\Title\StoreTitleRequest;
+use App\Http\Requests\Admin\Title\UpdateTitleRequest;
 use App\Http\Resources\Admin\TitleResource;
 use App\Models\Title;
 use App\Services\TitleService;

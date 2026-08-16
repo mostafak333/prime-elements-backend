@@ -15,9 +15,9 @@ class FilterCategoryRequest extends FormRequest
     {
         return [
             'parent_id' => ['integer', 'exists:categories,id'],
-            'title_id'  => ['integer', 'exists:titles,id'],
-            'name_en'   => ['string', 'max:255'],
-            'name_ar'   => ['string', 'max:255'],
+            'title_id' => ['integer', 'exists:titles,id'],
+            'name_en' => ['string', 'max:255'],
+            'name_ar' => ['string', 'max:255'],
             'slug' => ['string', 'max:255'],
             'description_en' => ['string'],
             'description_ar' => ['string'],

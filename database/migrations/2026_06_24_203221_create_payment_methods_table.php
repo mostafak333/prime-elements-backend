@@ -26,7 +26,7 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('admins')
                 ->nullOnDelete();
-                    });
+        });
     }
 
     /**

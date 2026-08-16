@@ -6,6 +6,7 @@ use App\Http\Controllers\UserApi\Cart\CartController;
 use App\Http\Controllers\UserApi\Category\CategoryController;
 use App\Http\Controllers\UserApi\Faq\FaqController;
 use App\Http\Controllers\UserApi\HomeController;
+use App\Http\Controllers\UserApi\NewsletterController;
 use App\Http\Controllers\UserApi\Order\OrderController;
 use App\Http\Controllers\UserApi\Product\ProductController;
 use App\Http\Controllers\UserApi\Profile\UserProfileController;
@@ -28,6 +29,12 @@ Route::get('products', [ProductController::class, 'index']);
 // Route::get('products/filter-options', [ProductController::class, 'filterOptions']);
 Route::get('reviews', [UserReviewController::class, 'index']);
 Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');
+
+// =========================================================================
+// NEWSLETTER SUBSCRIPTION (PUBLIC - supports guests & authenticated users)
+// =========================================================================
+Route::post('/subscribe', [NewsletterController::class, 'subscribe']);
+Route::post('/unsubscribe', [NewsletterController::class, 'unsubscribe']);
 
 // =========================================================================
 // SOCIAL LOGIN

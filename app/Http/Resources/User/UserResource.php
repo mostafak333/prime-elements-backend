@@ -4,6 +4,7 @@ namespace App\Http\Resources\User;
 
 use App\Models\Order;
 use App\Models\Wishlist;
+use App\Services\EmailSubscriptionService;
 use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,6 +25,7 @@ class UserResource extends JsonResource
             'street_address' => $this->street_address,
             'apartment' => $this->apartment,
             'member_since' => $this->created_at?->toDateString(),
+            'is_subscribed' => app(EmailSubscriptionService::class)->isSubscribed($this->resource),
             'statistics' => [
                 'total_orders' => Order::where('user_id', $this->id)->count(),
                 'delivered_orders' => Order::where('user_id', $this->id)->where('status', 'delivered')->count(),

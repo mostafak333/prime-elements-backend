@@ -22,10 +22,10 @@ class UserSocialAuthController extends Controller
         $result = $this->socialAuthService->login($provider, $request->input('token'));
 
         return $this->success([
-            'message'      => 'Login successful',
+            'message' => 'Login successful',
             'access_token' => $result['token'],
-            'token_type'   => 'Bearer',
-            'user'         => new UserResource($result['user']),
+            'token_type' => 'Bearer',
+            'user' => new UserResource($result['user']),
         ]);
     }
 }

@@ -22,7 +22,7 @@ class WishlistService
         $userId = auth()->guard('api-user')->id();
 
         return Wishlist::create([
-            'user_id'    => $userId,
+            'user_id' => $userId,
             'product_id' => $data['product_id'],
         ]);
     }

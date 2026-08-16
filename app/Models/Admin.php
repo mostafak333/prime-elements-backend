@@ -42,11 +42,11 @@ class Admin extends Authenticatable implements JWTSubject
     protected function casts(): array
     {
         return [
-            'email_verified_at'           => 'datetime',
-            'password'                    => 'hashed',
-            'is_super'                    => 'boolean',
-            'is_active'                   => 'boolean',
-            'invitation_token_expires_at'  => 'datetime',
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+            'is_super' => 'boolean',
+            'is_active' => 'boolean',
+            'invitation_token_expires_at' => 'datetime',
             'password_reset_token_expires_at' => 'datetime',
         ];
     }
