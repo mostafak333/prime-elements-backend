@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Models\Category;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
 
 class CategoryService
 {
-
-
+    public function __construct(
+        protected MediaService $mediaService
+    ) {}
 
     public function getAll(array $filters = [], int $perPage = 15)
     {
@@ -23,6 +25,11 @@ class CategoryService
         $adminId = auth()->guard('api-admin')->id() ?? null;
         $data['created_by'] = $adminId;
         $data['updated_by'] = $adminId;
+
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            $data['image'] = $this->mediaService->store($data['image'], 'categories');
+        }
+
         return Category::query()->create($data);
     }
 
@@ -30,7 +37,17 @@ class CategoryService
     {
         $adminId = auth()->guard('api-admin')->id() ?? null;
         $data['updated_by'] = $adminId;
+
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            $data['image'] = $this->mediaService->replace(
+                $data['image'],
+                $category->image,
+                'categories'
+            );
+        }
+
         $category->update($data);
+
         return $category->refresh();
     }
 
@@ -47,6 +64,7 @@ class CategoryService
             ]);
         }
 
+        $this->mediaService->delete($category->image);
         $category->delete();
     }
 

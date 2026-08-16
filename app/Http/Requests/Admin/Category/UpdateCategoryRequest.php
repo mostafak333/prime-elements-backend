@@ -25,7 +25,7 @@ class UpdateCategoryRequest extends FormRequest
                 'different:category_id', // 👈 Built-in Laravel validation
             ],
             'title_id' => ['required', 'integer', 'exists:titles,id'],
-            'image_id' => ['nullable', 'integer', 'exists:images,id'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'name_en' => ['sometimes', 'required', 'string', 'max:255'],
             'name_ar' => ['sometimes', 'required', 'string', 'max:255'],
             'slug' => [
@@ -33,7 +33,7 @@ class UpdateCategoryRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('categories', 'slug')->ignore($this->category_id)
+                Rule::unique('categories', 'slug')->ignore($this->category_id),
             ],
             'description_en' => ['nullable', 'string'],
             'description_ar' => ['nullable', 'string'],
@@ -45,12 +45,11 @@ class UpdateCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'parent_id.different' => 'A category cannot be its own parent.', // 👈 Custom message
+            'parent_id.different' => 'A category cannot be its own parent.',
             'slug.unique' => 'This slug is already taken.',
             'parent_id.exists' => 'The selected parent category does not exist.',
             'title_id.required' => 'The title field is required.',
             'title_id.exists' => 'The selected title does not exist.',
-            'image_id.exists' => 'The selected image does not exist.',
         ];
     }
 }

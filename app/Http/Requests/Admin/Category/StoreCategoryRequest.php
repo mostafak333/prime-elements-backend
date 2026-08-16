@@ -14,16 +14,16 @@ class StoreCategoryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id'  => ['nullable', 'integer', 'exists:categories,id'],
-            'title_id'   => ['required', 'integer', 'exists:titles,id'],
-            'image_id'   => ['nullable', 'integer', 'exists:images,id'],
-            'name_en'    => ['required', 'string', 'max:255'],
-            'name_ar'    => ['required', 'string', 'max:255'],
-            'slug'       => ['required', 'string', 'max:255', 'unique:categories,slug'],
+            'parent_id' => ['nullable', 'integer', 'exists:categories,id'],
+            'title_id' => ['sometimes', 'integer', 'exists:titles,id'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'name_en' => ['required', 'string', 'max:255'],
+            'name_ar' => ['required', 'string', 'max:255'],
+            'slug' => ['required', 'string', 'max:255', 'unique:categories,slug'],
             'description_en' => ['nullable', 'string'],
             'description_ar' => ['nullable', 'string'],
-            'status'     => ['required', 'boolean'],
-            'is_filter'     => ['required', 'boolean'],
+            'status' => ['required', 'boolean'],
+            'is_filter' => ['sometimes', 'boolean'],
         ];
     }
 }

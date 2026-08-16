@@ -5,26 +5,36 @@ namespace App\Services;
 use App\Jobs\SendEmailJob;
 use App\Mail\AdminInvitationMail;
 use App\Models\Admin;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+
 class AdminService
 {
+    public function __construct(
+        protected MediaService $mediaService
+    ) {}
+
     public function createAdminInvitation(array $data): Admin
     {
         return DB::transaction(function () use ($data) {
             $token = Str::random(64);
 
+            if (isset($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
+                $data['avatar'] = $this->mediaService->store($data['avatar'], 'admins');
+            }
+
             $admin = Admin::create([
-                'name'                       => $data['name'],
-                'email'                      => $data['email'],
-                'password'                   => Hash::make(Str::random(40)),
-                'invitation_token'           => $token,
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make(Str::random(40)),
+                'invitation_token' => $token,
                 'invitation_token_expires_at' => now()->addHours(48),
-                'is_active'                  => false,
-                'phone'                      => $data['phone'] ?? null,
-                'avatar'                     => $data['avatar'] ?? null,
-                'is_super'                   => $data['is_super'] ?? false,
+                'is_active' => false,
+                'phone' => $data['phone'] ?? null,
+                'avatar' => $data['avatar'] ?? null,
+                'is_super' => $data['is_super'] ?? false,
             ]);
 
             $admin->syncRoles($data['roles']);
@@ -37,11 +47,12 @@ class AdminService
             return $admin;
         });
     }
+
     public function getAll(array $filters = [], int $perPage = 15)
     {
         $query = Admin::query();
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
@@ -50,19 +61,19 @@ class AdminService
             });
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['name'])) {
+        if (! empty($filters['name'])) {
             $query->where('name', 'like', "%{$filters['name']}%");
         }
 
-        if (!empty($filters['email'])) {
+        if (! empty($filters['email'])) {
             $query->where('email', 'like', "%{$filters['email']}%");
         }
 
-        if (!empty($filters['phone'])) {
+        if (! empty($filters['phone'])) {
             $query->where('phone', 'like', "%{$filters['phone']}%");
         }
 
@@ -78,12 +89,22 @@ class AdminService
     {
         $status = strtolower($status) === 'active' ? true : false;
         $admin->update(['is_active' => $status]);
+
         return $admin->fresh();
     }
 
     public function update(Admin $admin, array $data): Admin
     {
+        if (isset($data['avatar']) && $data['avatar'] instanceof UploadedFile) {
+            $data['avatar'] = $this->mediaService->replace(
+                $data['avatar'],
+                $admin->avatar,
+                'admins'
+            );
+        }
+
         $admin->update($data);
+
         return $admin->fresh();
     }
 }

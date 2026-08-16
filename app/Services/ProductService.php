@@ -2,13 +2,19 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
+    public function __construct(
+        protected MediaService $mediaService
+    ) {}
+
     public function getAll(int $perPage = 15): LengthAwarePaginator
     {
         return Product::with(['images', 'detail'])
@@ -40,12 +46,12 @@ class ProductService
     private function applyFilters(Builder $query, array $filters): Builder
     {
         // Category filter
-        if (!empty($filters['categories'])) {
+        if (! empty($filters['categories'])) {
             $query->whereIn('category_id', $filters['categories']);
         }
 
         // Format filter (is_e_copy)
-        if (!empty($filters['formats'])) {
+        if (! empty($filters['formats'])) {
             $query->where(function ($q) use ($filters) {
                 if (in_array('printed', $filters['formats'])) {
                     $q->orWhere('is_e_copy', false);
@@ -71,14 +77,14 @@ class ProductService
         }
 
         // Availability filter
-        if (!empty($filters['availability'])) {
+        if (! empty($filters['availability'])) {
             if ($filters['availability'] === 'in_stock') {
                 $query->where('stock', '>', 0);
             } elseif ($filters['availability'] === 'out_of_stock') {
                 $query->where('stock', '<=', 0);
             }
         }
-        if (!empty($filters['filter'])) {
+        if (! empty($filters['filter'])) {
             if ($filters['filter'] === 'new_arrival') {
                 $query->where('is_new_arrival', true);
             } elseif ($filters['filter'] === 'best_seller') {
@@ -87,8 +93,8 @@ class ProductService
         }
 
         // Search filter
-        if (!empty($filters['search'])) {
-            $searchTerm = '%' . $filters['search'] . '%';
+        if (! empty($filters['search'])) {
+            $searchTerm = '%'.$filters['search'].'%';
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('name_en', 'LIKE', $searchTerm)
                     ->orWhere('name_ar', 'LIKE', $searchTerm)
@@ -104,7 +110,7 @@ class ProductService
         }
 
         // Sorting
-        if (!empty($filters['sort_by'])) {
+        if (! empty($filters['sort_by'])) {
             $query = $this->applySorting($query, $filters['sort_by']);
         }
 
@@ -140,13 +146,13 @@ class ProductService
     public function getFilterOptions(): array
     {
         // Get all categories with product counts
-        $categories = \App\Models\Category::withCount('products')
+        $categories = Category::withCount('products')
             ->whereHas('products', function ($query) {
                 $query->active();
             })
             ->orderBy('name_en')
             ->get()
-            ->map(fn($category) => [
+            ->map(fn ($category) => [
                 'id' => $category->id,
                 'name_en' => $category->name_en,
                 'name_ar' => $category->name_ar,
@@ -195,7 +201,6 @@ class ProductService
         ];
     }
 
-
     public function create(array $data)
     {
         return DB::transaction(function () use ($data) {
@@ -203,47 +208,51 @@ class ProductService
 
             // 1. Create product
             $product = Product::create([
-                'category_id'       => $data['category_id'],
-                'name_en'           => $data['name_en'],
-                'name_ar'           => $data['name_ar'],
+                'category_id' => $data['category_id'],
+                'name_en' => $data['name_en'],
+                'name_ar' => $data['name_ar'],
                 'short_description_en' => $data['short_description_en'] ?? null,
                 'short_description_ar' => $data['short_description_ar'] ?? null,
-                'price'             => $data['price'],
-                'discount'          => $data['discount'] ?? 0,
-                'stock'             => $data['stock'],
-                'status'            => $data['status'] ?? true,
-                'is_new_arrival'    => $data['is_new_arrival'] ?? false,
-                'is_best_seller'    => $data['is_best_seller'] ?? false,
-                'is_e_copy'         => $data['is_e_copy'] ?? false,
-                'publisher'         => $data['publisher'] ?? null,
-                'created_by'        =>  $adminId,
-                'updated_by'        =>  $adminId,
+                'price' => $data['price'],
+                'discount' => $data['discount'] ?? 0,
+                'stock' => $data['stock'],
+                'status' => $data['status'] ?? true,
+                'is_new_arrival' => $data['is_new_arrival'] ?? false,
+                'is_best_seller' => $data['is_best_seller'] ?? false,
+                'is_e_copy' => $data['is_e_copy'] ?? false,
+                'publisher' => $data['publisher'] ?? null,
+                'created_by' => $adminId,
+                'updated_by' => $adminId,
             ]);
 
             // 2. Save images (hasMany)
-            if (!empty($data['images'])) {
+            if (! empty($data['images'])) {
                 foreach ($data['images'] as $image) {
+                    $path = $image instanceof UploadedFile
+                        ? $this->mediaService->store($image, 'products')
+                        : $image;
+
                     $product->images()->create([
-                        'image_path' => $image,
+                        'image_path' => $path,
                     ]);
                 }
             }
 
             // 3. Save detail (ONE TO ONE)
-            if (!empty($data['detail'])) {
+            if (! empty($data['detail'])) {
 
                 $product->detail()->create([
-                    'description_en'    => $data['detail']['description_en'] ?? null,
-                    'description_ar'    => $data['detail']['description_ar'] ?? null,
-                    'title_en'          => $data['detail']['title_en'] ?? null,
-                    'title_ar'          => $data['detail']['title_ar'] ?? null,
-                    'author'            => $data['detail']['author'] ?? null,
-                    'publisher'         => $data['detail']['publisher'] ?? null,
-                    'language'          => $data['detail']['language'] ?? null,
-                    'pages'             => $data['detail']['pages'] ?? null,
-                    'isbn'              => $data['detail']['isbn'] ?? null,
-                    'publication_date'  => $data['detail']['publication_date'] ?? null,
-                    'is_active'         => $data['detail']['is_active'] ?? true,
+                    'description_en' => $data['detail']['description_en'] ?? null,
+                    'description_ar' => $data['detail']['description_ar'] ?? null,
+                    'title_en' => $data['detail']['title_en'] ?? null,
+                    'title_ar' => $data['detail']['title_ar'] ?? null,
+                    'author' => $data['detail']['author'] ?? null,
+                    'publisher' => $data['detail']['publisher'] ?? null,
+                    'language' => $data['detail']['language'] ?? null,
+                    'pages' => $data['detail']['pages'] ?? null,
+                    'isbn' => $data['detail']['isbn'] ?? null,
+                    'publication_date' => $data['detail']['publication_date'] ?? null,
+                    'is_active' => $data['detail']['is_active'] ?? true,
                 ]);
             }
 
@@ -258,29 +267,36 @@ class ProductService
 
             // 1. Update product core fields
             $product->update([
-                'category_id'       => $data['category_id'] ?? $product->category_id,
-                'name_en'           => $data['name_en'] ?? $product->name_en,
-                'name_ar'           => $data['name_ar'] ?? $product->name_ar,
+                'category_id' => $data['category_id'] ?? $product->category_id,
+                'name_en' => $data['name_en'] ?? $product->name_en,
+                'name_ar' => $data['name_ar'] ?? $product->name_ar,
                 'short_description_en' => $data['short_description_en'] ?? $product->short_description_en,
                 'short_description_ar' => $data['short_description_ar'] ?? $product->short_description_ar,
-                'price'             => $data['price'] ?? $product->price,
-                'discount'          => $data['discount'] ?? $product->discount,
-                'stock'             => $data['stock'] ?? $product->stock,
-                'status'            => $data['status'] ?? $product->status,
-                'is_new_arrival'    => $data['is_new_arrival'] ?? $product->is_new_arrival,
-                'is_best_seller'    => $data['is_best_seller'] ?? $product->is_best_seller,
-                'is_e_copy'         => $data['is_e_copy'] ?? $product->is_e_copy,
-                'publisher'         => $data['publisher'] ?? $product->publisher,
-                'updated_by'        => $adminId,
+                'price' => $data['price'] ?? $product->price,
+                'discount' => $data['discount'] ?? $product->discount,
+                'stock' => $data['stock'] ?? $product->stock,
+                'status' => $data['status'] ?? $product->status,
+                'is_new_arrival' => $data['is_new_arrival'] ?? $product->is_new_arrival,
+                'is_best_seller' => $data['is_best_seller'] ?? $product->is_best_seller,
+                'is_e_copy' => $data['is_e_copy'] ?? $product->is_e_copy,
+                'publisher' => $data['publisher'] ?? $product->publisher,
+                'updated_by' => $adminId,
             ]);
 
             // 2. Replace images
             if (isset($data['images'])) {
+                foreach ($product->images as $oldImage) {
+                    $this->mediaService->delete($oldImage->image_path);
+                }
                 $product->images()->delete();
 
                 foreach ($data['images'] as $image) {
+                    $path = $image instanceof UploadedFile
+                        ? $this->mediaService->store($image, 'products')
+                        : $image;
+
                     $product->images()->create([
-                        'image_path' => $image,
+                        'image_path' => $path,
                     ]);
                 }
             }
@@ -290,17 +306,17 @@ class ProductService
 
                 if ($product->detail) {
                     $product->detail->update([
-                        'description_en'    => $data['detail']['description_en'] ?? null,
-                        'description_ar'    => $data['detail']['description_ar'] ?? null,
-                        'title_en'          => $data['detail']['title_en'] ?? null,
-                        'title_ar'          => $data['detail']['title_ar'] ?? null,
-                        'author'            => $data['detail']['author'] ?? null,
-                        'publisher'         => $data['detail']['publisher'] ?? null,
-                        'language'          => $data['detail']['language'] ?? null,
-                        'pages'             => $data['detail']['pages'] ?? null,
-                        'isbn'              => $data['detail']['isbn'] ?? null,
-                        'publication_date'  => $data['detail']['publication_date'] ?? null,
-                        'is_active'         => $data['detail']['is_active'] ?? true,
+                        'description_en' => $data['detail']['description_en'] ?? null,
+                        'description_ar' => $data['detail']['description_ar'] ?? null,
+                        'title_en' => $data['detail']['title_en'] ?? null,
+                        'title_ar' => $data['detail']['title_ar'] ?? null,
+                        'author' => $data['detail']['author'] ?? null,
+                        'publisher' => $data['detail']['publisher'] ?? null,
+                        'language' => $data['detail']['language'] ?? null,
+                        'pages' => $data['detail']['pages'] ?? null,
+                        'isbn' => $data['detail']['isbn'] ?? null,
+                        'publication_date' => $data['detail']['publication_date'] ?? null,
+                        'is_active' => $data['detail']['is_active'] ?? true,
                     ]);
                 } else {
                     $product->detail()->create($data['detail']);
@@ -326,7 +342,9 @@ class ProductService
     public function delete(Product $product): void
     {
         DB::transaction(function () use ($product) {
-
+            foreach ($product->images as $image) {
+                $this->mediaService->delete($image->image_path);
+            }
             $product->images()->delete();
             $product->detail()?->delete();
 

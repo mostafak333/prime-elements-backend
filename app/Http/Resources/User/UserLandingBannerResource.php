@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\User;
 
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,14 +17,14 @@ class UserLandingBannerResource extends JsonResource
         $buttonName = $locale === 'ar' ? $this->button_name_ar : $this->button_name_en;
 
         return [
-            'id'          => $this->id,
-            'title'       => $title,
+            'id' => $this->id,
+            'title' => $title,
             'description' => $description,
-            'image'       => $this->image,
-            'button'      => [
+            'image_url' => app(MediaService::class)->getUrl($this->image),
+            'button' => [
                 'enabled' => $this->button_enabled,
-                'name'    => $buttonName,
-                'link'    => $this->button_link,
+                'name' => $buttonName,
+                'link' => $this->button_link,
             ],
         ];
     }
