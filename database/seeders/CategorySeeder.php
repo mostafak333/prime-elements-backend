@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
@@ -138,7 +137,7 @@ class CategorySeeder extends Seeder
                         'description_ar' => 'مكة المكرمة',
                         'image' => 'assets/test.jpg',
                     ],
-                ]
+                ],
             ],
             [
                 'name_en' => 'National Universities',
@@ -193,7 +192,7 @@ class CategorySeeder extends Seeder
                         'description_ar' => 'بيشة',
                         'image' => 'assets/test.jpg',
                     ],
-                ]
+                ],
             ],
             [
                 'name_en' => 'Private Colleges & Academies',
@@ -264,7 +263,7 @@ class CategorySeeder extends Seeder
                         'description_ar' => 'الرياض',
                         'image' => 'assets/test.jpg',
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -366,7 +365,7 @@ class CategorySeeder extends Seeder
             ]);
 
             // Create child categories if any
-            if (!empty($UniCat['children'])) {
+            if (! empty($UniCat['children'])) {
                 foreach ($UniCat['children'] as $child) {
                     Category::create([
                         'title_id' => $universitycategoriesTitleId,

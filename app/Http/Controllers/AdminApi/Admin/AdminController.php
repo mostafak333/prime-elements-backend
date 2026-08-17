@@ -96,7 +96,7 @@ class AdminController extends Controller
                 'Admin updated successfully.'
             );
         } catch (\Exception $e) {
-            return $this->error('Failed to update admin: ' . $e->getMessage(), 500);
+            return $this->error('Failed to update admin: '.$e->getMessage(), 500);
         }
     }
 

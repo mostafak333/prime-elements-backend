@@ -28,7 +28,7 @@ class AdminRoleController extends Controller
     {
         $validated = $request->validate([
             'roles' => ['required', 'array', 'min:1'],
-            'roles.*' => ['required', 'string', Rule::exists('roles', 'name')->where(fn($q) => $q->where('guard_name', 'api-admin'))],
+            'roles.*' => ['required', 'string', Rule::exists('roles', 'name')->where(fn ($q) => $q->where('guard_name', 'api-admin'))],
         ]);
 
         $admin->syncRoles($validated['roles']);
@@ -46,7 +46,7 @@ class AdminRoleController extends Controller
             ->where('guard_name', 'api-admin')
             ->first();
 
-        if (!$roleModel) {
+        if (! $roleModel) {
             throw ValidationException::withMessages([
                 'role' => ['The specified role does not exist.'],
             ]);
