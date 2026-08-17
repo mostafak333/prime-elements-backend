@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
@@ -16,6 +13,8 @@ return new class extends Migration
             $table->foreignId('category_id')->constrained('categories');
             $table->string('name_en');
             $table->string('name_ar');
+            $table->text('short_description_en')->nullable();
+            $table->text('short_description_ar')->nullable();
             $table->decimal('price', 10, 2);
             $table->decimal('discount', 10, 2);
             $table->integer('stock');
@@ -30,7 +29,6 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('admins')
                 ->nullOnDelete();
-
             $table->foreignId('updated_by')
                 ->nullable()
                 ->constrained('admins')
@@ -38,9 +36,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('products');
