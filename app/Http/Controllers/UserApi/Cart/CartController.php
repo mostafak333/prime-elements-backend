@@ -25,7 +25,7 @@ class CartController extends Controller
         $summary = $this->cartService->getCartSummary($cartItems);
 
         return $this->success([
-            'items'   => CartResource::collection($cartItems),
+            'items' => CartResource::collection($cartItems),
             'summary' => $summary,
         ], 'Cart retrieved successfully.');
     }

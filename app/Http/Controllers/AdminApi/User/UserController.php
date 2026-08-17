@@ -17,6 +17,7 @@ class UserController extends Controller
     use ApiResponse;
 
     protected UserService $userService;
+
     protected ReviewService $reviewService;
 
     public function __construct(UserService $userService)
@@ -56,7 +57,7 @@ class UserController extends Controller
     {
         $user = User::find($userId);
 
-        if (!$user) {
+        if (! $user) {
             return $this->error('User not found.', 404);
         }
 

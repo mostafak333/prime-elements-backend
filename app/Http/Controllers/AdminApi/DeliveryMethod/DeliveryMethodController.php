@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\AdminApi\DeliveryMethod;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\DeliveryMethod\{
-    StoreDeliveryMethodRequest,
-    UpdateDeliveryMethodRequest
-};
+use App\Http\Requests\Admin\DeliveryMethod\StoreDeliveryMethodRequest;
+use App\Http\Requests\Admin\DeliveryMethod\UpdateDeliveryMethodRequest;
 use App\Http\Resources\Admin\DeliveryMethodResource;
 use App\Models\DeliveryMethod;
 use App\Services\DeliveryMethodService;
@@ -35,10 +33,10 @@ class DeliveryMethodController extends Controller
             'delivery_methods' => DeliveryMethodResource::collection($paginatedData),
             'pagination' => [
                 'current_page' => $paginatedData->currentPage(),
-                'last_page'    => $paginatedData->lastPage(),
-                'per_page'     => $paginatedData->perPage(),
-                'total'        => $paginatedData->total(),
-            ]
+                'last_page' => $paginatedData->lastPage(),
+                'per_page' => $paginatedData->perPage(),
+                'total' => $paginatedData->total(),
+            ],
         ], 'Delivery methods retrieved successfully.');
     }
 

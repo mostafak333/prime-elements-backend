@@ -31,9 +31,10 @@ class AdminController extends Controller
 
         return $this->success([
             'message' => 'Admin invitation sent successfully',
-            'admin'   => new AdminResource($admin),
+            'admin' => new AdminResource($admin),
         ], 'Admin invitation sent successfully', 201);
     }
+
     public function index(ListAdminsRequest $request): JsonResponse
     {
         $filters = $request->filters();
@@ -56,7 +57,7 @@ class AdminController extends Controller
     {
         $admin = Admin::find($id);
 
-        if (!$admin) {
+        if (! $admin) {
             return $this->error('Admin not found.', 404);
         }
 
@@ -65,13 +66,14 @@ class AdminController extends Controller
             'Admin retrieved successfully.'
         );
     }
+
     public function update(UpdateAdminRequest $request, Admin $admin): JsonResponse
     {
 
         $authenticatedAdmin = auth()->user();
 
         // Check if user is super admin
-        if (!$authenticatedAdmin || !$authenticatedAdmin->is_super) {
+        if (! $authenticatedAdmin || ! $authenticatedAdmin->is_super) {
             return $this->error('Only super admins can update admin users.', 403);
         }
 
@@ -102,7 +104,7 @@ class AdminController extends Controller
     {
         $admin = Admin::find($id);
 
-        if (!$admin) {
+        if (! $admin) {
             return $this->error('Admin not found.', 404);
         }
 

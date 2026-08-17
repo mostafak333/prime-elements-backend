@@ -2,11 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\AddressDetail;
-use App\Models\DeliveryMethod;
-use App\Models\OrderItem;
-use App\Models\PaymentMethod;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
 
 class AdminRoleController extends Controller
 {
@@ -27,7 +28,7 @@ class AdminRoleController extends Controller
     {
         $validated = $request->validate([
             'roles' => ['required', 'array', 'min:1'],
-            'roles.*' => ['required', 'string', Rule::exists('roles', 'name')->where(fn ($q) => $q->where('guard_name', 'api-admin'))],
+            'roles.*' => ['required', 'string', Rule::exists('roles', 'name')->where(fn($q) => $q->where('guard_name', 'api-admin'))],
         ]);
 
         $admin->syncRoles($validated['roles']);
@@ -40,7 +41,7 @@ class AdminRoleController extends Controller
 
     public function destroy(Admin $admin, string $role): JsonResponse
     {
-        $roleModel = app(\Spatie\Permission\Models\Role::class)
+        $roleModel = app(Role::class)
             ->where('name', $role)
             ->where('guard_name', 'api-admin')
             ->first();
@@ -51,7 +52,7 @@ class AdminRoleController extends Controller
             ]);
         }
 
-        if (!$admin->hasRole($role)) {
+        if (! $admin->hasRole($role)) {
             throw ValidationException::withMessages([
                 'role' => ['The admin does not have this role.'],
             ]);

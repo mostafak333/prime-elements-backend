@@ -24,7 +24,6 @@ class Setting extends Model
 
     // Relationships
 
-
     public function updatedBy()
     {
         return $this->belongsTo(Admin::class, 'updated_by');

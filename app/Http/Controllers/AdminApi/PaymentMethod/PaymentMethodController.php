@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\AdminApi\PaymentMethod;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\PaymentMethod\{
-    StorePaymentMethodRequest,
-    UpdatePaymentMethodRequest
-};
+use App\Http\Requests\Admin\PaymentMethod\StorePaymentMethodRequest;
+use App\Http\Requests\Admin\PaymentMethod\UpdatePaymentMethodRequest;
 use App\Http\Resources\Admin\PaymentMethodResource;
 use App\Models\PaymentMethod;
 use App\Services\PaymentMethodService;
@@ -35,10 +33,10 @@ class PaymentMethodController extends Controller
             'payment_methods' => PaymentMethodResource::collection($paginatedData),
             'pagination' => [
                 'current_page' => $paginatedData->currentPage(),
-                'last_page'    => $paginatedData->lastPage(),
-                'per_page'     => $paginatedData->perPage(),
-                'total'        => $paginatedData->total(),
-            ]
+                'last_page' => $paginatedData->lastPage(),
+                'per_page' => $paginatedData->perPage(),
+                'total' => $paginatedData->total(),
+            ],
         ], 'Payment methods retrieved successfully.');
     }
 

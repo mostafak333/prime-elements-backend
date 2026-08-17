@@ -2,29 +2,27 @@
 
 namespace App\Http\Resources\User;
 
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategoryResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     */
     public function toArray(Request $request): array
     {
         return [
-            'id'         => $this->id,
-            'parent_id'  => $this->parent_id,
-            'title_id'   => $this->title_id,
-            'image_id'   => $this->image_id,
-            'name_en'    => $this->name_en,
-            'name_ar'    => $this->name_ar,
-            'slug'       => $this->slug,
+            'id' => $this->id,
+            'parent_id' => $this->parent_id,
+            'title_id' => $this->title_id,
+            'image_url' => app(MediaService::class)->getUrl($this->image),
+            'name_en' => $this->name_en,
+            'name_ar' => $this->name_ar,
+            'slug' => $this->slug,
             'description_en' => $this->description_en,
             'description_ar' => $this->description_ar,
-            'status'     => $this->status,
-            'is_filter'  => $this->is_filter,
-            'children'   => CategoryResource::collection($this->whenLoaded('children')),
+            'status' => $this->status,
+            'is_filter' => $this->is_filter,
+            'children' => CategoryResource::collection($this->whenLoaded('children')),
             'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }

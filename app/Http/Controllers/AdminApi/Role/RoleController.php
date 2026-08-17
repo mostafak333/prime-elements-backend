@@ -6,14 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Role\CreateRoleRequest;
 use App\Http\Requests\Admin\Role\UpdateRoleRequest;
 use App\Http\Resources\Admin\RoleResource;
-use App\Models\Admin;
 use App\Services\RoleService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {

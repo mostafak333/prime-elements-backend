@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -54,7 +53,7 @@ class ProductDetail extends Model
      */
     public function getFullTitleAttribute()
     {
-        return $this->book_title . ' - ' . $this->author;
+        return $this->book_title.' - '.$this->author;
     }
 
     /**

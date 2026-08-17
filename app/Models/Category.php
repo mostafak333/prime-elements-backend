@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\Admin;
-use App\Models\Image;
-use App\Models\Title;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +14,7 @@ class Category extends Model
     protected $fillable = [
         'parent_id',
         'title_id',
-        'image_id',
+        'image',
         'name_en',
         'name_ar',
         'slug',
@@ -56,14 +53,6 @@ class Category extends Model
     public function title()
     {
         return $this->belongsTo(Title::class, 'title_id');
-    }
-
-    /**
-     * Get the image associated with this category.
-     */
-    public function image()
-    {
-        return $this->belongsTo(Image::class, 'image_id');
     }
 
     /**
@@ -114,23 +103,23 @@ class Category extends Model
         }
 
         if (isset($filters['name_en'])) {
-            $query->where('name_en', 'LIKE', '%' . $filters['name_en'] . '%');
+            $query->where('name_en', 'LIKE', '%'.$filters['name_en'].'%');
         }
 
         if (isset($filters['name_ar'])) {
-            $query->where('name_ar', 'LIKE', '%' . $filters['name_ar'] . '%');
+            $query->where('name_ar', 'LIKE', '%'.$filters['name_ar'].'%');
         }
 
         if (isset($filters['slug'])) {
-            $query->where('slug', 'LIKE', '%' . $filters['slug'] . '%');
+            $query->where('slug', 'LIKE', '%'.$filters['slug'].'%');
         }
 
         if (isset($filters['description_en'])) {
-            $query->where('description_en', 'LIKE', '%' . $filters['description_en'] . '%');
+            $query->where('description_en', 'LIKE', '%'.$filters['description_en'].'%');
         }
 
         if (isset($filters['description_ar'])) {
-            $query->where('description_ar', 'LIKE', '%' . $filters['description_ar'] . '%');
+            $query->where('description_ar', 'LIKE', '%'.$filters['description_ar'].'%');
         }
 
         if (isset($filters['status'])) {

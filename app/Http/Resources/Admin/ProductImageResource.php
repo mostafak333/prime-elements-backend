@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Admin;
 
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,8 +13,7 @@ class ProductImageResource extends JsonResource
         return [
             'id' => $this->id,
             'image_path' => $this->image_path,
-            'is_primary' => $this->is_primary,
-            // Add other fields as needed
+            'image_url' => app(MediaService::class)->getUrl($this->image_path),
         ];
     }
 }

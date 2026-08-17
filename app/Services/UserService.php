@@ -10,28 +10,28 @@ class UserService
     {
         $query = User::query();
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $search = $filters['search'];
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['name'])) {
+        if (! empty($filters['name'])) {
             $query->where('name', 'like', "%{$filters['name']}%");
         }
 
-        if (!empty($filters['email'])) {
+        if (! empty($filters['email'])) {
             $query->where('email', 'like', "%{$filters['email']}%");
         }
 
-        if (!empty($filters['phone'])) {
+        if (! empty($filters['phone'])) {
             $query->where('phone', 'like', "%{$filters['phone']}%");
         }
 
@@ -46,6 +46,7 @@ class UserService
     public function updateStatus(User $user, string $status): User
     {
         $user->update(['status' => $status]);
+
         return $user->fresh();
     }
 }

@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Models\CartItem;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
 
 class CartService
 {
@@ -28,13 +27,14 @@ class CartService
 
         if ($existing) {
             $existing->increment('quantity', $data['quantity']);
+
             return $existing->fresh()->load('product.images', 'product.detail');
         }
 
         return CartItem::create([
-            'user_id'    => $userId,
+            'user_id' => $userId,
             'product_id' => $data['product_id'],
-            'quantity'   => $data['quantity'],
+            'quantity' => $data['quantity'],
         ])->load('product.images', 'product.detail');
     }
 
@@ -44,10 +44,12 @@ class CartService
 
         if ($quantity < 1) {
             $cartItem->delete();
+
             return null;
         }
 
         $cartItem->update(['quantity' => $quantity]);
+
         return $cartItem->fresh()->load('product.images', 'product.detail');
     }
 
@@ -79,7 +81,7 @@ class CartService
 
         return [
             'total_items' => $totalItems,
-            'subtotal'    => round($subtotal, 2),
+            'subtotal' => round($subtotal, 2),
         ];
     }
 

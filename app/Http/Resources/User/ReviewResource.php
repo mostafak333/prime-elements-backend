@@ -15,7 +15,7 @@ class ReviewResource extends JsonResource
             'product_name' => $this->product?->name_en,
             'user_name' => $this->user?->name,
             'rating' => $this->rating,
-            'comment' => $this->comment
+            'comment' => $this->comment,
         ];
     }
 }

@@ -32,7 +32,7 @@ class UserProfileController extends Controller
 
         return $this->success([
             'message' => 'Profile updated successfully',
-            'user'    => new UserResource($user),
+            'user' => new UserResource($user),
         ], 'Profile updated successfully.');
     }
 }

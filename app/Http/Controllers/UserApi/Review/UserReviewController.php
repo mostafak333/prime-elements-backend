@@ -34,6 +34,7 @@ class UserReviewController extends Controller
             return $this->error($e->getMessage(), 422);
         }
     }
+
     public function index(Request $request): JsonResponse
     {
         $filters = $request->only(['product_id', 'user_id', 'status']);

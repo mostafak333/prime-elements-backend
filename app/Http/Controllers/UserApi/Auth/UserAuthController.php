@@ -15,6 +15,7 @@ use App\Traits\ApiResponse;
 class UserAuthController extends Controller
 {
     use ApiResponse;
+
     public function __construct(
         private UserAuthService $userAuthService
     ) {}
@@ -25,7 +26,7 @@ class UserAuthController extends Controller
 
         return $this->success([
             'message' => 'Registration successful. Please verify your email.',
-            'user'    => new UserResource($user),
+            'user' => new UserResource($user),
         ], 201);
     }
 
@@ -42,19 +43,20 @@ class UserAuthController extends Controller
 
         if ($user->status === 'blocked') {
             auth()->guard('api-user')->logout();
+
             return $this->error('Your account has been blocked. Please contact support.', 403);
         }
 
-        $check =  $this->userAuthService->checkEmailVerification($user);
+        $check = $this->userAuthService->checkEmailVerification($user);
         if ($check) {
             return $this->error('email not verified, please verify your email before logging in.', 401);
         }
 
         return $this->success([
-            'message'      => 'Login successful',
+            'message' => 'Login successful',
             'access_token' => $token,
-            'token_type'   => 'Bearer',
-            'user'         => new UserResource($user),
+            'token_type' => 'Bearer',
+            'user' => new UserResource($user),
         ], 200);
     }
 

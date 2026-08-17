@@ -3,8 +3,9 @@
 namespace App\Http\Controllers\AdminApi\Category;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Category\{StoreCategoryRequest, UpdateCategoryRequest};
 use App\Http\Requests\Admin\Category\FilterCategoryRequest;
+use App\Http\Requests\Admin\Category\StoreCategoryRequest;
+use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
 use App\Models\Category;
 use App\Services\CategoryService;
@@ -23,7 +24,6 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-
     // In your CategoryController.php
     public function index(FilterCategoryRequest $request): JsonResponse
     {
@@ -38,8 +38,8 @@ class CategoryController extends Controller
                 'total' => $categories->total(),
                 'per_page' => $categories->perPage(),
                 'current_page' => $categories->currentPage(),
-                'last_page' => $categories->lastPage()
-            ]
+                'last_page' => $categories->lastPage(),
+            ],
         ];
 
         return $this->success($responseData, 'Categories retrieved successfully.', 200);

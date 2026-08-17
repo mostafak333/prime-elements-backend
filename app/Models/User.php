@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
@@ -54,10 +55,15 @@ class User extends Authenticatable implements JWTSubject
     protected function casts(): array
     {
         return [
-            'email_verified_at'                => 'datetime',
+            'email_verified_at' => 'datetime',
             'email_verification_token_expires_at' => 'datetime',
-            'password_reset_token_expires_at'    => 'datetime',
-            'password'                         => 'hashed',
+            'password_reset_token_expires_at' => 'datetime',
+            'password' => 'hashed',
         ];
+    }
+
+    public function emailSubscriptions(): HasMany
+    {
+        return $this->hasMany(EmailSubscription::class);
     }
 }

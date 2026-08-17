@@ -12,8 +12,6 @@ use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-
-
     public function setPassword(array $data): void
     {
         $admin = Admin::where('invitation_token', $data['token'])
@@ -28,10 +26,10 @@ class AuthService
 
         DB::transaction(function () use ($admin, $data) {
             $admin->update([
-                'password'                   => Hash::make($data['password']),
-                'invitation_token'           => null,
+                'password' => Hash::make($data['password']),
+                'invitation_token' => null,
                 'invitation_token_expires_at' => null,
-                'is_active'                  => true,
+                'is_active' => true,
             ]);
         });
     }
@@ -47,7 +45,7 @@ class AuthService
         $token = Str::random(64);
 
         $admin->update([
-            'password_reset_token'           => $token,
+            'password_reset_token' => $token,
             'password_reset_token_expires_at' => now()->addHour(),
         ]);
 
@@ -71,8 +69,8 @@ class AuthService
 
         DB::transaction(function () use ($admin, $data) {
             $admin->update([
-                'password'                    => Hash::make($data['password']),
-                'password_reset_token'        => null,
+                'password' => Hash::make($data['password']),
+                'password_reset_token' => null,
                 'password_reset_token_expires_at' => null,
             ]);
         });

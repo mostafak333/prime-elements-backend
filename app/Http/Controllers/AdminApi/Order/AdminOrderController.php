@@ -54,7 +54,7 @@ class AdminOrderController extends Controller
     {
         $order = Order::find($order);
 
-        if (!$order) {
+        if (! $order) {
             return $this->error('Order not found.', 404);
         }
 

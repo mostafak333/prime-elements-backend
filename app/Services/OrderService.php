@@ -6,8 +6,6 @@ use App\Models\AddressDetail;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Setting;
-use App\Models\User;
-use App\Services\EbookDeliveryService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -18,23 +16,23 @@ class OrderService
     {
         $query = Order::with('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user');
 
-        if (!empty($filters['search'])) {
+        if (! empty($filters['search'])) {
             $query->where('order_number', 'like', "%{$filters['search']}%");
         }
 
-        if (!empty($filters['user_id'])) {
+        if (! empty($filters['user_id'])) {
             $query->where('user_id', $filters['user_id']);
         }
 
-        if (!empty($filters['status'])) {
+        if (! empty($filters['status'])) {
             $query->where('status', $filters['status']);
         }
 
-        if (!empty($filters['date_from'])) {
+        if (! empty($filters['date_from'])) {
             $query->whereDate('created_at', '>=', $filters['date_from']);
         }
 
-        if (!empty($filters['date_to'])) {
+        if (! empty($filters['date_to'])) {
             $query->whereDate('created_at', '<=', $filters['date_to']);
         }
 
@@ -77,7 +75,7 @@ class OrderService
             'cancelled' => [],
         ];
 
-        if (!in_array($new, $flow[$current] ?? [])) {
+        if (! in_array($new, $flow[$current] ?? [])) {
             throw ValidationException::withMessages([
                 'status' => ["Cannot change status from \"{$current}\" to \"{$new}\"."],
             ]);
@@ -122,15 +120,15 @@ class OrderService
             $this->validateStock($cartItems);
 
             $address = AddressDetail::create([
-                'user_id'       => $userId,
-                'full_name'     => $data['address']['full_name'],
-                'phone'         => $data['address']['phone'],
+                'user_id' => $userId,
+                'full_name' => $data['address']['full_name'],
+                'phone' => $data['address']['phone'],
                 'address_line1' => $data['address']['address_line1'],
                 'address_line2' => $data['address']['address_line2'] ?? null,
-                'city'          => $data['address']['city'],
-                'state'         => $data['address']['state'] ?? null,
-                'postal_code'   => $data['address']['postal_code'],
-                'country'       => $data['address']['country'],
+                'city' => $data['address']['city'],
+                'state' => $data['address']['state'] ?? null,
+                'postal_code' => $data['address']['postal_code'],
+                'country' => $data['address']['country'],
             ]);
 
             $subtotal = 0;
@@ -146,9 +144,9 @@ class OrderService
 
                 $orderItemsData[] = [
                     'product_id' => $item->product_id,
-                    'quantity'   => $item->quantity,
-                    'price'      => $item->product->price,
-                    'discount'   => $item->product->discount ?? 0,
+                    'quantity' => $item->quantity,
+                    'price' => $item->product->price,
+                    'discount' => $item->product->discount ?? 0,
                 ];
             }
 
@@ -157,23 +155,23 @@ class OrderService
             $total = $subtotal - $totalDiscount + $shipping + $tax;
 
             $order = Order::create([
-                'user_id'                      => $userId,
-                'order_number'                 => $this->generateOrderNumber(),
-                'address_details_id'           => $address->id,
-                'payment_method_id'            => $data['payment_method_id'],
-                'delivery_method_id'           => $data['delivery_method_id'],
-                'subtotal'                     => $subtotal,
-                'shipping'                     => $shipping,
-                'discount'                     => $totalDiscount,
-                'tax'                          => $tax,
-                'total'                        => $total,
-                'status'                       => 'pending',
-                'payment_status'               => 'unpaid',
-                'terms_and_condition_agreed'   => $data['terms_and_condition_agreed'],
-                'user_full_name'               => $data['address']['full_name'],
-                'email'                        => $user->email,
-                'phone_to_number'              => $data['address']['phone'],
-                'notes'                        => $data['notes'] ?? null,
+                'user_id' => $userId,
+                'order_number' => $this->generateOrderNumber(),
+                'address_details_id' => $address->id,
+                'payment_method_id' => $data['payment_method_id'],
+                'delivery_method_id' => $data['delivery_method_id'],
+                'subtotal' => $subtotal,
+                'shipping' => $shipping,
+                'discount' => $totalDiscount,
+                'tax' => $tax,
+                'total' => $total,
+                'status' => 'pending',
+                'payment_status' => 'unpaid',
+                'terms_and_condition_agreed' => $data['terms_and_condition_agreed'],
+                'user_full_name' => $data['address']['full_name'],
+                'email' => $user->email,
+                'phone_to_number' => $data['address']['phone'],
+                'notes' => $data['notes'] ?? null,
             ]);
 
             foreach ($orderItemsData as $itemData) {
@@ -209,7 +207,7 @@ class OrderService
     private function generateOrderNumber(): string
     {
         do {
-            $number = 'ORD-' . now()->format('YmdHis') . '-' . strtoupper(Str::random(4));
+            $number = 'ORD-'.now()->format('YmdHis').'-'.strtoupper(Str::random(4));
         } while (Order::where('order_number', $number)->exists());
 
         return $number;

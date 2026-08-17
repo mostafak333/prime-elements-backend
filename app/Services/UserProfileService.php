@@ -5,10 +5,15 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\User;
 use App\Models\Wishlist;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 
 class UserProfileService
 {
+    public function __construct(
+        protected MediaService $mediaService
+    ) {}
+
     public function getProfile(): User
     {
         return auth()->guard('api-user')->user();
@@ -26,7 +31,15 @@ class UserProfileService
             }
         }
 
-        if (!empty($updateData)) {
+        if (isset($updateData['avatar']) && $updateData['avatar'] instanceof UploadedFile) {
+            $updateData['avatar'] = $this->mediaService->replace(
+                $updateData['avatar'],
+                $user->avatar,
+                'users'
+            );
+        }
+
+        if (! empty($updateData)) {
             DB::transaction(function () use ($user, $updateData) {
                 $user->update($updateData);
             });
@@ -46,9 +59,9 @@ class UserProfileService
         $wishlistItems = Wishlist::where('user_id', $user->id)->count();
 
         return [
-            'total_orders'    => $totalOrders,
+            'total_orders' => $totalOrders,
             'delivered_orders' => $deliveredOrders,
-            'wishlist_items'  => $wishlistItems,
+            'wishlist_items' => $wishlistItems,
         ];
     }
 
@@ -58,7 +71,7 @@ class UserProfileService
         $statistics = $this->getStatistics($user);
 
         return [
-            'user'       => $user,
+            'user' => $user,
             'statistics' => $statistics,
         ];
     }

@@ -29,12 +29,12 @@ class LandingBannerController extends Controller
         $banners = $this->bannerService->getAll($perPage);
 
         return $this->success([
-            'banners'    => AdminLandingBannerResource::collection($banners),
+            'banners' => AdminLandingBannerResource::collection($banners),
             'pagination' => [
-                'total'        => $banners->total(),
-                'per_page'     => $banners->perPage(),
+                'total' => $banners->total(),
+                'per_page' => $banners->perPage(),
                 'current_page' => $banners->currentPage(),
-                'last_page'    => $banners->lastPage(),
+                'last_page' => $banners->lastPage(),
             ],
         ], 'Banners retrieved successfully.');
     }

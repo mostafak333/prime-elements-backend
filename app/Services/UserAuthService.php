@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Jobs\SendEmailJob;
-use App\Mail\UserVerificationMail;
 use App\Mail\UserPasswordResetMail;
+use App\Mail\UserVerificationMail;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -13,20 +13,26 @@ use Illuminate\Validation\ValidationException;
 
 class UserAuthService
 {
+    public function __construct(
+        private EmailSubscriptionService $subscriptionService
+    ) {}
+
     public function register(array $data): User
     {
         return DB::transaction(function () use ($data) {
             $token = Str::random(64);
 
             $user = User::create([
-                'name'                            => $data['name'],
-                'email'                           => $data['email'],
-                'password'                        => Hash::make($data['password']),
-                'email_verification_token'         => $token,
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'email_verification_token' => $token,
                 'email_verification_token_expires_at' => now()->addHours(48),
             ]);
 
             $user->assignRole('Customer');
+
+            $this->subscriptionService->linkGuestSubscription($user);
 
             SendEmailJob::dispatch(
                 $user->email,
@@ -50,8 +56,8 @@ class UserAuthService
         }
 
         $user->update([
-            'email_verified_at'                 => now(),
-            'email_verification_token'           => null,
+            'email_verified_at' => now(),
+            'email_verification_token' => null,
             'email_verification_token_expires_at' => null,
         ]);
     }
@@ -67,7 +73,7 @@ class UserAuthService
         $token = Str::random(64);
 
         $user->update([
-            'password_reset_token'           => $token,
+            'password_reset_token' => $token,
             'password_reset_token_expires_at' => now()->addHour(),
         ]);
 
@@ -91,8 +97,8 @@ class UserAuthService
 
         DB::transaction(function () use ($user, $data) {
             $user->update([
-                'password'                       => Hash::make($data['password']),
-                'password_reset_token'           => null,
+                'password' => Hash::make($data['password']),
+                'password_reset_token' => null,
                 'password_reset_token_expires_at' => null,
             ]);
         });

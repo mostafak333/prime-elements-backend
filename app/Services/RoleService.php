@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleService
 {
@@ -22,7 +22,7 @@ class RoleService
             'guard_name' => 'api-admin',
         ]);
 
-        if (!empty($data['permissions'])) {
+        if (! empty($data['permissions'])) {
             $permissions = Permission::whereIn('name', $data['permissions'])
                 ->where('guard_name', 'api-admin')
                 ->get();
