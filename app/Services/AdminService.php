@@ -105,6 +105,10 @@ class AdminService
 
         $admin->update($data);
 
+        if (isset($data['roles']) && ! empty($data['roles'])) {
+            $admin->syncRoles($data['roles']);
+        }
+
         return $admin->fresh();
     }
 }

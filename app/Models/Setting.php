@@ -13,6 +13,9 @@ class Setting extends Model
         'delivery_fee',
         'vat_percentage',
         'vat_enabled',
+        'terms_conditions',
+        'privacy_policy',
+        'return_exchange_policy',
         'updated_by',
     ];
 
@@ -43,5 +46,20 @@ class Setting extends Model
     public static function isVatEnabled(): bool
     {
         return static::first()->vat_enabled ?? true;
+    }
+
+    public static function getTermsConditions(): ?string
+    {
+        return static::first()->terms_conditions ?? null;
+    }
+
+    public static function getPrivacyPolicy(): ?string
+    {
+        return static::first()->privacy_policy ?? null;
+    }
+
+    public static function getReturnExchangePolicy(): ?string
+    {
+        return static::first()->return_exchange_policy ?? null;
     }
 }

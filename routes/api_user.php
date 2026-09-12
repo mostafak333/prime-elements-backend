@@ -11,6 +11,7 @@ use App\Http\Controllers\UserApi\Order\OrderController;
 use App\Http\Controllers\UserApi\Product\ProductController;
 use App\Http\Controllers\UserApi\Profile\UserProfileController;
 use App\Http\Controllers\UserApi\Review\UserReviewController;
+use App\Http\Controllers\UserApi\Settings\PolicyController;
 use App\Http\Controllers\UserApi\Title\TitleController;
 use App\Http\Controllers\UserApi\Wishlist\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -26,9 +27,11 @@ Route::post('/reset-password', [UserAuthController::class, 'resetPassword']);
 Route::get('titles', [TitleController::class, 'index']);
 Route::get('categories', [CategoryController::class, 'index']);
 Route::get('products', [ProductController::class, 'index']);
+Route::get('products/{product}', [ProductController::class, 'show']);
 // Route::get('products/filter-options', [ProductController::class, 'filterOptions']);
 Route::get('reviews', [UserReviewController::class, 'index']);
 Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');
+Route::get('policies', [PolicyController::class, 'index']);
 
 // =========================================================================
 // NEWSLETTER SUBSCRIPTION (PUBLIC - supports guests & authenticated users)
@@ -49,8 +52,7 @@ Route::get('/home', [HomeController::class, 'index']);
 // =========================================================================
 // PROTECTED CUSTOMER ENDPOINTS (Guard: api-user)
 // =========================================================================
-Route::group(['middleware' => ['auth:api-user']], function () {
-    Route::get('products/{product}', [ProductController::class, 'show']);
+Route::group(['middleware' => ['auth:api-user', 'user.active']], function () {
     Route::get(
         'categories/{category}/subcategories',
         [CategoryController::class, 'subCategories']

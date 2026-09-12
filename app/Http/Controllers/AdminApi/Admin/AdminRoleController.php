@@ -27,11 +27,13 @@ class AdminRoleController extends Controller
     public function sync(Request $request, Admin $admin): JsonResponse
     {
         $validated = $request->validate([
-            'roles' => ['required', 'array', 'min:1'],
-            'roles.*' => ['required', 'string', Rule::exists('roles', 'name')->where(fn ($q) => $q->where('guard_name', 'api-admin'))],
+            'roles' => ['required'],
+            'roles.*' => ['string', Rule::exists('roles', 'name')->where(fn ($q) => $q->where('guard_name', 'api-admin'))],
         ]);
 
-        $admin->syncRoles($validated['roles']);
+        $roles = is_array($validated['roles']) ? $validated['roles'] : [$validated['roles']];
+
+        $admin->syncRoles($roles);
 
         return $this->success(
             RoleResource::collection($admin->fresh()->roles),

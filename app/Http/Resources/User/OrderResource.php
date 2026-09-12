@@ -25,6 +25,7 @@ class OrderResource extends JsonResource
             'notes' => $this->notes,
             'estimated_delivery_date' => $this->estimated_delivery_date?->format('Y-m-d'),
             'terms_and_condition_agreed' => $this->terms_and_condition_agreed,
+            'privacy_policy_agreed' => $this->privacy_policy_agreed,
             'payment_method' => new PaymentMethodResource($this->whenLoaded('paymentMethod')),
             'delivery_method' => new DeliveryMethodResource($this->whenLoaded('deliveryMethod')),
             'address' => new AddressResource($this->whenLoaded('addressDetail')),

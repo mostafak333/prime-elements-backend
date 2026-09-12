@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CartItem;
+use App\Models\Setting;
 use Illuminate\Database\Eloquent\Collection;
 
 class CartService
@@ -68,20 +69,45 @@ class CartService
 
     public function getCartSummary(Collection $cartItems): array
     {
+        $setting = Setting::query()->first();
+
         $subtotal = 0;
+        $totalDiscount = 0;
         $totalItems = 0;
 
         foreach ($cartItems as $item) {
             $price = $item->product?->price ?? 0;
             $discount = $item->product?->discount ?? 0;
-            $effectivePrice = max(0, $price - $discount);
-            $subtotal += $effectivePrice * $item->quantity;
+            $subtotal += $price * $item->quantity;
+            $totalDiscount += $discount * $item->quantity;
             $totalItems += $item->quantity;
         }
+
+        // Shipping
+        $shipping = $setting?->delivery_fee ?? 0;
+
+        // VAT percentage
+        $taxPercentage = ($setting?->vat_enabled ?? false)
+            ? ($setting?->vat_percentage ?? 0)
+            : 0;
+
+        // Amount after product discounts
+        $amountAfterDiscount = max(0, $subtotal - $totalDiscount);
+
+        // VAT amount
+        $tax = $amountAfterDiscount * ($taxPercentage / 100);
+
+        // Final total
+        $total = $amountAfterDiscount + $shipping + $tax;
 
         return [
             'total_items' => $totalItems,
             'subtotal' => round($subtotal, 2),
+            'discount' => round($totalDiscount, 2),
+            'shipping' => round($shipping, 2),
+            'tax_percentage' => round($taxPercentage, 2),
+            'tax' => round($tax, 2),
+            'total' => round($total, 2),
         ];
     }
 

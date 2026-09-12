@@ -9,6 +9,7 @@ use App\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderService
 {
@@ -84,6 +85,8 @@ class OrderService
 
     public function getUserOrders(int $perPage = 15)
     {
+        $this->ensureUserIsActive();
+
         $userId = auth()->guard('api-user')->id();
 
         return Order::with('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail')
@@ -103,6 +106,8 @@ class OrderService
 
     public function createOrder(array $data): Order
     {
+        $this->ensureUserIsActive();
+
         $userId = auth()->guard('api-user')->id();
         $user = auth()->guard('api-user')->user();
         $setting = Setting::first();
@@ -151,8 +156,10 @@ class OrderService
             }
 
             $shipping = $data['shipping'] ?? $setting->delivery_fee;
-            $tax = $setting->vat_enabled ? $setting->vat_percentage : 0;
-            $total = $subtotal - $totalDiscount + $shipping + $tax;
+            $taxPercentage = $setting->vat_enabled ? $setting->vat_percentage : 0;
+            $taxableAmount = $subtotal - $totalDiscount;
+            $tax = $taxableAmount * ($taxPercentage / 100);
+            $total = $taxableAmount + $shipping + $tax;
 
             $order = Order::create([
                 'user_id' => $userId,
@@ -168,6 +175,7 @@ class OrderService
                 'status' => 'pending',
                 'payment_status' => 'unpaid',
                 'terms_and_condition_agreed' => $data['terms_and_condition_agreed'],
+                'privacy_policy_agreed' => $data['privacy_policy_agreed'] ?? false,
                 'user_full_name' => $data['address']['full_name'],
                 'email' => $user->email,
                 'phone_to_number' => $data['address']['phone'],
@@ -184,6 +192,15 @@ class OrderService
 
             return $order->load(['orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail']);
         });
+    }
+
+    private function ensureUserIsActive(): void
+    {
+        $user = auth()->guard('api-user')->user();
+
+        if (! $user || $user->status === 'blocked') {
+            throw new HttpException(403, 'Your account has been blocked. You cannot perform order actions.');
+        }
     }
 
     private function validateStock($cartItems): void

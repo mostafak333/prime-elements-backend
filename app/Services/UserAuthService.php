@@ -28,6 +28,8 @@ class UserAuthService
                 'password' => Hash::make($data['password']),
                 'email_verification_token' => $token,
                 'email_verification_token_expires_at' => now()->addHours(48),
+                'terms_and_conditions_agreed' => $data['terms_and_conditions_agreed'] ?? false,
+                'privacy_policy_agreed' => $data['privacy_policy_agreed'] ?? false,
             ]);
 
             $user->assignRole('Customer');

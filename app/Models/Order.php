@@ -24,6 +24,7 @@ class Order extends Model
         'status',
         'payment_status',
         'terms_and_condition_agreed',
+        'privacy_policy_agreed',
         'estimated_delivery_date',
         'user_full_name',
         'email',
@@ -38,6 +39,7 @@ class Order extends Model
         'tax' => 'decimal:2',
         'total' => 'decimal:2',
         'terms_and_condition_agreed' => 'boolean',
+        'privacy_policy_agreed' => 'boolean',
         'estimated_delivery_date' => 'date',
     ];
 

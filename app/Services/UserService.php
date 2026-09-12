@@ -47,6 +47,10 @@ class UserService
     {
         $user->update(['status' => $status]);
 
+        // Invalidate every token already issued to this user so the change
+        // (e.g. blocking) takes effect immediately on the client side.
+        $user->increment('token_version');
+
         return $user->fresh();
     }
 }
