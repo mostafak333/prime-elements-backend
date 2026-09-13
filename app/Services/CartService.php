@@ -79,7 +79,7 @@ class CartService
             $price = $item->product?->price ?? 0;
             $discount = $item->product?->discount ?? 0;
             $subtotal += $price * $item->quantity;
-            $totalDiscount += $discount * $item->quantity;
+            $totalDiscount += round((float) $discount * $item->quantity, 2);
             $totalItems += $item->quantity;
         }
 
@@ -104,6 +104,8 @@ class CartService
             'total_items' => $totalItems,
             'subtotal' => round($subtotal, 2),
             'discount' => round($totalDiscount, 2),
+            'discount_amount' => round($totalDiscount, 2),
+            'discount_percentage' => $subtotal > 0 ? round(($totalDiscount / $subtotal) * 100, 2) : 0,
             'shipping' => round($shipping, 2),
             'tax_percentage' => round($taxPercentage, 2),
             'tax' => round($tax, 2),

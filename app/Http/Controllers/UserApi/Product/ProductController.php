@@ -20,6 +20,8 @@ class ProductController extends Controller
 
     public function index(ProductFilterRequest $request): JsonResponse
     {
+        Product::expireExpiredDiscounts();
+
         $products = $this->productService->getAllForUser($request->validated());
 
         return $this->success([
@@ -35,6 +37,8 @@ class ProductController extends Controller
 
     public function show(Product $product): JsonResponse
     {
+        Product::expireExpiredDiscounts();
+
         $product->load(['images', 'detail']);
 
         return $this->success(

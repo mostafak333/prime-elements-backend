@@ -142,7 +142,8 @@ class OrderService
 
             foreach ($cartItems as $item) {
                 $itemSubtotal = $item->product->price * $item->quantity;
-                $itemDiscount = ($item->product->discount ?? 0) * $item->quantity;
+                $perUnitDiscount = (float) ($item->product->discount ?? 0);
+                $itemDiscount = round($perUnitDiscount * $item->quantity, 2);
 
                 $subtotal += $itemSubtotal;
                 $totalDiscount += $itemDiscount;
@@ -151,7 +152,7 @@ class OrderService
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'price' => $item->product->price,
-                    'discount' => $item->product->discount ?? 0,
+                    'discount' => $perUnitDiscount,
                 ];
             }
 

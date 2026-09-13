@@ -32,7 +32,7 @@ class ProductFilterRequest extends FormRequest
             'sort_by' => 'sometimes|in:price_asc,price_desc,name_asc,name_desc,newest,best_seller',
             'search' => 'sometimes|string|max:255',
             'page' => 'sometimes|integer|min:1',
-            'filter' => 'sometimes|in:new_arrival,best_seller',
+            'filter' => 'sometimes|in:new_arrival,best_seller,has_offer',
         ];
     }
 

@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\HandleFormDataOnNonPostRequests;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -25,6 +26,9 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(__DIR__.'/../routes/api_admin.php');
         },
     )
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command('discounts:expire')->everyFiveMinutes();
+    })
     ->withMiddleware(function (Middleware $middleware) {
 
         $middleware->alias([

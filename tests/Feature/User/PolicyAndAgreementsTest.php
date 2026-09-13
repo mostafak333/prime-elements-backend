@@ -72,7 +72,7 @@ class PolicyAndAgreementsTest extends TestCase
             'name_en' => 'Product',
             'name_ar' => 'منتج',
             'price' => 100,
-            'discount' => 0,
+            'discount_percentage' => 0,
             'stock' => 10,
             'status' => true,
             'is_new_arrival' => false,

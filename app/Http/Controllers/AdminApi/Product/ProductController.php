@@ -22,6 +22,8 @@ class ProductController extends Controller
 
     public function index(Request $request): JsonResponse
     {
+        Product::expireExpiredDiscounts();
+
         $perPage = (int) $request->get('per_page', 15);
 
         $products = $this->productService->getAll($perPage);
@@ -50,6 +52,8 @@ class ProductController extends Controller
 
     public function show(Product $product): JsonResponse
     {
+        Product::expireExpiredDiscounts();
+
         $product->load(['images', 'detail']);
 
         return $this->success(
