@@ -129,7 +129,6 @@ Order response `data` now includes discount + agreement fields:
   "payment_status": "unpaid",
   "subtotal": 200.0,
   "shipping": 50.0,
-  "discount": 20.0,
   "discount_amount": 20.0,
   "discount_percentage": 10.0,
   "tax": 18.3,
@@ -141,7 +140,6 @@ Order response `data` now includes discount + agreement fields:
       "id": 1,
       "quantity": 2,
       "price": 100.0,
-      "discount": 10.0,
       "discount_amount": 10.0,
       "discount_percentage": 10.0,
       "product": { ... }
@@ -242,7 +240,6 @@ Same fields, except `discount_percentage` is the **raw stored value** (kept for 
   "summary": {
     "total_items": 2,
     "subtotal": 200.0,
-    "discount": 20.0,
     "discount_amount": 20.0,
     "discount_percentage": 10.0,
     "shipping": 50.0,
@@ -253,7 +250,7 @@ Same fields, except `discount_percentage` is the **raw stored value** (kept for 
 }
 ```
 
-Money math (per item): `price` (unit) × `quantity`; discount uses the **effective** per-unit amount (0 if expired). `subtotal = Σ price×qty`, `discount_amount = Σ effectiveDiscount×qty` (== `discount`), `discount_percentage = discount/subtotal×100`, then shipping and VAT applied. `discount_percentage`/amounts here are **numbers** (floats).
+Money math (per item): `price` (unit) × `quantity`; discount uses the **effective** per-unit amount (0 if expired). `subtotal = Σ price×qty`, `discount_amount = Σ effectiveDiscount×qty`, `discount_percentage = discount_amount/subtotal×100`, then shipping and VAT applied. `discount_percentage`/amounts here are **numbers** (floats).
 
 ### Filtering — show only discounted products
 
@@ -270,7 +267,7 @@ Use the `filter` param with one of `new_arrival`, `best_seller`, `has_offer` (mu
 - **Timezone:** `Africa/Cairo` (configurable via `APP_TIMEZONE`). All `*_at` and `discount_start_at`/`discount_end_at` dates in responses are **local store time**, format `Y-m-d H:i:s`. `estimated_delivery_date` is `Y-m-d`.
 - `created_at`/`updated_at` are also returned in local store time.
 - Money strings: `"100.00"` (2dp, dot). Parse with your money helper; render with your currency.
-- `discount` == `discount_amount` (kept for backward compatibility) on cart & order summaries/items.
+- Discount money value is exposed ONLY as `discount_amount` (accompanied by `discount_percentage`). There is **no bare `discount` field** and **no `discount_amount` stored in the database** (orders keep an internal `discount` snapshot to recompute it, but it is not exposed).
 
 ---
 
@@ -280,7 +277,7 @@ Use the `filter` param with one of `new_arrival`, `best_seller`, `has_offer` (mu
 2. **Registration form** — add T&C + Privacy checkboxes (required, must link to policy pages), send `terms_and_conditions_agreed: true` and `privacy_policy_agreed: true`.
 3. **Checkout** — add the two agreements, pass `terms_and_condition_agreed`/`privacy_policy_agreed` (must be `true`); show the new `discount_amount`/`discount_percentage` on the order summary.
 4. **Product cards / detail** — show `price_after_discount` and an offer badge when `has_offer === true`; use `discount_percentage` for the "10% OFF" label and `discount_amount` for the saved-money value.
-5. **Cart page** — use the `summary` block for subtotal/discount/shipping/VAT/total; highlight per-item discounts.
+5. **Cart page** — use the `summary` block for subtotal/discount_amount/shipping/VAT/total; highlight per-item discounts.
 6. **Admin panel** —
    - Product create/edit: percentage + start/end date-time pickers (send local store times).
    - Settings page: editable fields for T&C, Privacy, Return/Exchange, delivery fee, VAT.
