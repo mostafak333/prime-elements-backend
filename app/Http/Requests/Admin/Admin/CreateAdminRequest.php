@@ -12,6 +12,15 @@ class CreateAdminRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('is_super')) {
+            $this->merge([
+                'is_super' => filter_var($this->input('is_super'), FILTER_VALIDATE_BOOLEAN),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

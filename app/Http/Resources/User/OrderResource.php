@@ -17,6 +17,10 @@ class OrderResource extends JsonResource
             'subtotal' => $this->subtotal,
             'shipping' => $this->shipping,
             'discount' => $this->discount,
+            'discount_amount' => $this->discount,
+            'discount_percentage' => (float) $this->subtotal > 0
+                ? round(((float) $this->discount / (float) $this->subtotal) * 100, 2)
+                : 0,
             'tax' => $this->tax,
             'total' => $this->total,
             'user_full_name' => $this->user_full_name,
@@ -25,6 +29,7 @@ class OrderResource extends JsonResource
             'notes' => $this->notes,
             'estimated_delivery_date' => $this->estimated_delivery_date?->format('Y-m-d'),
             'terms_and_condition_agreed' => $this->terms_and_condition_agreed,
+            'privacy_policy_agreed' => $this->privacy_policy_agreed,
             'payment_method' => new PaymentMethodResource($this->whenLoaded('paymentMethod')),
             'delivery_method' => new DeliveryMethodResource($this->whenLoaded('deliveryMethod')),
             'address' => new AddressResource($this->whenLoaded('addressDetail')),

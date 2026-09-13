@@ -20,6 +20,10 @@ class AdminOrderResource extends JsonResource
             'subtotal' => $this->subtotal,
             'shipping' => $this->shipping,
             'discount' => $this->discount,
+            'discount_amount' => $this->discount,
+            'discount_percentage' => (float) $this->subtotal > 0
+                ? round(((float) $this->discount / (float) $this->subtotal) * 100, 2)
+                : 0,
             'tax' => $this->tax,
             'total' => $this->total,
             'user_full_name' => $this->user_full_name,

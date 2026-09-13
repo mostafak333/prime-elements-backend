@@ -26,6 +26,8 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
     'city',
     'street_address',
     'apartment',
+    'terms_and_conditions_agreed',
+    'privacy_policy_agreed',
     'social_provider',
     'social_id',
 ])]
@@ -49,6 +51,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'guard' => 'api-user',
+            'token_version' => (int) ($this->token_version ?? 0),
         ];
     }
 

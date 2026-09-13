@@ -28,6 +28,7 @@ class StoreOrderRequest extends FormRequest
             'shipping' => ['nullable', 'numeric', 'min:0'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'terms_and_condition_agreed' => ['required', 'boolean', 'accepted'],
+            'privacy_policy_agreed' => ['required', 'boolean', 'accepted'],
         ];
     }
 
@@ -35,6 +36,9 @@ class StoreOrderRequest extends FormRequest
     {
         return [
             'terms_and_condition_agreed.accepted' => 'You must agree to the terms and conditions.',
+            'terms_and_condition_agreed.required' => 'You must agree to the terms and conditions.',
+            'privacy_policy_agreed.accepted' => 'You must agree to the privacy policy.',
+            'privacy_policy_agreed.required' => 'You must agree to the privacy policy.',
             'address.full_name.required' => 'Full name is required.',
             'address.phone.required' => 'Phone number is required.',
         ];

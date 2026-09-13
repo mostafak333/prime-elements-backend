@@ -89,6 +89,8 @@ class ProductService
                 $query->where('is_new_arrival', true);
             } elseif ($filters['filter'] === 'best_seller') {
                 $query->where('is_best_seller', true);
+            } elseif ($filters['filter'] === 'has_offer') {
+                $query->hasOffer();
             }
         }
 
@@ -214,7 +216,9 @@ class ProductService
                 'short_description_en' => $data['short_description_en'] ?? null,
                 'short_description_ar' => $data['short_description_ar'] ?? null,
                 'price' => $data['price'],
-                'discount' => $data['discount'] ?? 0,
+                'discount_percentage' => $data['discount_percentage'] ?? 0,
+                'discount_start_at' => $data['discount_start_at'] ?? null,
+                'discount_end_at' => $data['discount_end_at'] ?? null,
                 'stock' => $data['stock'],
                 'status' => $data['status'] ?? true,
                 'is_new_arrival' => $data['is_new_arrival'] ?? false,
@@ -273,7 +277,9 @@ class ProductService
                 'short_description_en' => $data['short_description_en'] ?? $product->short_description_en,
                 'short_description_ar' => $data['short_description_ar'] ?? $product->short_description_ar,
                 'price' => $data['price'] ?? $product->price,
-                'discount' => $data['discount'] ?? $product->discount,
+                'discount_percentage' => $data['discount_percentage'] ?? $product->getRawOriginal('discount_percentage'),
+                'discount_start_at' => $data['discount_start_at'] ?? $product->discount_start_at,
+                'discount_end_at' => $data['discount_end_at'] ?? $product->discount_end_at,
                 'stock' => $data['stock'] ?? $product->stock,
                 'status' => $data['status'] ?? $product->status,
                 'is_new_arrival' => $data['is_new_arrival'] ?? $product->is_new_arrival,
