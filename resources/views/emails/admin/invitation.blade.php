@@ -7,7 +7,7 @@
 <p>You have been invited to join the admin panel.</p>
 <p>Please set your password using the link below:</p>
 <p>
-    <a href="{{ config('app.url') }}/admin/set-password?token={{ $token }}">
+    <a href="{{ config('app.frontend_admin_url') }}/admin/set-password?token={{ $token }}">
         Set Your Password
     </a>
 </p>
