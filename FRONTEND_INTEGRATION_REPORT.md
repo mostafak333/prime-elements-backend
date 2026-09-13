@@ -285,3 +285,6 @@ Use the `filter` param with one of `new_arrival`, `best_seller`, `has_offer` (mu
    - Product create/edit: percentage + start/end date-time pickers (send local store times).
    - Settings page: editable fields for T&C, Privacy, Return/Exchange, delivery fee, VAT.
    - Order detail: show discount % and amount per item and in summary.
+
+   add
+   
