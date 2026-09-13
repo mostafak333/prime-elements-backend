@@ -397,7 +397,8 @@ class DiscountWindowTest extends TestCase
         $response->assertOk();
 
         $this->assertSame(100.0, (float) $response->json('data.summary.subtotal'));
-        $this->assertSame(0.0, (float) $response->json('data.summary.discount'));
+        $this->assertSame(0.0, (float) $response->json('data.summary.discount_amount'));
+        $this->assertArrayNotHasKey('discount', $response->json('data.summary'));
     }
 
     public function test_cart_discount_is_percentage_based(): void
@@ -423,7 +424,7 @@ class DiscountWindowTest extends TestCase
         $response->assertOk();
 
         $this->assertSame(200.0, (float) $response->json('data.summary.subtotal'));
-        $this->assertSame(20.0, (float) $response->json('data.summary.discount'));
+        $this->assertSame(20.0, (float) $response->json('data.summary.discount_amount'));
         $this->assertSame(20.0, (float) $response->json('data.summary.discount_amount'));
         $this->assertSame(10.0, (float) $response->json('data.summary.discount_percentage'));
     }

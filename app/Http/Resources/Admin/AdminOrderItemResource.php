@@ -14,7 +14,6 @@ class AdminOrderItemResource extends JsonResource
             'id' => $this->id,
             'quantity' => $this->quantity,
             'price' => $this->price,
-            'discount' => $this->discount,
             'discount_amount' => $this->discount,
             'discount_percentage' => (float) $this->price > 0
                 ? round(((float) $this->discount / (float) $this->price) * 100, 2)

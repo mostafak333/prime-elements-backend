@@ -19,7 +19,6 @@ class AdminOrderResource extends JsonResource
             'payment_status' => $this->payment_status,
             'subtotal' => $this->subtotal,
             'shipping' => $this->shipping,
-            'discount' => $this->discount,
             'discount_amount' => $this->discount,
             'discount_percentage' => (float) $this->subtotal > 0
                 ? round(((float) $this->discount / (float) $this->subtotal) * 100, 2)

@@ -103,7 +103,6 @@ class CartService
         return [
             'total_items' => $totalItems,
             'subtotal' => round($subtotal, 2),
-            'discount' => round($totalDiscount, 2),
             'discount_amount' => round($totalDiscount, 2),
             'discount_percentage' => $subtotal > 0 ? round(($totalDiscount / $subtotal) * 100, 2) : 0,
             'shipping' => round($shipping, 2),
