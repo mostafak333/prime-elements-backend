@@ -16,7 +16,9 @@ return new class extends Migration
             $table->text('short_description_en')->nullable();
             $table->text('short_description_ar')->nullable();
             $table->decimal('price', 10, 2);
-            $table->decimal('discount', 10, 2);
+            $table->decimal('discount_percentage', 10, 2);
+            $table->timestamp('discount_start_at')->nullable();
+            $table->timestamp('discount_end_at')->nullable();
             $table->integer('stock');
             $table->boolean('status')->default(true);
             $table->boolean('is_new_arrival')->default(false);

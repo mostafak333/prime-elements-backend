@@ -20,7 +20,7 @@ class StoreWishlistRequest extends FormRequest
             'product_id' => [
                 'required',
                 'integer',
-                'exists:products,id',
+                Rule::exists('products', 'id')->where(fn ($q) => $q->where('status', true)),
                 Rule::unique('wishlists', 'product_id')
                     ->where('user_id', $userId)
                     ->whereNull('deleted_at'),

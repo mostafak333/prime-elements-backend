@@ -13,9 +13,12 @@ class Setting extends Model
         'delivery_fee',
         'vat_percentage',
         'vat_enabled',
-        'terms_conditions',
-        'privacy_policy',
-        'return_exchange_policy',
+        'terms_conditions_en',
+        'terms_conditions_ar',
+        'privacy_policy_en',
+        'privacy_policy_ar',
+        'return_exchange_policy_en',
+        'return_exchange_policy_ar',
         'updated_by',
     ];
 
@@ -50,16 +53,16 @@ class Setting extends Model
 
     public static function getTermsConditions(): ?string
     {
-        return static::first()->terms_conditions ?? null;
+        return static::first()->terms_conditions_en ?? null;
     }
 
     public static function getPrivacyPolicy(): ?string
     {
-        return static::first()->privacy_policy ?? null;
+        return static::first()->privacy_policy_en ?? null;
     }
 
     public static function getReturnExchangePolicy(): ?string
     {
-        return static::first()->return_exchange_policy ?? null;
+        return static::first()->return_exchange_policy_en ?? null;
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Category\FilterCategoryRequest;
 use App\Http\Requests\Admin\Category\StoreCategoryRequest;
 use App\Http\Requests\Admin\Category\UpdateCategoryRequest;
 use App\Http\Resources\Admin\CategoryResource;
+use App\Http\Resources\Admin\CategorySelectResource;
 use App\Models\Category;
 use App\Services\CategoryService;
 use App\Traits\ApiResponse;
@@ -43,6 +44,15 @@ class CategoryController extends Controller
         ];
 
         return $this->success($responseData, 'Categories retrieved successfully.', 200);
+    }
+
+    public function select(FilterCategoryRequest $request): JsonResponse
+    {
+        return $this->success([
+            'categories' => CategorySelectResource::collection(
+                $this->categoryService->getAllForSelect($request->validated())
+            ),
+        ], 'Categories retrieved successfully.', 200);
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse
@@ -88,8 +98,11 @@ class CategoryController extends Controller
                 200
             );
         } catch (ValidationException $e) {
+            $message = collect($e->errors())->flatten()->first()
+                ?? 'Cannot delete this category.';
+
             return $this->error(
-                'Cannot delete a category that has child categories',
+                $message,
                 422
             );
         }

@@ -104,6 +104,25 @@ class OrderService
             ->find($id);
     }
 
+    public function cancelOrderForUser(Order $order): Order
+    {
+        $this->ensureUserIsActive();
+
+        if ($order->user_id !== auth()->guard('api-user')->id()) {
+            throw ValidationException::withMessages([
+                'order' => ['Order not found.'],
+            ]);
+        }
+
+        if ($order->status !== 'pending') {
+            throw ValidationException::withMessages([
+                'status' => ["Cannot cancel this order because its status is \"{$order->status}\". Only pending orders can be cancelled."],
+            ]);
+        }
+
+        return $this->updateStatus($order, 'cancelled');
+    }
+
     public function createOrder(array $data): Order
     {
         $this->ensureUserIsActive();

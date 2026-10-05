@@ -10,6 +10,7 @@ use App\Services\OrderService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller
 {
@@ -47,6 +48,22 @@ class OrderController extends Controller
         return $this->success(
             new OrderResource($order),
             'Order retrieved successfully.'
+        );
+    }
+
+    public function cancel(Order $order): JsonResponse
+    {
+        try {
+            $cancelled = $this->orderService->cancelOrderForUser($order);
+        } catch (ValidationException $e) {
+            $message = collect($e->errors())->flatten()->first() ?? 'Cannot cancel this order.';
+
+            return $this->error($message, $e->status ?? 422);
+        }
+
+        return $this->success(
+            new OrderResource($cancelled),
+            'Order cancelled successfully.'
         );
     }
 

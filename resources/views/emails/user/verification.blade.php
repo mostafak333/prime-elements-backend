@@ -7,7 +7,7 @@
 <p>Thank you for registering.</p>
 <p>Please verify your email address by clicking the link below:</p>
 <p>
-    <a href="{{ config('app.frontend_url') }}/user/verify-email/{{ $token }}">
+    <a href="{{ config('app.frontend_url') }}/verify-email/{{ $token }}">
         Verify Email
     </a>
 </p>

@@ -34,18 +34,21 @@ Every endpoint returns the same wrapper:
 GET {{BASE_URL}}/api/policies
 ```
 
-No auth. Response `data`:
+No auth. Response `data` (both languages are ALWAYS returned; pick the one you need):
 
 ```json
 {
-  "terms_conditions": "<h1>Terms &amp; Conditions...</h1> ...",
-  "privacy_policy": "<h1>Privacy Policy...</h1> ...",
-  "return_exchange_policy": "<h1>Return &amp; Exchange Policy...</h1> ..."
+  "terms_conditions_en": "<h1>Terms &amp; Conditions...</h1> ...",
+  "terms_conditions_ar": "<h1 style=\"direction:rtl\">الشروط والأحكام...</h1> ...",
+  "privacy_policy_en": "<h1>Privacy Policy...</h1> ...",
+  "privacy_policy_ar": "<h1 style=\"direction:rtl\">سياسة الخصوصية...</h1> ...",
+  "return_exchange_policy_en": "<h1>Return &amp; Exchange Policy...</h1> ...",
+  "return_exchange_policy_ar": "<h1 style=\"direction:rtl\">سياسة الاسترجاع والاستبدال...</h1> ..."
 }
 ```
 
 - Content is **HTML** (full styled documents supported — headings, paragraphs, lists, bold, links). Render it as HTML, do not escape.
-- If a policy is empty the field returns `null` or empty — show a fallback in the UI.
+- Every policy field exists as `_en` and `_ar`; if a language is empty the field returns `null` — show a fallback in the UI.
 
 ### Admin endpoints — edit content
 
@@ -58,16 +61,101 @@ Auth: `Authorization: Bearer <admin-token>`.
 
 `PUT` accepts **partial** updates (only send fields you want to change), all optional:
 
-| Field                    | Type    | Notes                          |
-| ------------------------ | ------- | ------------------------------ |
-| `terms_conditions`       | string  | null allowed                   |
-| `privacy_policy`         | string  | null allowed                   |
-| `return_exchange_policy` | string  | null allowed                   |
-| `delivery_fee`           | number  | >= 0                           |
-| `vat_percentage`         | number  | 0–100                          |
-| `vat_enabled`            | boolean |                                |
+| Field                     | Type    | Notes                          |
+| ------------------------- | ------- | ------------------------------ |
+| `terms_conditions_en`     | string  | null allowed                   |
+| `terms_conditions_ar`     | string  | null allowed                   |
+| `privacy_policy_en`       | string  | null allowed                   |
+| `privacy_policy_ar`       | string  | null allowed                   |
+| `return_exchange_policy_en` | string | null allowed                  |
+| `return_exchange_policy_ar` | string | null allowed                  |
+| `delivery_fee`            | number  | >= 0                           |
+| `vat_percentage`          | number  | 0–100                          |
+| `vat_enabled`             | boolean |                                |
 
-Customer-facing product/cart/order amounts (shipping + VAT) are driven by `delivery_fee` and `vat_enabled`/`vat_percentage` from these settings.
+- Admin UI must provide separate editors for English and Arabic per policy (both required fields should be saved together).
+
+---
+
+## 2b. FAQs — Bilingual
+
+```
+GET  {{BASE_URL}}/api/faqs              # public, active only, sorted by sort_order
+GET  {{BASE_URL}}/api/admin/faqs        # admin, paginated (?per_page=)
+POST {{BASE_URL}}/api/admin/faqs        # create
+PUT  {{BASE_URL}}/api/admin/faqs/{id}   # update
+DELETE {{BASE_URL}}/api/admin/faqs/{id} # delete
+```
+
+Auth: `Authorization: Bearer <admin-token>` (except the public `GET /api/faqs`).
+
+Both languages are ALWAYS returned on every side. Payload shape:
+
+```json
+{
+  "id": 1,
+  "question_en": "How do returns work?",
+  "question_ar": "كيف تعمل عملية الاسترجاع؟",
+  "answer_en": "You can request a return within 7 days.",
+  "answer_ar": "يمكنك طلب الاسترجاع خلال 7 أيام.",
+  "is_active": true,
+  "sort_order": 1
+}
+```
+
+`POST` requires all four fields (`question_en`, `question_ar`, `answer_en`, `answer_ar`) plus optional `is_active`, `sort_order`. `PUT` is partial (`sometimes`).
+
+---
+
+## 2d. Contact Us — Public Message Form
+
+```
+POST {{BASE_URL}}/api/contact-us
+```
+
+No auth. Sends the customer message by email to the store's configured contact mailbox (set via `CONTACT_US_EMAIL`).
+
+| Field       | Type   | Notes             |
+| ----------- | ------ | ----------------- |
+| `full_name` | string | required          |
+| `email`     | string | required, valid   |
+| `subject`   | string | required          |
+| `message`   | string | required          |
+
+Response is `{ success: true }` (v200). The store's reply-to is set to the sender's `email`.
+
+---
+
+## 2c. Home Banners — Bilingual
+
+```
+GET  {{BASE_URL}}/api/banners          # public
+GET  {{BASE_URL}}/api/admin/landing-banners    # admin, paginated
+POST {{BASE_URL}}/api/admin/landing-banners    # create
+PUT  {{BASE_URL}}/api/admin/landing-banners/{id} # update
+DELETE {{BASE_URL}}/api/admin/landing-banners/{id} # delete
+```
+
+Both languages are ALWAYS returned. User-side payload shape:
+
+```json
+{
+  "id": 4,
+  "title_en": "Bestsellers You Can't Put Down",
+  "title_ar": "الأكثر مبيعًا التي لا تستطيع تركها",
+  "description_en": "Discover the books everyone is reading right now.",
+  "description_ar": "اكتشف الكتب التي يقرأها الجميع الآن.",
+  "image_url": "https://api.pmelements.com/storage/banners/xxxx.png",
+  "button": {
+    "enabled": true,
+    "name_en": "Shop Bestsellers",
+    "name_ar": "تسوق الأكثر مبيعًا",
+    "link": "https://pmelements.com/best-sellers"
+  }
+}
+```
+
+Admin resource returns the same fields flattened (`button_enabled`, `button_name_en`, `button_name_ar`, `button_link`). `POST` requires `title_en` (+ optional `title_ar`, `description_en/ar`, image upload); `button_name_en`/`button_link` required when `button_enabled` is `true`.
 
 ---
 
@@ -252,6 +340,8 @@ Same fields, except `discount_percentage` is the **raw stored value** (kept for 
 
 Money math (per item): `price` (unit) × `quantity`; discount uses the **effective** per-unit amount (0 if expired). `subtotal = Σ price×qty`, `discount_amount = Σ effectiveDiscount×qty`, `discount_percentage = discount_amount/subtotal×100`, then shipping and VAT applied. `discount_percentage`/amounts here are **numbers** (floats).
 
+**Cart/wishlist cleanup:** items whose product was deleted/deactivated are automatically **removed** server-side when the cart/wishlist is fetched. `items[].product` is never `null` — treat the list as authoritative; the summary only counts remaining valid items.
+
 ### Filtering — show only discounted products
 
 ```
@@ -273,14 +363,17 @@ Use the `filter` param with one of `new_arrival`, `best_seller`, `has_offer` (mu
 
 ## 7. What the Frontend Team Should Wire Up
 
-1. **Policy pages** — link Terms, Privacy, Return/Exchange to `GET /api/policies` content rendered as HTML.
+1. **Policy pages** — link Terms, Privacy, Return/Exchange to `GET /api/policies`, render the `_en` or `_ar` variant as HTML (add a language toggle).
+2. **FAQ page** — use `GET /api/faqs`; render `question_ar`/`answer_ar` or `_en` depending on the active language.
+3. **Settings/FAQs (admin)** — provide English + Arabic editors for each FAQ and each policy; send both `_en` and `_ar` keys on save.
 2. **Registration form** — add T&C + Privacy checkboxes (required, must link to policy pages), send `terms_and_conditions_agreed: true` and `privacy_policy_agreed: true`.
 3. **Checkout** — add the two agreements, pass `terms_and_condition_agreed`/`privacy_policy_agreed` (must be `true`); show the new `discount_amount`/`discount_percentage` on the order summary.
 4. **Product cards / detail** — show `price_after_discount` and an offer badge when `has_offer === true`; use `discount_percentage` for the "10% OFF" label and `discount_amount` for the saved-money value.
 5. **Cart page** — use the `summary` block for subtotal/discount_amount/shipping/VAT/total; highlight per-item discounts.
 6. **Admin panel** —
    - Product create/edit: percentage + start/end date-time pickers (send local store times).
-   - Settings page: editable fields for T&C, Privacy, Return/Exchange, delivery fee, VAT.
+   - Settings page: editable fields (English + Arabic) for T&C, Privacy, Return/Exchange, delivery fee, VAT.
+   - FAQs page: list/create/edit/delete with English + Arabic fields.
    - Order detail: show discount % and amount per item and in summary.
 
    add

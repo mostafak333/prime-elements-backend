@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Wishlist;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ProductService
 {
@@ -289,6 +292,10 @@ class ProductService
                 'updated_by' => $adminId,
             ]);
 
+            if (! $product->status) {
+                $this->removeFromCartsAndWishlists($product->id);
+            }
+
             // 2. Replace images
             if (isset($data['images'])) {
                 foreach ($product->images as $oldImage) {
@@ -347,6 +354,12 @@ class ProductService
 
     public function delete(Product $product): void
     {
+        if ($product->orderItems()->exists()) {
+            throw ValidationException::withMessages([
+                'product' => ['Cannot delete a product that is referenced by orders. Deactivate it instead.'],
+            ]);
+        }
+
         DB::transaction(function () use ($product) {
             foreach ($product->images as $image) {
                 $this->mediaService->delete($image->image_path);
@@ -354,7 +367,15 @@ class ProductService
             $product->images()->delete();
             $product->detail()?->delete();
 
+            $this->removeFromCartsAndWishlists($product->id);
+
             $product->delete();
         });
+    }
+
+    private function removeFromCartsAndWishlists(int $productId): void
+    {
+        CartItem::where('product_id', $productId)->forceDelete();
+        Wishlist::where('product_id', $productId)->forceDelete();
     }
 }

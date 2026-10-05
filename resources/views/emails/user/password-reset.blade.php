@@ -7,7 +7,7 @@
 <p>We received a request to reset your password.</p>
 <p>Click the link below to reset your password:</p>
 <p>
-    <a href="{{ config('app.frontend_url') }}/user/reset-password?token={{ $token }}">
+    <a href="{{ config('app.frontend_url') }}/reset-password?token={{ $token }}">
         Reset Password
     </a>
 </p>

@@ -4,6 +4,7 @@ use App\Http\Controllers\UserApi\Auth\UserAuthController;
 use App\Http\Controllers\UserApi\Auth\UserSocialAuthController;
 use App\Http\Controllers\UserApi\Cart\CartController;
 use App\Http\Controllers\UserApi\Category\CategoryController;
+use App\Http\Controllers\UserApi\ContactUsController;
 use App\Http\Controllers\UserApi\Faq\FaqController;
 use App\Http\Controllers\UserApi\HomeController;
 use App\Http\Controllers\UserApi\NewsletterController;
@@ -38,6 +39,11 @@ Route::get('policies', [PolicyController::class, 'index']);
 // =========================================================================
 Route::post('/subscribe', [NewsletterController::class, 'subscribe']);
 Route::post('/unsubscribe', [NewsletterController::class, 'unsubscribe']);
+
+// =========================================================================
+// CONTACT US (PUBLIC)
+// =========================================================================
+Route::post('/contact-us', [ContactUsController::class, 'store']);
 
 // =========================================================================
 // SOCIAL LOGIN
@@ -75,6 +81,7 @@ Route::group(['middleware' => ['auth:api-user', 'user.active']], function () {
     Route::get('orders', [OrderController::class, 'index']);
     Route::post('orders', [OrderController::class, 'store']);
     Route::get('orders/{order}', [OrderController::class, 'show']);
+    Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel']);
 
     Route::post('reviews', [UserReviewController::class, 'store']);
 });

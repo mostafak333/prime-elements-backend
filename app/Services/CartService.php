@@ -12,6 +12,13 @@ class CartService
     {
         $userId = auth()->guard('api-user')->id();
 
+        CartItem::where('user_id', $userId)
+            ->where(function ($query) {
+                $query->whereDoesntHave('product')
+                    ->orWhereHas('product', fn ($product) => $product->where('status', false));
+            })
+            ->forceDelete();
+
         return CartItem::with('product.images', 'product.detail')
             ->where('user_id', $userId)
             ->latest()

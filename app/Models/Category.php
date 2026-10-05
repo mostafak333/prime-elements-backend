@@ -48,6 +48,14 @@ class Category extends Model
     }
 
     /**
+     * Get the products that belong to this category.
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'category_id');
+    }
+
+    /**
      * Get the title associated with this category.
      */
     public function title()

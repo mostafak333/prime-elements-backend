@@ -69,6 +69,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Contact Us Recipient
+    |--------------------------------------------------------------------------
+    |
+    | The mailbox that receives customer messages sent through the public
+    | "Contact Us" endpoint.
+    |
+    */
+
+    'contactusemail' => env('CONTACT_US_EMAIL', env('MAIL_FROM_ADDRESS', 'support@pmelements.com')),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |
