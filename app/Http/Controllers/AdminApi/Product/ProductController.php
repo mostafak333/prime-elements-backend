@@ -11,6 +11,7 @@ use App\Services\ProductService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -74,11 +75,21 @@ class ProductController extends Controller
 
     public function destroy(Product $product): JsonResponse
     {
-        $this->productService->delete($product);
+        try {
+            $this->productService->delete($product);
 
-        return $this->success(
-            null,
-            'Product deleted successfully.'
-        );
+            return $this->success(
+                null,
+                'Product deleted successfully.'
+            );
+        } catch (ValidationException $e) {
+            $message = collect($e->errors())->flatten()->first()
+                ?? 'Cannot delete this product.';
+
+            return $this->error(
+                $message,
+                422
+            );
+        }
     }
 }

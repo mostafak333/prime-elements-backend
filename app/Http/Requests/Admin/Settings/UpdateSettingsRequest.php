@@ -32,19 +32,37 @@ class UpdateSettingsRequest extends FormRequest
                 'boolean',
             ],
 
-            'terms_conditions' => [
+            'terms_conditions_en' => [
                 'sometimes',
                 'nullable',
                 'string',
             ],
 
-            'privacy_policy' => [
+            'terms_conditions_ar' => [
                 'sometimes',
                 'nullable',
                 'string',
             ],
 
-            'return_exchange_policy' => [
+            'privacy_policy_en' => [
+                'sometimes',
+                'nullable',
+                'string',
+            ],
+
+            'privacy_policy_ar' => [
+                'sometimes',
+                'nullable',
+                'string',
+            ],
+
+            'return_exchange_policy_en' => [
+                'sometimes',
+                'nullable',
+                'string',
+            ],
+
+            'return_exchange_policy_ar' => [
                 'sometimes',
                 'nullable',
                 'string',

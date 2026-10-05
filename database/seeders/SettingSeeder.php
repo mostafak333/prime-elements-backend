@@ -15,8 +15,9 @@ class SettingSeeder extends Seeder
                 'delivery_fee' => 50,
                 'vat_percentage' => 14,
                 'vat_enabled' => true,
-                'privacy_policy' => 'This privacy policy explains how Prime Elements collects, uses, and protects your personal information.',
-                'terms_conditions' => '<div>
+                'privacy_policy_en' => 'This privacy policy explains how Prime Elements collects, uses, and protects your personal information.',
+                'privacy_policy_ar' => 'توضح سياسة الخصوصية هذه كيفية قيام متجر برايم إليمنتس بجمع معلوماتك الشخصية واستخدامها وحمايتها.',
+                'terms_conditions_ar' => '<div>
     <p><span dir="rtl">الشروط والأحكام</span></p>
     <p><span dir="rtl"><strong><span>آخر تحديث</span></strong><strong>: 25&nbsp;</strong><strong><span>أغسطس </span></strong><strong>2026</strong></span></p>
     <p><span dir="rtl"><span>مرحبًا بكم في متجر </span><strong><span>برايم إليمنتس</span></strong><span> الإلكتروني</span></span><span dir="ltr">.</span></p>
@@ -260,7 +261,8 @@ class SettingSeeder extends Seeder
     <p><span dir="rtl"><strong><span>آخر تحديث</span></strong><strong>: 25&nbsp;</strong><strong><span>أغسطس </span></strong><strong>2026</strong></span></p>
     <p>&nbsp;</p>
 </div>',
-                'return_exchange_policy' => '<p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span style="font-family:Arial; font-weight:bold;" dir="rtl">سياسة الاسترجاع والاستبدال والاسترداد</span></p>
+                'terms_conditions_en' => '<h3>Terms &amp; Conditions</h3><p>These terms and conditions govern the use of the Prime Elements store and all purchases made through it. By using the store, creating an account, or placing an order, you confirm that you have read and accepted these terms in the language displayed in the store.</p>',
+                'return_exchange_policy_ar' => '<p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span style="font-family:Arial; font-weight:bold;" dir="rtl">سياسة الاسترجاع والاستبدال والاسترداد</span></p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span dir="rtl"><strong><span style="font-family:Arial;">آخر تحديث</span></strong><strong>: 26&nbsp;</strong><strong><span style="font-family:Arial;">أغسطس </span></strong><strong>2026</strong></span></p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span dir="rtl"><span style="font-family:Arial;">حرصًا من </span><strong><span style="font-family:Arial;">شركة برايم إليمنتس</span></strong><span style="font-family:Arial;"> على حماية حقوق عملائها وتقديم تجربة شراء واضحة وموثوقة، توضح هذه السياسة آلية الاسترجاع والاستبدال واسترداد المبالغ للمنتجات التي يتم شراؤها من خلال متجر برايم إليمنتس، وذلك وفقًا للأنظمة واللوائح المعمول بها في المملكة العربية السعودية</span></span><span dir="ltr">.</span></p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span dir="rtl"><strong><span style="font-family:Arial;">أولًا</span></strong><strong>:&nbsp;</strong><strong><span style="font-family:Arial;">الاسترجاع</span></strong></span></p>
@@ -331,6 +333,7 @@ class SettingSeeder extends Seeder
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span style="font-family:Arial; font-weight:bold;" dir="rtl">شركة برايم إليمنتس</span><br><span dir="rtl"><strong><span style="font-family:Arial;">المملكة العربية السعودية </span></strong><strong>&ndash;&nbsp;</strong><strong><span style="font-family:Arial;">الرياض</span></strong></span><br><span style="font-family:Arial; font-weight:bold;" dir="rtl">رقم السجل التجاري</span>: 7054698936<br><span style="font-family:Arial; font-weight:bold;" dir="rtl">البريد الإلكتروني</span>: <a href="mailto:support@pmelements.com" style="text-decoration:none;"><u><span style="color:#467886;">support@pmelements.com</span></u></a><br><span style="font-family:Arial; font-weight:bold;" dir="rtl">الهاتف</span>: +966 50 880 7708</p>
 <p style="margin-top:0pt; margin-bottom:8pt; text-align:right;"><span dir="rtl"><strong><span style="font-family:Arial;">آخر تحديث</span></strong><strong>: 26&nbsp;</strong><strong><span style="font-family:Arial;">أغسطس </span></strong><strong>2026</strong></span>&nbsp;</p>
 <p style="bottom: 10px; right: 10px; position: absolute;"><br></p>',
+                'return_exchange_policy_en' => '<h3>Return, Exchange &amp; Refund Policy</h3><p>Returns, exchanges, and refunds are handled in accordance with the store policy and the applicable regulations in the Kingdom of Saudi Arabia. Please refer to the full policy in the language displayed in the store or contact our support team.</p>',
                 'updated_by' => 1,
             ]
         );

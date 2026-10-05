@@ -13,6 +13,7 @@ class OrderResource extends JsonResource
             'id' => $this->id,
             'order_number' => $this->order_number,
             'status' => $this->status,
+            'can_cancel' => $this->status === 'pending',
             'payment_status' => $this->payment_status,
             'subtotal' => $this->subtotal,
             'shipping' => $this->shipping,

@@ -20,6 +20,14 @@ class CategoryService
             ->paginate($perPage);
     }
 
+    public function getAllForSelect(array $filters = [])
+    {
+        return Category::query()
+            ->filter($filters)
+            ->orderBy('name_en')
+            ->get(['id', 'parent_id', 'name_en', 'name_ar']);
+    }
+
     public function create(array $data): Category
     {
         $adminId = auth()->guard('api-admin')->id() ?? null;
@@ -61,6 +69,12 @@ class CategoryService
         if ($category->children()->exists()) {
             throw ValidationException::withMessages([
                 'category' => ['Cannot delete a category that has child categories.'],
+            ]);
+        }
+
+        if ($category->products()->exists()) {
+            throw ValidationException::withMessages([
+                'category' => ['Cannot delete a category that has products. Move or deactivate its products first.'],
             ]);
         }
 

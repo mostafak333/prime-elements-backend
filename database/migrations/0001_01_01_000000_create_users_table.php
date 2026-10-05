@@ -22,6 +22,9 @@ return new class extends Migration
             $table->string('phone', 50)->nullable();
             $table->string('avatar')->nullable();
             $table->enum('status', ['active', 'blocked'])->default('active');
+            $table->unsignedBigInteger('token_version')->default(0);
+            $table->boolean('terms_and_conditions_agreed')->default(false);
+            $table->boolean('privacy_policy_agreed')->default(false);
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('street_address')->nullable();

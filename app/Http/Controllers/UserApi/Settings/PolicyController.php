@@ -16,9 +16,12 @@ class PolicyController extends Controller
         $settings = Setting::first() ?? new Setting;
 
         return $this->success([
-            'terms_conditions' => $settings->terms_conditions,
-            'privacy_policy' => $settings->privacy_policy,
-            'return_exchange_policy' => $settings->return_exchange_policy,
+            'terms_conditions_en' => $settings->terms_conditions_en,
+            'terms_conditions_ar' => $settings->terms_conditions_ar,
+            'privacy_policy_en' => $settings->privacy_policy_en,
+            'privacy_policy_ar' => $settings->privacy_policy_ar,
+            'return_exchange_policy_en' => $settings->return_exchange_policy_en,
+            'return_exchange_policy_ar' => $settings->return_exchange_policy_ar,
         ], 'Policies retrieved successfully.');
     }
 }

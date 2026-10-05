@@ -11,6 +11,13 @@ class WishlistService
     {
         $userId = auth()->guard('api-user')->id();
 
+        Wishlist::where('user_id', $userId)
+            ->where(function ($query) {
+                $query->whereDoesntHave('product')
+                    ->orWhereHas('product', fn ($product) => $product->where('status', false));
+            })
+            ->forceDelete();
+
         return Wishlist::with('product.images', 'product.detail')
             ->where('user_id', $userId)
             ->latest()

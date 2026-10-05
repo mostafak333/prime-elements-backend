@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::put('/settings', [SettingsController::class, 'update']);
 
     Route::apiResource('titles', TitleController::class);
+    Route::get('categories/select', [CategoryController::class, 'select']);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('products', ProductController::class);
     Route::apiResource('delivery-methods', DeliveryMethodController::class);

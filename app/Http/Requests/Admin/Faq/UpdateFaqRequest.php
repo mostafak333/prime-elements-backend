@@ -14,8 +14,10 @@ class UpdateFaqRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'question' => ['sometimes', 'required', 'string', 'max:1000'],
-            'answer' => ['sometimes', 'required', 'string'],
+            'question_en' => ['sometimes', 'required', 'string', 'max:1000'],
+            'question_ar' => ['sometimes', 'required', 'string', 'max:1000'],
+            'answer_en' => ['sometimes', 'required', 'string'],
+            'answer_ar' => ['sometimes', 'required', 'string'],
             'is_active' => ['sometimes', 'boolean'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
         ];

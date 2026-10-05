@@ -109,9 +109,12 @@ class PolicyAndAgreementsTest extends TestCase
     public function test_policies_endpoint_returns_policy_contents(): void
     {
         Setting::firstOrCreate([], [
-            'terms_conditions' => 'Terms and conditions content.',
-            'privacy_policy' => 'Privacy policy content.',
-            'return_exchange_policy' => 'Return policy content.',
+            'terms_conditions_en' => 'Terms and conditions content (EN).',
+            'terms_conditions_ar' => 'الشروط والأحكام (AR).',
+            'privacy_policy_en' => 'Privacy policy content (EN).',
+            'privacy_policy_ar' => 'سياسة الخصوصية (AR).',
+            'return_exchange_policy_en' => 'Return policy content (EN).',
+            'return_exchange_policy_ar' => 'سياسة الاسترجاع (AR).',
         ]);
 
         $response = $this->getJson('/api/policies');
@@ -120,9 +123,12 @@ class PolicyAndAgreementsTest extends TestCase
             ->assertJson([
                 'success' => true,
                 'data' => [
-                    'terms_conditions' => 'Terms and conditions content.',
-                    'privacy_policy' => 'Privacy policy content.',
-                    'return_exchange_policy' => 'Return policy content.',
+                    'terms_conditions_en' => 'Terms and conditions content (EN).',
+                    'terms_conditions_ar' => 'الشروط والأحكام (AR).',
+                    'privacy_policy_en' => 'Privacy policy content (EN).',
+                    'privacy_policy_ar' => 'سياسة الخصوصية (AR).',
+                    'return_exchange_policy_en' => 'Return policy content (EN).',
+                    'return_exchange_policy_ar' => 'سياسة الاسترجاع (AR).',
                 ],
             ]);
     }
@@ -135,9 +141,12 @@ class PolicyAndAgreementsTest extends TestCase
             ->assertJson([
                 'success' => true,
                 'data' => [
-                    'terms_conditions' => null,
-                    'privacy_policy' => null,
-                    'return_exchange_policy' => null,
+                    'terms_conditions_en' => null,
+                    'terms_conditions_ar' => null,
+                    'privacy_policy_en' => null,
+                    'privacy_policy_ar' => null,
+                    'return_exchange_policy_en' => null,
+                    'return_exchange_policy_ar' => null,
                 ],
             ]);
     }
@@ -159,17 +168,23 @@ class PolicyAndAgreementsTest extends TestCase
         $token = auth()->guard('api-admin')->login($admin);
 
         $response = $this->putJson('/api/admin/settings', [
-            'terms_conditions' => 'New terms.',
-            'privacy_policy' => 'New privacy.',
-            'return_exchange_policy' => 'New return policy.',
+            'terms_conditions_en' => 'New terms.',
+            'terms_conditions_ar' => 'شروط جديدة.',
+            'privacy_policy_en' => 'New privacy.',
+            'privacy_policy_ar' => 'خصوصية جديدة.',
+            'return_exchange_policy_en' => 'New return policy.',
+            'return_exchange_policy_ar' => 'سياسة استرجاع جديدة.',
         ], $this->authHeaders($token));
 
         $response->assertOk();
 
         $setting = Setting::first();
-        $this->assertSame('New terms.', $setting->terms_conditions);
-        $this->assertSame('New privacy.', $setting->privacy_policy);
-        $this->assertSame('New return policy.', $setting->return_exchange_policy);
+        $this->assertSame('New terms.', $setting->terms_conditions_en);
+        $this->assertSame('شروط جديدة.', $setting->terms_conditions_ar);
+        $this->assertSame('New privacy.', $setting->privacy_policy_en);
+        $this->assertSame('خصوصية جديدة.', $setting->privacy_policy_ar);
+        $this->assertSame('New return policy.', $setting->return_exchange_policy_en);
+        $this->assertSame('سياسة استرجاع جديدة.', $setting->return_exchange_policy_ar);
     }
 
     public function test_long_styled_policy_content_is_saved_and_retrieved_unchanged(): void
@@ -188,18 +203,21 @@ class PolicyAndAgreementsTest extends TestCase
         $token = auth()->guard('api-admin')->login($admin);
 
         $response = $this->putJson('/api/admin/settings', [
-            'terms_conditions' => $longHtml,
+            'terms_conditions_en' => $longHtml,
+            'terms_conditions_ar' => $longHtml,
         ], $this->authHeaders($token));
 
         $response->assertOk();
 
         $setting = Setting::first();
-        $this->assertGreaterThan(3000, str_word_count($setting->terms_conditions));
-        $this->assertSame($longHtml, $setting->terms_conditions);
+        $this->assertGreaterThan(3000, str_word_count($setting->terms_conditions_en));
+        $this->assertSame($longHtml, $setting->terms_conditions_en);
+        $this->assertSame($longHtml, $setting->terms_conditions_ar);
 
         $public = $this->getJson('/api/policies');
         $public->assertOk();
-        $this->assertSame($longHtml, $public->json('data.terms_conditions'));
+        $this->assertSame($longHtml, $public->json('data.terms_conditions_en'));
+        $this->assertSame($longHtml, $public->json('data.terms_conditions_ar'));
     }
 
     // =========================================================================

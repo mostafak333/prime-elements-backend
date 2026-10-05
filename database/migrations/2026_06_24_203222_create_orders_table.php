@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('payment_status');
             $table->boolean('terms_and_condition_agreed')->default(false);
+            $table->boolean('privacy_policy_agreed')->default(false);
             $table->date('estimated_delivery_date')->nullable();
             $table->string('user_full_name');
             $table->string('email');

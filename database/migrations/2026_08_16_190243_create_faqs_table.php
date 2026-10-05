@@ -10,8 +10,10 @@ return new class extends Migration
     {
         Schema::create('faqs', function (Blueprint $table) {
             $table->id();
-            $table->text('question');
-            $table->text('answer');
+            $table->text('question_en');
+            $table->text('question_ar')->nullable();
+            $table->text('answer_en');
+            $table->text('answer_ar')->nullable();
             $table->boolean('is_active')->default(true);
             $table->integer('sort_order')->default(0);
             $table->timestamps();
