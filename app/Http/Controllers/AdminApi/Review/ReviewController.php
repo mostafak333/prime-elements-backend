@@ -37,7 +37,7 @@ class ReviewController extends Controller
                 'current_page' => $reviews->currentPage(),
                 'last_page' => $reviews->lastPage(),
             ],
-        ], 'Reviews retrieved successfully.');
+        ], 'messages.review.retrieved');
     }
 
     public function show(int $id): JsonResponse
@@ -46,7 +46,7 @@ class ReviewController extends Controller
 
         return $this->success(
             new AdminReviewResource($review),
-            'Review retrieved successfully.'
+            'messages.review.retrieved_single'
         );
     }
 
@@ -56,7 +56,7 @@ class ReviewController extends Controller
 
         return $this->success(
             new AdminReviewResource($updatedReview),
-            'Review status updated successfully.'
+            'messages.review.status_updated'
         );
     }
 }

@@ -43,7 +43,7 @@ class CategoryController extends Controller
             ],
         ];
 
-        return $this->success($responseData, 'Categories retrieved successfully.', 200);
+        return $this->success($responseData, 'messages.category.retrieved', 200);
     }
 
     public function select(FilterCategoryRequest $request): JsonResponse
@@ -52,7 +52,7 @@ class CategoryController extends Controller
             'categories' => CategorySelectResource::collection(
                 $this->categoryService->getAllForSelect($request->validated())
             ),
-        ], 'Categories retrieved successfully.', 200);
+        ], 'messages.category.retrieved', 200);
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse
@@ -61,7 +61,7 @@ class CategoryController extends Controller
 
         return $this->success(
             new CategoryResource($category),
-            'Category created successfully.',
+            'messages.category.created',
             201
         );
     }
@@ -70,7 +70,7 @@ class CategoryController extends Controller
     {
         return $this->success(
             new CategoryResource($category),
-            'Category retrieved successfully.',
+            'messages.category.retrieved_single',
             200
         );
     }
@@ -81,7 +81,7 @@ class CategoryController extends Controller
 
         return $this->success(
             new CategoryResource($updatedCategory),
-            'Category updated successfully.',
+            'messages.category.updated',
             200
         );
     }
@@ -94,12 +94,12 @@ class CategoryController extends Controller
 
             return $this->success(
                 null,
-                'Category deleted successfully.',
+                'messages.category.deleted',
                 200
             );
         } catch (ValidationException $e) {
             $message = collect($e->errors())->flatten()->first()
-                ?? 'Cannot delete this category.';
+                ?? __('messages.category.cannot_delete');
 
             return $this->error(
                 $message,

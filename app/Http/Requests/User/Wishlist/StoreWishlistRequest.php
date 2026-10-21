@@ -31,7 +31,7 @@ class StoreWishlistRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'product_id.unique' => 'This product is already in your wishlist.',
+            'product_id.unique' => __('validation.custom.product_id.unique'),
         ];
     }
 }

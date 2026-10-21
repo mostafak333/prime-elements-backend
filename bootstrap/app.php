@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureUserIsActive;
 use App\Http\Middleware\HandleFormDataOnNonPostRequests;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -34,6 +35,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'user.active' => EnsureUserIsActive::class,
         ]);
+
+        $middleware->append(SetLocale::class);
 
         $middleware->append(HandleFormDataOnNonPostRequests::class);
 

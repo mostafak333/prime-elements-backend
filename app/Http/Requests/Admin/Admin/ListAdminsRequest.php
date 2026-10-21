@@ -38,10 +38,10 @@ class ListAdminsRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'per_page.integer' => 'Per page must be a number.',
-            'per_page.min' => 'Per page must be at least 1.',
-            'per_page.max' => 'Per page cannot exceed 100.',
-            'status.in' => 'Status must be one of: active, inactive, pending, suspended.',
+            'per_page.integer' => __('validation.custom.per_page.integer'),
+            'per_page.min' => __('validation.custom.per_page.min'),
+            'per_page.max' => __('validation.custom.per_page.max'),
+            'status.in' => __('validation.custom.status.in'),
         ];
     }
 

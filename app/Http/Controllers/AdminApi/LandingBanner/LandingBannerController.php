@@ -36,7 +36,7 @@ class LandingBannerController extends Controller
                 'current_page' => $banners->currentPage(),
                 'last_page' => $banners->lastPage(),
             ],
-        ], 'Banners retrieved successfully.');
+        ], 'messages.banner.retrieved');
     }
 
     public function store(CreateLandingBannerRequest $request): JsonResponse
@@ -45,7 +45,7 @@ class LandingBannerController extends Controller
 
         return $this->success(
             new AdminLandingBannerResource($banner),
-            'Banner created successfully.',
+            'messages.banner.created',
             201
         );
     }
@@ -54,7 +54,7 @@ class LandingBannerController extends Controller
     {
         return $this->success(
             new AdminLandingBannerResource($landing_banner),
-            'Banner retrieved successfully.'
+            'messages.banner.retrieved_single'
         );
     }
 
@@ -64,7 +64,7 @@ class LandingBannerController extends Controller
 
         return $this->success(
             new AdminLandingBannerResource($banner),
-            'Banner updated successfully.'
+            'messages.banner.updated'
         );
     }
 
@@ -72,6 +72,6 @@ class LandingBannerController extends Controller
     {
         $this->bannerService->delete($landing_banner);
 
-        return $this->success(null, 'Banner deleted successfully.');
+        return $this->success(null, 'messages.banner.deleted');
     }
 }

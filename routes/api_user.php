@@ -87,5 +87,5 @@ Route::group(['middleware' => ['auth:api-user', 'user.active']], function () {
 });
 
 Route::get('/ebook/download/{token}', function () {
-    return response()->json(['message' => 'Invalid or expired download link.'], 404);
+    return response()->json(['message' => __('messages.ebook.invalid_download_link')], 404);
 })->name('ebook.download');

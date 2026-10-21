@@ -35,12 +35,12 @@ class StoreOrderRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'terms_and_condition_agreed.accepted' => 'You must agree to the terms and conditions.',
-            'terms_and_condition_agreed.required' => 'You must agree to the terms and conditions.',
-            'privacy_policy_agreed.accepted' => 'You must agree to the privacy policy.',
-            'privacy_policy_agreed.required' => 'You must agree to the privacy policy.',
-            'address.full_name.required' => 'Full name is required.',
-            'address.phone.required' => 'Phone number is required.',
+            'terms_and_condition_agreed.accepted' => __('validation.custom.terms_and_condition_agreed.accepted'),
+            'terms_and_condition_agreed.required' => __('validation.custom.terms_and_condition_agreed.required'),
+            'privacy_policy_agreed.accepted' => __('validation.custom.privacy_policy_agreed.accepted'),
+            'privacy_policy_agreed.required' => __('validation.custom.privacy_policy_agreed.required'),
+            'address.full_name.required' => __('validation.custom.address.full_name.required'),
+            'address.phone.required' => __('validation.custom.address.phone.required'),
         ];
     }
 }

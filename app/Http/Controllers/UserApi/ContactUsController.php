@@ -27,6 +27,6 @@ class ContactUsController extends Controller
             )
         );
 
-        return $this->success(null, 'Your message has been sent successfully.');
+        return $this->success(null, 'messages.contact.message_sent');
     }
 }

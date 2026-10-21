@@ -58,7 +58,7 @@ class TitleService
     public function delete(Title $title): void
     {
         if ($title->categories()->exists()) {
-            throw new \Exception('Cannot delete title because it is linked to categories.');
+            throw new \Exception(__('messages.title.cannot_delete'));
         }
 
         $title->delete();

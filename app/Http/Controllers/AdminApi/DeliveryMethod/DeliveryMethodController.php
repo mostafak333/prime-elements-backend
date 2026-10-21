@@ -37,7 +37,7 @@ class DeliveryMethodController extends Controller
                 'per_page' => $paginatedData->perPage(),
                 'total' => $paginatedData->total(),
             ],
-        ], 'Delivery methods retrieved successfully.');
+        ], 'messages.delivery_method.retrieved');
     }
 
     public function store(StoreDeliveryMethodRequest $request): JsonResponse
@@ -46,7 +46,7 @@ class DeliveryMethodController extends Controller
 
         return $this->success(
             new DeliveryMethodResource($deliveryMethod),
-            'Delivery method created successfully.',
+            'messages.delivery_method.created',
             201
         );
     }
@@ -55,7 +55,7 @@ class DeliveryMethodController extends Controller
     {
         return $this->success(
             new DeliveryMethodResource($deliveryMethod),
-            'Delivery method retrieved successfully.'
+            'messages.delivery_method.retrieved_single'
         );
     }
 
@@ -71,7 +71,7 @@ class DeliveryMethodController extends Controller
 
         return $this->success(
             new DeliveryMethodResource($deliveryMethod),
-            'Delivery method updated successfully.'
+            'messages.delivery_method.updated'
         );
     }
 
@@ -81,7 +81,7 @@ class DeliveryMethodController extends Controller
 
         return $this->success(
             null,
-            'Delivery method deleted successfully.'
+            'messages.delivery_method.deleted'
         );
     }
 }

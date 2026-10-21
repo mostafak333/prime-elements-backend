@@ -34,20 +34,20 @@ class OrderController extends Controller
                 'per_page' => $orders->perPage(),
                 'total' => $orders->total(),
             ],
-        ], 'Orders retrieved successfully.');
+        ], 'messages.order.retrieved');
     }
 
     public function show(Order $order): JsonResponse
     {
         if ($order->user_id !== auth()->guard('api-user')->id()) {
-            return $this->error('Order not found.', 404);
+            return $this->error('messages.order.not_found', 404);
         }
 
         $order->load(['orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail']);
 
         return $this->success(
             new OrderResource($order),
-            'Order retrieved successfully.'
+            'messages.order.retrieved_single'
         );
     }
 
@@ -56,14 +56,14 @@ class OrderController extends Controller
         try {
             $cancelled = $this->orderService->cancelOrderForUser($order);
         } catch (ValidationException $e) {
-            $message = collect($e->errors())->flatten()->first() ?? 'Cannot cancel this order.';
+            $message = collect($e->errors())->flatten()->first() ?? __('messages.order.cannot_cancel');
 
             return $this->error($message, $e->status ?? 422);
         }
 
         return $this->success(
             new OrderResource($cancelled),
-            'Order cancelled successfully.'
+            'messages.order.cancelled'
         );
     }
 
@@ -73,7 +73,7 @@ class OrderController extends Controller
 
         return $this->success(
             new OrderResource($order),
-            'Order placed successfully.',
+            'messages.order.placed',
             201
         );
     }

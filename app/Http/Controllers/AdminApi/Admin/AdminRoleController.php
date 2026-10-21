@@ -20,7 +20,7 @@ class AdminRoleController extends Controller
     {
         return $this->success(
             RoleResource::collection($admin->roles),
-            'Admin roles retrieved successfully.'
+            'messages.admin_role.retrieved'
         );
     }
 
@@ -37,7 +37,7 @@ class AdminRoleController extends Controller
 
         return $this->success(
             RoleResource::collection($admin->fresh()->roles),
-            'Admin roles updated successfully.'
+            'messages.admin_role.updated'
         );
     }
 
@@ -50,13 +50,13 @@ class AdminRoleController extends Controller
 
         if (! $roleModel) {
             throw ValidationException::withMessages([
-                'role' => ['The specified role does not exist.'],
+                'role' => [__('messages.admin_role.role_not_exists')],
             ]);
         }
 
         if (! $admin->hasRole($role)) {
             throw ValidationException::withMessages([
-                'role' => ['The admin does not have this role.'],
+                'role' => [__('messages.admin_role.role_not_assigned')],
             ]);
         }
 
@@ -64,7 +64,7 @@ class AdminRoleController extends Controller
 
         return $this->success(
             RoleResource::collection($admin->fresh()->roles),
-            'Role removed from admin successfully.'
+            'messages.admin_role.role_removed'
         );
     }
 }

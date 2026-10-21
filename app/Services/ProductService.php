@@ -356,7 +356,7 @@ class ProductService
     {
         if ($product->orderItems()->exists()) {
             throw ValidationException::withMessages([
-                'product' => ['Cannot delete a product that is referenced by orders. Deactivate it instead.'],
+                'product' => [__('messages.product.referenced_by_orders')],
             ]);
         }
 

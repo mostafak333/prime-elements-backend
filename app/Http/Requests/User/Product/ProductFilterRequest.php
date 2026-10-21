@@ -39,12 +39,12 @@ class ProductFilterRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'categories.*.exists' => 'One or more selected categories are invalid.',
-            'formats.*.in' => 'Invalid format selected. Must be printed, ebook, or both.',
-            'min_price.min' => 'Minimum price must be at least 0.',
-            'max_price.min' => 'Maximum price must be at least 0.',
-            'max_price.gte' => 'Maximum price must be greater than or equal to minimum price.',
-            'availability.in' => 'Invalid availability option.',
+            'categories.*.exists' => __('validation.custom.categories.exists'),
+            'formats.*.in' => __('validation.custom.formats.in'),
+            'min_price.min' => __('validation.custom.min_price.min'),
+            'max_price.min' => __('validation.custom.max_price.min'),
+            'max_price.gte' => __('validation.custom.max_price.gte'),
+            'availability.in' => __('validation.custom.availability.in'),
         ];
     }
 }

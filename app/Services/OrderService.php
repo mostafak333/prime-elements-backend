@@ -78,7 +78,7 @@ class OrderService
 
         if (! in_array($new, $flow[$current] ?? [])) {
             throw ValidationException::withMessages([
-                'status' => ["Cannot change status from \"{$current}\" to \"{$new}\"."],
+                'status' => [__('messages.order.invalid_status_transition', ['from' => $current, 'to' => $new])],
             ]);
         }
     }
@@ -110,13 +110,13 @@ class OrderService
 
         if ($order->user_id !== auth()->guard('api-user')->id()) {
             throw ValidationException::withMessages([
-                'order' => ['Order not found.'],
+                'order' => [__('messages.order.not_found')],
             ]);
         }
 
         if ($order->status !== 'pending') {
             throw ValidationException::withMessages([
-                'status' => ["Cannot cancel this order because its status is \"{$order->status}\". Only pending orders can be cancelled."],
+                'status' => [__('messages.order.cannot_cancel_status', ['status' => $order->status])],
             ]);
         }
 
@@ -136,7 +136,7 @@ class OrderService
 
         if ($cartItems->isEmpty()) {
             throw ValidationException::withMessages([
-                'cart' => ['Your cart is empty. Add items before placing an order.'],
+                'cart' => [__('messages.order.cart_empty')],
             ]);
         }
 
@@ -219,7 +219,7 @@ class OrderService
         $user = auth()->guard('api-user')->user();
 
         if (! $user || $user->status === 'blocked') {
-            throw new HttpException(403, 'Your account has been blocked. You cannot perform order actions.');
+            throw new HttpException(403, __('messages.order.account_blocked'));
         }
     }
 
@@ -228,7 +228,7 @@ class OrderService
         foreach ($cartItems as $item) {
             if ($item->product->stock < $item->quantity) {
                 throw ValidationException::withMessages([
-                    'cart' => ["Insufficient stock for \"{$item->product->name_en}\". Available: {$item->product->stock}, requested: {$item->quantity}."],
+                    'cart' => [__('messages.order.insufficient_stock', ['product' => $item->product->name_en, 'available' => $item->product->stock, 'requested' => $item->quantity])],
                 ]);
             }
         }

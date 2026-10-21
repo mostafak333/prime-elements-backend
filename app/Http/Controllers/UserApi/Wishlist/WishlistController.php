@@ -33,7 +33,7 @@ class WishlistController extends Controller
                 'per_page' => $wishlistItems->perPage(),
                 'total' => $wishlistItems->total(),
             ],
-        ], 'Wishlist retrieved successfully.');
+        ], 'messages.wishlist.retrieved');
     }
 
     public function store(StoreWishlistRequest $request): JsonResponse
@@ -42,7 +42,7 @@ class WishlistController extends Controller
 
         return $this->success(
             new WishlistResource($wishlistItem->load('product.images', 'product.detail')),
-            'Product added to wishlist successfully.',
+            'messages.wishlist.item_added',
             201
         );
     }
@@ -53,7 +53,7 @@ class WishlistController extends Controller
 
         return $this->success(
             null,
-            'Product removed from wishlist successfully.'
+            'messages.wishlist.item_removed'
         );
     }
 }

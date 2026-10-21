@@ -37,7 +37,7 @@ class AdminOrderController extends Controller
                 'current_page' => $orders->currentPage(),
                 'last_page' => $orders->lastPage(),
             ],
-        ], 'Orders retrieved successfully.');
+        ], 'messages.order.retrieved');
     }
 
     public function show(int $id): JsonResponse
@@ -46,7 +46,7 @@ class AdminOrderController extends Controller
 
         return $this->success(
             new AdminOrderResource($order),
-            'Order retrieved successfully.'
+            'messages.order.retrieved_single'
         );
     }
 
@@ -55,7 +55,7 @@ class AdminOrderController extends Controller
         $order = Order::find($order);
 
         if (! $order) {
-            return $this->error('Order not found.', 404);
+            return $this->error('messages.order.not_found', 404);
         }
 
         $updatedOrder = $this->orderService->updateStatus(
@@ -65,7 +65,7 @@ class AdminOrderController extends Controller
 
         return $this->success(
             new AdminOrderResource($updatedOrder),
-            'Order status updated successfully.'
+            'messages.order.status_updated'
         );
     }
 }

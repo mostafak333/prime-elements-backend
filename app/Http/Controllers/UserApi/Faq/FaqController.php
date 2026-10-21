@@ -22,6 +22,6 @@ class FaqController extends Controller
 
         return $this->success([
             'faqs' => FaqResource::collection($faqs),
-        ], 'FAQs retrieved successfully.');
+        ], 'messages.faq.retrieved');
     }
 }

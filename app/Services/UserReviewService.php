@@ -17,7 +17,7 @@ class UserReviewService
 
         if (! $this->eligibilityService->canReview($user, $data['product_id'])) {
             throw ValidationException::withMessages([
-                'product_id' => ['You can review this product after completing your order.'],
+                'product_id' => [__('messages.review.not_eligible')],
             ]);
         }
 

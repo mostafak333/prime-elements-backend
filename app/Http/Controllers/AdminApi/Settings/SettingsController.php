@@ -23,7 +23,7 @@ class SettingsController extends Controller
 
         return $this->success(
             new SettingsResource($settings),
-            'Settings retrieved successfully.'
+            'messages.settings.retrieved'
         );
     }
 
@@ -35,7 +35,7 @@ class SettingsController extends Controller
 
         return $this->success(
             new SettingsResource($settings),
-            'Settings updated successfully.'
+            'messages.settings.updated'
         );
     }
 }

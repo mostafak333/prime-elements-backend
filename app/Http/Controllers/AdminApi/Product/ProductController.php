@@ -37,7 +37,7 @@ class ProductController extends Controller
                 'per_page' => $products->perPage(),
                 'total' => $products->total(),
             ],
-        ], 'Products retrieved successfully.');
+        ], 'messages.product.retrieved');
     }
 
     public function store(StoreProductRequest $request): JsonResponse
@@ -46,7 +46,7 @@ class ProductController extends Controller
 
         return $this->success(
             new ProductResource($product),
-            'Product created successfully.',
+            'messages.product.created',
             201
         );
     }
@@ -59,7 +59,7 @@ class ProductController extends Controller
 
         return $this->success(
             new ProductResource($product),
-            'Product retrieved successfully.'
+            'messages.product.retrieved_single'
         );
     }
 
@@ -69,7 +69,7 @@ class ProductController extends Controller
 
         return $this->success(
             new ProductResource($product),
-            'Product updated successfully.'
+            'messages.product.updated'
         );
     }
 
@@ -80,11 +80,11 @@ class ProductController extends Controller
 
             return $this->success(
                 null,
-                'Product deleted successfully.'
+                'messages.product.deleted'
             );
         } catch (ValidationException $e) {
             $message = collect($e->errors())->flatten()->first()
-                ?? 'Cannot delete this product.';
+                ?? __('messages.product.cannot_delete');
 
             return $this->error(
                 $message,

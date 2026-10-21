@@ -40,7 +40,7 @@ class UserController extends Controller
                 'current_page' => $users->currentPage(),
                 'last_page' => $users->lastPage(),
             ],
-        ], 'Users retrieved successfully.');
+        ], 'messages.user.retrieved');
     }
 
     public function show(int $id): JsonResponse
@@ -49,7 +49,7 @@ class UserController extends Controller
 
         return $this->success(
             new AdminUserResource($user),
-            'User retrieved successfully.'
+            'messages.user.retrieved_single'
         );
     }
 
@@ -58,14 +58,14 @@ class UserController extends Controller
         $user = User::find($userId);
 
         if (! $user) {
-            return $this->error('User not found.', 404);
+            return $this->error('messages.user.not_found', 404);
         }
 
         $updatedUser = $this->userService->updateStatus($user, $request->input('status'));
 
         return $this->success(
             new AdminUserResource($updatedUser),
-            'User status updated successfully.'
+            'messages.user.status_updated'
         );
     }
 }

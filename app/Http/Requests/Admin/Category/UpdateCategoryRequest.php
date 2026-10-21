@@ -45,11 +45,11 @@ class UpdateCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'parent_id.different' => 'A category cannot be its own parent.',
-            'slug.unique' => 'This slug is already taken.',
-            'parent_id.exists' => 'The selected parent category does not exist.',
-            'title_id.required' => 'The title field is required.',
-            'title_id.exists' => 'The selected title does not exist.',
+            'parent_id.different' => __('validation.custom.parent_id.different'),
+            'slug.unique' => __('validation.custom.slug.unique'),
+            'parent_id.exists' => __('validation.custom.parent_id.exists'),
+            'title_id.required' => __('validation.custom.title_id.required'),
+            'title_id.exists' => __('validation.custom.title_id.exists'),
         ];
     }
 }

@@ -53,7 +53,7 @@ class UserAuthService
 
         if (! $user) {
             throw ValidationException::withMessages([
-                'token' => ['The verification token is invalid or has expired.'],
+                'token' => [__('messages.auth.verification_token_invalid')],
             ]);
         }
 
@@ -93,7 +93,7 @@ class UserAuthService
 
         if (! $user) {
             throw ValidationException::withMessages([
-                'token' => ['The password reset token is invalid or has expired.'],
+                'token' => [__('messages.auth.password_reset_token_invalid')],
             ]);
         }
 
@@ -112,7 +112,7 @@ class UserAuthService
 
         if (! Hash::check($data['current_password'], $user->password)) {
             throw ValidationException::withMessages([
-                'current_password' => ['The current password is incorrect.'],
+                'current_password' => [__('messages.auth.current_password_incorrect')],
             ]);
         }
 

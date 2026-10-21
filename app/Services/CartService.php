@@ -124,7 +124,7 @@ class CartService
         $userId = auth()->guard('api-user')->id();
 
         if ($cartItem->user_id !== $userId) {
-            abort(403, 'This cart item does not belong to you.');
+            abort(403, __('messages.cart.item_not_owned'));
         }
     }
 }

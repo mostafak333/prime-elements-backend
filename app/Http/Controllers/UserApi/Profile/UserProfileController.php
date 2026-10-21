@@ -23,7 +23,7 @@ class UserProfileController extends Controller
 
         return $this->success([
             'user' => new UserResource($user),
-        ], 'Profile retrieved successfully.');
+        ], 'messages.profile.retrieved');
     }
 
     public function update(UpdateProfileRequest $request): JsonResponse
@@ -31,8 +31,8 @@ class UserProfileController extends Controller
         $user = $this->userProfileService->updateProfile($request->validated());
 
         return $this->success([
-            'message' => 'Profile updated successfully',
+            'message' => __('messages.profile.updated'),
             'user' => new UserResource($user),
-        ], 'Profile updated successfully.');
+        ], 'messages.profile.updated');
     }
 }
