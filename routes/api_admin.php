@@ -105,10 +105,21 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderInvoiceController::class, 'download'])
+        ->name('admin.orders.invoice.download');
+    Route::get('/orders/{order}/invoice/view', [\App\Http\Controllers\OrderInvoiceController::class, 'view'])
+        ->name('admin.orders.invoice.view');
 
     // =========================================================================
     // FAQ MANAGEMENT
     // =========================================================================
     Route::apiResource('faqs', FaqController::class);
     Route::put('/faqs/{faq}/status', [FaqController::class, 'updateStatus'])->name('faqs.update-status');
+
+    // =========================================================================
+    // EBOOK ACCESS CODES
+    // =========================================================================
+    Route::get('/products/{product}/access-codes', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'index'])->name('products.access-codes.index');
+    Route::post('/products/{product}/access-codes', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'store'])->name('products.access-codes.store');
+    Route::delete('/access-codes/{ebookAccessCode}', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'destroy'])->name('access-codes.destroy');
 });

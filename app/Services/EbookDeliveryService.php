@@ -7,14 +7,12 @@ use App\Mail\EbookDeliveryMail;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 
 class EbookDeliveryService
 {
     public function deliverEbooks(Order $order): void
     {
-        $ebookItems = $order->orderItems()->whereHas('product', function ($q) {
+        $ebookItems = $order->orderItems()->with('product')->whereHas('product', function ($q) {
             $q->where('is_e_copy', true);
         })->get();
 
@@ -22,37 +20,40 @@ class EbookDeliveryService
             return;
         }
 
+        $order->load('user', 'orderEbookCodes.ebookAccessCode');
+
         foreach ($ebookItems as $item) {
-            $this->attachDownload($item, $order->user);
+            $this->sendDeliveryEmail($item, $order->user, $order);
         }
 
-        $order->update(['status' => 'delivered']);
+        // Do not mark as delivered just because email sent per requirement; status remains as set by admin confirmation flow
     }
 
-    private function attachDownload(OrderItem $item, User $user): void
+    private function sendDeliveryEmail(OrderItem $item, User $user, Order $order): void
     {
-        $token = Str::random(64);
-        $expireAt = now()->addDays(7);
+        $codes = [];
+        foreach ($order->orderEbookCodes as $oec) {
+            if ($oec->order_item_id == $item->id && $oec->ebookAccessCode) {
+                $codes[] = $oec->ebookAccessCode->code;
+            }
+        }
+        if (empty($codes)) {
+            // Fallback: get codes assigned to this order item
+            $codes = \App\Models\EbookAccessCode::where('order_id', $order->id)
+                ->where('order_item_id', $item->id)
+                ->pluck('code')
+                ->toArray();
+        }
 
-        $downloadUrl = URL::temporarySignedRoute(
-            'ebook.download',
-            $expireAt,
-            ['token' => $token]
-        );
-
-        $item->update([
-            'download_token' => $token,
-            'download_url' => $downloadUrl,
-            'download_expire_at' => $expireAt,
-        ]);
+        $ebookUrl = $item->product->ebook_url;
 
         SendEmailJob::dispatch(
             $user->email,
             new EbookDeliveryMail(
                 $user,
                 $item->product->name_en,
-                $downloadUrl,
-                $expireAt->format('Y-m-d H:i:s')
+                $ebookUrl,
+                $codes
             )
         );
     }

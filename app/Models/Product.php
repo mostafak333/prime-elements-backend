@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ProductFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected static function newFactory()
+    {
+        return ProductFactory::new();
+    }
 
     protected $fillable = [
         'category_id',
@@ -26,6 +32,7 @@ class Product extends Model
         'is_new_arrival',
         'is_best_seller',
         'is_e_copy',
+        'ebook_url',
         'publisher',
         'created_by',
         'updated_by',
@@ -180,6 +187,11 @@ class Product extends Model
     public function scopeECopy(Builder $query)
     {
         return $query->where('is_e_copy', true);
+    }
+
+    public function ebookAccessCodes()
+    {
+        return $this->hasMany(EbookAccessCode::class);
     }
 
     /**

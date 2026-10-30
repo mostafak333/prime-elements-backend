@@ -82,6 +82,10 @@ Route::group(['middleware' => ['auth:api-user', 'user.active']], function () {
     Route::post('orders', [OrderController::class, 'store']);
     Route::get('orders/{order}', [OrderController::class, 'show']);
     Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel']);
+    Route::get('orders/{order}/invoice', [\App\Http\Controllers\OrderInvoiceController::class, 'download'])
+        ->name('orders.invoice.download');
+    Route::get('orders/{order}/invoice/view', [\App\Http\Controllers\OrderInvoiceController::class, 'view'])
+        ->name('orders.invoice.view');
 
     Route::post('reviews', [UserReviewController::class, 'store']);
 });

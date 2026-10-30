@@ -27,7 +27,7 @@ class ProductResource extends JsonResource
             'has_offer' => $this->has_offer,
             'discount_start_at' => $this->discount_start_at?->toDateTimeString(),
             'discount_end_at' => $this->discount_end_at?->toDateTimeString(),
-            'stock' => $this->stock,
+            'stock' => $this->is_e_copy ? ($this->ebookAccessCodes()->whereNull('used_at')->count()) : $this->stock,
             'is_new_arrival' => $this->is_new_arrival,
             'is_best_seller' => $this->is_best_seller,
             'is_e_copy' => $this->is_e_copy,

@@ -80,5 +80,19 @@ return [
         'product_id' => [
             'unique' => 'This product is already in your wishlist.',
         ],
+
+        'ebook_url' => [
+            'required' => 'The ebook URL is required for e-books.',
+            'url' => 'The ebook URL must be a valid URL.',
+        ],
+
+        'codes' => [
+            'required' => 'At least one access code is required.',
+            'array' => 'Access codes must be provided as an array.',
+        ],
+
+        'codes.*' => [
+            'required' => 'Each access code is required.',
+        ],
     ],
 ];

@@ -212,6 +212,7 @@ class ProductService
             $adminId = auth()->guard('api-admin')->id() ?? null;
 
             // 1. Create product
+            $isEbook = $data['is_e_copy'] ?? false;
             $product = Product::create([
                 'category_id' => $data['category_id'],
                 'name_en' => $data['name_en'],
@@ -222,11 +223,12 @@ class ProductService
                 'discount_percentage' => $data['discount_percentage'] ?? 0,
                 'discount_start_at' => $data['discount_start_at'] ?? null,
                 'discount_end_at' => $data['discount_end_at'] ?? null,
-                'stock' => $data['stock'],
+                'stock' => $isEbook ? 0 : ($data['stock'] ?? 0),
                 'status' => $data['status'] ?? true,
                 'is_new_arrival' => $data['is_new_arrival'] ?? false,
                 'is_best_seller' => $data['is_best_seller'] ?? false,
-                'is_e_copy' => $data['is_e_copy'] ?? false,
+                'is_e_copy' => $isEbook,
+                'ebook_url' => $data['ebook_url'] ?? null,
                 'publisher' => $data['publisher'] ?? null,
                 'created_by' => $adminId,
                 'updated_by' => $adminId,
@@ -273,6 +275,7 @@ class ProductService
             $adminId = auth()->guard('api-admin')->id() ?? null;
 
             // 1. Update product core fields
+            $isEbook = array_key_exists('is_e_copy', $data) ? (bool)$data['is_e_copy'] : $product->is_e_copy;
             $product->update([
                 'category_id' => $data['category_id'] ?? $product->category_id,
                 'name_en' => $data['name_en'] ?? $product->name_en,
@@ -283,11 +286,12 @@ class ProductService
                 'discount_percentage' => $data['discount_percentage'] ?? $product->getRawOriginal('discount_percentage'),
                 'discount_start_at' => $data['discount_start_at'] ?? $product->discount_start_at,
                 'discount_end_at' => $data['discount_end_at'] ?? $product->discount_end_at,
-                'stock' => $data['stock'] ?? $product->stock,
+                'stock' => $isEbook ? 0 : (array_key_exists('stock', $data) && $data['stock'] !== null ? $data['stock'] : $product->stock),
                 'status' => $data['status'] ?? $product->status,
                 'is_new_arrival' => $data['is_new_arrival'] ?? $product->is_new_arrival,
                 'is_best_seller' => $data['is_best_seller'] ?? $product->is_best_seller,
-                'is_e_copy' => $data['is_e_copy'] ?? $product->is_e_copy,
+                'is_e_copy' => $isEbook,
+                'ebook_url' => array_key_exists('ebook_url', $data) ? $data['ebook_url'] : $product->ebook_url,
                 'publisher' => $data['publisher'] ?? $product->publisher,
                 'updated_by' => $adminId,
             ]);

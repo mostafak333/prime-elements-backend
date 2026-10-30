@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use Database\Factories\AdminFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Permission\Traits\HasRoles;
@@ -25,7 +27,12 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 #[Hidden(['password', 'remember_token', 'invitation_token', 'password_reset_token'])]
 class Admin extends Authenticatable implements JWTSubject
 {
-    use HasRoles, SoftDeletes;
+    use HasFactory, HasRoles, SoftDeletes;
+
+    protected static function newFactory()
+    {
+        return AdminFactory::new();
+    }
 
     public function getJWTIdentifier()
     {

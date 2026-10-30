@@ -16,14 +16,14 @@ class EbookDeliveryMail extends Mailable
     public function __construct(
         public User $user,
         public string $productName,
-        public string $downloadUrl,
-        public string $expiresAt,
+        public ?string $ebookUrl = null,
+        public array $accessCodes = [],
     ) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Ebook is Ready for Download',
+            subject: 'Your Ebook Access Details',
         );
     }
 

@@ -28,13 +28,36 @@ class CartService
     public function add(array $data): CartItem
     {
         $userId = auth()->guard('api-user')->id();
+        $product = \App\Models\Product::find($data['product_id']);
+        if (! $product) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'product_id' => [__('messages.product.not_found')],
+            ]);
+        }
+        $quantity = (int) ($data['quantity'] ?? 1);
+        if ($product->is_e_copy) {
+            $available = app(\App\Services\EbookAccessCodeService::class)->getAvailableCount($product);
+            $existingQty = CartItem::where('user_id', $userId)->where('product_id', $product->id)->sum('quantity');
+            if ($existingQty + $quantity > $available) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'quantity' => [__('messages.ebook.insufficient_codes')],
+                ]);
+            }
+        } else {
+            $existingQty = CartItem::where('user_id', $userId)->where('product_id', $product->id)->sum('quantity');
+            if ($product->stock < ($existingQty + $quantity)) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'quantity' => [__('messages.order.insufficient_stock', ['product' => $product->name_en, 'available' => $product->stock, 'requested' => $existingQty + $quantity])],
+                ]);
+            }
+        }
 
         $existing = CartItem::where('user_id', $userId)
             ->where('product_id', $data['product_id'])
             ->first();
 
         if ($existing) {
-            $existing->increment('quantity', $data['quantity']);
+            $existing->increment('quantity', $quantity);
 
             return $existing->fresh()->load('product.images', 'product.detail');
         }
@@ -42,7 +65,7 @@ class CartService
         return CartItem::create([
             'user_id' => $userId,
             'product_id' => $data['product_id'],
-            'quantity' => $data['quantity'],
+            'quantity' => $quantity,
         ])->load('product.images', 'product.detail');
     }
 
@@ -54,6 +77,24 @@ class CartService
             $cartItem->delete();
 
             return null;
+        }
+
+        $product = $cartItem->product;
+        if ($product) {
+            if ($product->is_e_copy) {
+                $available = app(\App\Services\EbookAccessCodeService::class)->getAvailableCount($product);
+                if ($quantity > $available) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'quantity' => [__('messages.ebook.insufficient_codes')],
+                    ]);
+                }
+            } else {
+                if ($product->stock < $quantity) {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'quantity' => [__('messages.order.insufficient_stock', ['product' => $product->name_en, 'available' => $product->stock, 'requested' => $quantity])],
+                    ]);
+                }
+            }
         }
 
         $cartItem->update(['quantity' => $quantity]);

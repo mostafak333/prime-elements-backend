@@ -13,6 +13,14 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderService
 {
+    public function __construct(
+        private ?EbookAccessCodeService $ebookAccessCodeService = null
+    ) {
+        if ($this->ebookAccessCodeService === null) {
+            $this->ebookAccessCodeService = app(EbookAccessCodeService::class);
+        }
+    }
+
     public function getAll(array $filters = [], int $perPage = 15)
     {
         $query = Order::with('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user');
@@ -68,18 +76,34 @@ class OrderService
 
     private function validateStatusTransition(string $current, string $new): void
     {
+        if ($new === 'cancelled') {
+            if ($current === 'pending') {
+                // Allow cancellation while pending
+            } elseif ($current === 'confirmed' || $current === 'out_for_delivery') {
+                throw ValidationException::withMessages([
+                    'status' => [__('messages.order.cannot_cancel_after_confirmation')],
+                ]);
+            } else {
+                throw ValidationException::withMessages([
+                    'status' => [__('messages.order.invalid_status_transition', ['from' => $current, 'to' => $new])],
+                ]);
+            }
+        }
+
         $flow = [
-            'pending' => ['confirmed', 'cancelled'],
-            'confirmed' => ['out_for_delivery', 'cancelled'],
+            'pending' => ['confirmed'],
+            'confirmed' => ['out_for_delivery'],
             'out_for_delivery' => ['delivered'],
             'delivered' => [],
             'cancelled' => [],
         ];
 
-        if (! in_array($new, $flow[$current] ?? [])) {
-            throw ValidationException::withMessages([
-                'status' => [__('messages.order.invalid_status_transition', ['from' => $current, 'to' => $new])],
-            ]);
+        if ($new !== 'cancelled') {
+            if (! in_array($new, $flow[$current] ?? [])) {
+                throw ValidationException::withMessages([
+                    'status' => [__('messages.order.invalid_status_transition', ['from' => $current, 'to' => $new])],
+                ]);
+            }
         }
     }
 
@@ -116,11 +140,26 @@ class OrderService
 
         if ($order->status !== 'pending') {
             throw ValidationException::withMessages([
-                'status' => [__('messages.order.cannot_cancel_status', ['status' => $order->status])],
+                'status' => [__('messages.order.cannot_cancel_after_confirmation')],
             ]);
         }
 
-        return $this->updateStatus($order, 'cancelled');
+        return $this->cancelOrderInternal($order);
+    }
+
+    private function cancelOrderInternal(Order $order): Order
+    {
+        return DB::transaction(function () use ($order) {
+            $order->refresh();
+            if ($order->status !== 'pending') {
+                throw ValidationException::withMessages([
+                    'status' => [__('messages.order.cannot_cancel_after_confirmation')],
+                ]);
+            }
+            $this->ebookAccessCodeService->releaseCodesForOrder($order->id);
+            $order->update(['status' => 'cancelled']);
+            return $order->fresh()->load('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail');
+        });
     }
 
     public function createOrder(array $data): Order
@@ -142,6 +181,22 @@ class OrderService
 
         return DB::transaction(function () use ($data, $userId, $user, $cartItems, $setting) {
             $this->validateStock($cartItems);
+
+            // Reserve codes atomically for ebooks if needed
+            $reservedCodesByProduct = [];
+            foreach ($cartItems as $item) {
+                if ($item->product->is_e_copy) {
+                    $available = \App\Models\EbookAccessCode::where('product_id', $item->product_id)
+                        ->whereNull('used_at')
+                        ->lockForUpdate()
+                        ->count();
+                    if ($available < $item->quantity) {
+                        throw ValidationException::withMessages([
+                            'cart' => [__('messages.ebook.insufficient_codes')],
+                        ]);
+                    }
+                }
+            }
 
             $address = AddressDetail::create([
                 'user_id' => $userId,
@@ -202,8 +257,21 @@ class OrderService
                 'notes' => $data['notes'] ?? null,
             ]);
 
+            $createdOrderItems = [];
             foreach ($orderItemsData as $itemData) {
-                $order->orderItems()->create($itemData);
+                $createdOrderItems[] = $order->orderItems()->create($itemData);
+            }
+
+            // Reserve codes for ebooks
+            foreach ($cartItems as $item) {
+                if ($item->product->is_e_copy) {
+                    $reserved = $this->ebookAccessCodeService->reserveCodes($item->product, $item->quantity, $order->id);
+                    // Map reserved codes to the corresponding order item
+                    $orderItem = $order->orderItems()->where('product_id', $item->product_id)->latest('id')->first();
+                    if ($orderItem && ! empty($reserved)) {
+                        $this->ebookAccessCodeService->attachCodesToOrderItem($order, $orderItem, $reserved);
+                    }
+                }
             }
 
             $this->decrementStock($cartItems);
@@ -226,6 +294,15 @@ class OrderService
     private function validateStock($cartItems): void
     {
         foreach ($cartItems as $item) {
+            if ($item->product->is_e_copy) {
+                $available = $this->ebookAccessCodeService->getAvailableCount($item->product);
+                if ($available < $item->quantity) {
+                    throw ValidationException::withMessages([
+                        'cart' => [__('messages.ebook.insufficient_codes')],
+                    ]);
+                }
+                continue;
+            }
             if ($item->product->stock < $item->quantity) {
                 throw ValidationException::withMessages([
                     'cart' => [__('messages.order.insufficient_stock', ['product' => $item->product->name_en, 'available' => $item->product->stock, 'requested' => $item->quantity])],
@@ -237,6 +314,10 @@ class OrderService
     private function decrementStock($cartItems): void
     {
         foreach ($cartItems as $item) {
+            if ($item->product->is_e_copy) {
+                // Stock already synced based on available codes
+                continue;
+            }
             $item->product->decrement('stock', $item->quantity);
         }
     }
