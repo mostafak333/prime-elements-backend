@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminApi\Admin\AdminController;
 use App\Http\Controllers\AdminApi\Admin\AdminRoleController;
 use App\Http\Controllers\AdminApi\Auth\AdminAuthController;
+use App\Http\Controllers\AdminApi\Bundle\BundleController;
 use App\Http\Controllers\AdminApi\Category\CategoryController;
 use App\Http\Controllers\AdminApi\DeliveryMethod\DeliveryMethodController;
 use App\Http\Controllers\AdminApi\Faq\FaqController;
@@ -109,6 +110,12 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
         ->name('admin.orders.invoice.download');
     Route::get('/orders/{order}/invoice/view', [\App\Http\Controllers\OrderInvoiceController::class, 'view'])
         ->name('admin.orders.invoice.view');
+
+    // =========================================================================
+    // BUNDLE MANAGEMENT
+    // =========================================================================
+    Route::apiResource('bundles', BundleController::class);
+    Route::put('/bundles/{bundle}/status', [BundleController::class, 'updateStatus'])->name('bundles.update-status');
 
     // =========================================================================
     // FAQ MANAGEMENT

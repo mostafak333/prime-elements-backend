@@ -207,6 +207,21 @@ return [
         'item_not_owned' => 'This cart item does not belong to you.',
     ],
 
+    'bundle' => [
+        'retrieved' => 'Bundle retrieved successfully.',
+        'retrieved_single' => 'Bundle retrieved successfully.',
+        'created' => 'Bundle created successfully.',
+        'updated' => 'Bundle updated successfully.',
+        'deleted' => 'Bundle deleted successfully.',
+        'status_updated' => 'Bundle status updated successfully.',
+        'added_to_cart' => 'Bundle products added to your cart successfully.',
+        'not_found' => 'This bundle link is invalid or no longer available.',
+        'empty' => 'This bundle does not contain any products.',
+        'product_unavailable' => 'The product ":product" is not available.',
+        'insufficient_stock' => 'Insufficient stock for ":product". Available: :available, requested: :requested.',
+        'insufficient_codes' => 'The product ":product" is currently unavailable.',
+    ],
+
     'wishlist' => [
         'retrieved' => 'Wishlist retrieved successfully.',
         'item_added' => 'Product added to wishlist successfully.',

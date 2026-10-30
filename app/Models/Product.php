@@ -122,6 +122,14 @@ class Product extends Model
         return $this->hasMany(CartItem::class);
     }
 
+    /**
+     * Get all predefined bundle items that reference this product.
+     */
+    public function bundleItems()
+    {
+        return $this->hasMany(BundleItem::class);
+    }
+
     public function images()
     {
         return $this->hasMany(ProductImage::class);
