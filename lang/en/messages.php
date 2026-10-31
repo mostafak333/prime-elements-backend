@@ -283,4 +283,20 @@ return [
         'insufficient_codes' => 'This product is out of stock.',
         'cannot_set_stock_for_ebook' => 'Cannot set stock for e-book products. Use access codes instead.',
     ],
+
+    'notification' => [
+        'retrieved' => 'Notifications retrieved successfully.',
+        'unread_count' => 'Unread notification count retrieved successfully.',
+        'marked_read' => 'Notification marked as read.',
+        'marked_all_read' => 'All notifications marked as read.',
+        'order_status_updated_title' => 'Order status updated',
+        'order_status_updated_message' => 'Order :order_reference is now :status.',
+        'status' => [
+            'pending' => 'Pending',
+            'confirmed' => 'Confirmed',
+            'out_for_delivery' => 'Out for delivery',
+            'delivered' => 'Delivered',
+            'cancelled' => 'Cancelled',
+        ],
+    ],
 ];

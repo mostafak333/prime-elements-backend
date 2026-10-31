@@ -9,6 +9,7 @@ use App\Http\Controllers\UserApi\ContactUsController;
 use App\Http\Controllers\UserApi\Faq\FaqController;
 use App\Http\Controllers\UserApi\HomeController;
 use App\Http\Controllers\UserApi\NewsletterController;
+use App\Http\Controllers\UserApi\Notification\NotificationController;
 use App\Http\Controllers\UserApi\Order\OrderController;
 use App\Http\Controllers\UserApi\Product\ProductController;
 use App\Http\Controllers\UserApi\Profile\UserProfileController;
@@ -69,6 +70,11 @@ Route::group(['middleware' => ['auth:api-user', 'user.active']], function () {
     Route::post('/change-password', [UserAuthController::class, 'changePassword']);
     Route::get('/profile', [UserProfileController::class, 'show']);
     Route::put('/profile', [UserProfileController::class, 'update']);
+
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::patch('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
 
     Route::get('wishlist', [WishlistController::class, 'index']);
     Route::post('wishlist', [WishlistController::class, 'store']);

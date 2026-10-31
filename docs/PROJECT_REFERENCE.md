@@ -1,6 +1,6 @@
 # Prime Elements Backend - Project Reference
 
-> Last verified: 2026-10-30
+> Last verified: 2026-10-31
 >
 > This document describes how the backend actually behaves in code and configuration.
 > Where the repository is inconsistent or a behavior could not be verified, it is
@@ -41,6 +41,7 @@ Legend:
 | Tests | PHPUnit `^12.5.12`, Laravel test helpers |
 | Formatting | Laravel Pint `^1.27` |
 | Excel import | PhpSpreadsheet `^5.2` |
+| Realtime broadcasts | Pusher Channels via `pusher/pusher-php-server` `^7.2` |
 | Dev tooling | Laravel Pail, Collision, Faker, Mockery, Tinker |
 
 `composer.json` also references `laravel/pao`, which appears to be an internal or
@@ -468,6 +469,13 @@ timestamps, index on `(product_id, used_at)`.
 `id`, `order_id`, `order_item_id`, `ebook_access_code_id`, timestamps, unique
 `(order_item_id, ebook_access_code_id)`.
 
+### `notifications`
+
+Laravel's standard polymorphic database notification table: UUID `id`, `type`,
+`notifiable_type`, `notifiable_id`, JSON `data`, nullable `read_at`, timestamps.
+Customers access rows through their `Notifiable` relation; no order-specific
+notification table is used.
+
 ### `bundles`
 
 `id`, bilingual name/description, `token` (64 chars, unique), `status`,
@@ -752,6 +760,159 @@ user's order returns `404` from the controller.
   `GET /api/categories/{category}/subcategories`.
 - `is_filter` marks categories intended for filter UIs.
 - Deleting a category is blocked if it has children or products.
+
+### 11.11 Customer notifications
+
+Laravel database notifications are the source of truth. The user notification
+uses the native polymorphic `notifications` table; the stored order payload
+contains `type`, translation keys, and `order` (`id`, `reference`, `status`).
+API resources resolve the title, message, and status label using `Accept-Language`
+(`en` or `ar`). The generic notification resource/event shape can support future
+user notification types; admin notifications and admin-to-user custom messages
+are not implemented in this phase.
+
+An admin status change uses `PUT /api/admin/orders/{order}/status`. Only a real
+status change can create a notification. The status update runs in a database
+transaction; the database notification and broadcast dispatch happen through
+an after-commit callback. Repeating the same status remains rejected by the
+existing transition rules and does not create a duplicate.
+
+#### Customer API
+
+All notification requests require `Authorization: Bearer <user-token>` from the
+`api-user` guard and support `Accept-Language: en` or `Accept-Language: ar`.
+Notification ownership is always scoped to the authenticated user; an attempt
+to mark another user's notification returns `404`.
+
+| Method | Path | Parameters / result |
+| --- | --- | --- |
+| GET | `/api/notifications` | Optional `page` (integer, min 1), `per_page` (integer, 1-100; default 15). Newest first. |
+| GET | `/api/notifications/unread-count` | Returns `unread_count`. |
+| PATCH | `/api/notifications/{notification}/read` | Marks one owned notification as read; returns the notification resource. |
+| PATCH | `/api/notifications/read-all` | Marks all unread owned notifications as read; returns `updated_count`. |
+
+English list response:
+
+```json
+{
+  "success": true,
+  "message": "Notifications retrieved successfully.",
+  "data": {
+    "notifications": [
+      {
+        "id": "4e6596bf-3b51-4e84-b854-35054f70f931",
+        "type": "order_status_changed",
+        "title": "Order status updated",
+        "message": "Order ORD-20261031-0001 is now Confirmed.",
+        "data": {
+          "order": { "id": 42, "reference": "ORD-20261031-0001", "status": "confirmed" }
+        },
+        "is_read": false,
+        "read_at": null,
+        "created_at": "2026-10-31T12:00:00.000000Z"
+      }
+    ],
+    "pagination": {
+      "total": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "last_page": 1
+    }
+  }
+}
+```
+
+Arabic list notification fields for the same record:
+
+```json
+{
+  "type": "order_status_changed",
+  "title": "تم تحديث حالة الطلب",
+  "message": "حالة الطلب ORD-20261031-0001 الآن تم التأكيد.",
+  "data": {
+    "order": { "id": 42, "reference": "ORD-20261031-0001", "status": "confirmed" }
+  },
+  "is_read": false,
+  "read_at": null,
+  "created_at": "2026-10-31T12:00:00.000000Z"
+}
+```
+
+Unread count:
+
+```json
+{
+  "success": true,
+  "message": "Unread notification count retrieved successfully.",
+  "data": { "unread_count": 3 }
+}
+```
+
+Mark one read returns the same resource shape with `is_read: true` and a
+non-null `read_at`, under `data`. Mark all read returns:
+
+```json
+{
+  "success": true,
+  "message": "All notifications marked as read.",
+  "data": { "updated_count": 3 }
+}
+```
+
+#### Pusher Channels
+
+The event alias is `notification.created`. It is broadcast only to the private
+channel `private-users.{userId}` (Laravel channel name `users.{userId}`). The
+channel callback checks the requested ID against the authenticated `api-user`;
+the auth route is `POST /api/broadcasting/auth` and also applies `user.active`.
+The frontend must send the customer bearer token to that auth endpoint. No
+public channel is used.
+
+Echo subscription example (frontend repository only):
+
+```js
+Echo.private(`users.${userId}`).listen('.notification.created', (event) => {
+  // Use event.id to refresh the localized notification from GET /api/notifications.
+});
+```
+
+Broadcast payload:
+
+```json
+{
+  "id": "4e6596bf-3b51-4e84-b854-35054f70f931",
+  "type": "order_status_changed",
+  "data": {
+    "type": "order_status_changed",
+    "title_key": "messages.notification.order_status_updated_title",
+    "message_key": "messages.notification.order_status_updated_message",
+    "order": { "id": 42, "reference": "ORD-20261031-0001", "status": "confirmed" }
+  },
+  "created_at": "2026-10-31T12:00:00.000000Z"
+}
+```
+
+The event contains structured, language-independent data and translation keys.
+The client should refetch the notification API with its current
+`Accept-Language` to get localized display text and the current read state.
+
+#### Deployment
+
+Set `BROADCAST_CONNECTION=pusher` and configure these backend environment
+variables: `PUSHER_APP_ID`, `PUSHER_APP_KEY`, `PUSHER_APP_SECRET`, and
+`PUSHER_APP_CLUSTER`. Optional custom-host settings are `PUSHER_HOST`,
+`PUSHER_PORT` (default 443), and `PUSHER_SCHEME` (default `https`). Never put
+`PUSHER_APP_SECRET` in frontend configuration. The public app key and cluster
+are needed by Echo.
+
+Keep `QUEUE_CONNECTION=database`; no Redis service is required. The broadcast
+event implements `ShouldBroadcast`, so Pusher network calls run in the existing
+queue worker rather than the order-status request. Although the database queue
+has `after_commit=false`, the event is dispatched only from an explicit
+after-commit callback. The database notification is inserted after commit and
+remains available if the customer is offline. Deploy by running `php artisan
+migrate --force`, setting Pusher environment values, clearing/rebuilding config
+cache, and restarting the existing `php artisan queue:work` worker.
 
 ---
 

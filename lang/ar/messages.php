@@ -282,4 +282,20 @@ return [
         'not_ebook_product' => 'هذا المنتج ليس كتابًا إلكترونيًا.',
         'insufficient_codes' => 'هذا المنتج غير متوفر حاليًا.',
     ],
+
+    'notification' => [
+        'retrieved' => 'تم استرجاع الإشعارات بنجاح.',
+        'unread_count' => 'تم استرجاع عدد الإشعارات غير المقروءة بنجاح.',
+        'marked_read' => 'تم تحديد الإشعار كمقروء.',
+        'marked_all_read' => 'تم تحديد جميع الإشعارات كمقروءة.',
+        'order_status_updated_title' => 'تم تحديث حالة الطلب',
+        'order_status_updated_message' => 'حالة الطلب :order_reference الآن :status.',
+        'status' => [
+            'pending' => 'قيد الانتظار',
+            'confirmed' => 'تم التأكيد',
+            'out_for_delivery' => 'قيد التوصيل',
+            'delivered' => 'تم التسليم',
+            'cancelled' => 'ملغي',
+        ],
+    ],
 ];
