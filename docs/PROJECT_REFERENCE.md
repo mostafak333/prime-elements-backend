@@ -564,8 +564,25 @@ Catalog filters (`ProductService::getAllForUser`):
 - Every e-book unit needs one unused `EbookAccessCode`.
 - Available stock = count of codes with `used_at = null` for the product.
 - Codes are globally unique.
-- Empty/whitespace codes are skipped when adding a batch; duplicates abort the
-  transaction with a validation error.
+- The existing JSON batch endpoint skips empty/whitespace codes and aborts its
+  transaction if a duplicate is encountered.
+- Admin bulk import uses `POST /api/admin/products/{product}/access-codes/import`
+  with an `xlsx` or `csv` upload. The first worksheet/file row must contain the
+  single exact header `access_code`; each following row contains one code.
+- The downloadable XLSX template is `GET
+  /api/admin/products/{product}/access-codes/import/template`; it contains one
+  `Access Codes` worksheet and the exact `access_code` header, with no sample
+  codes.
+- Bulk imports read CSV incrementally and XLSX in 500-row chunks. Invalid,
+  empty, duplicate-in-file, and already-existing codes are rejected by row;
+  valid rows are retained. The response includes total rows, imported codes,
+  rejected codes, and row-numbered errors. Code values are not included in
+  errors or logs.
+- The global unique index on `code` prevents duplicates across products and
+  concurrent imports. Each successful import is created unused and unassigned
+  (`used_at`, `order_id`, and `order_item_id` are null); after successful inserts,
+  product stock is synced to the current unused-code count. Import does not run
+  reservation, order, cancellation, or delivery logic.
 - Used codes cannot be deleted.
 - Product delete cascades codes.
 - Reserving codes marks `used_at`, sets `order_id`, and updates the product

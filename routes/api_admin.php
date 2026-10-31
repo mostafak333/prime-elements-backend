@@ -129,6 +129,8 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     // EBOOK ACCESS CODES
     // =========================================================================
     Route::get('/products/{product}/access-codes', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'index'])->name('products.access-codes.index');
+    Route::get('/products/access-codes/import/template', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'importTemplate'])->name('products.access-codes.import.template');
+    Route::post('/products/{product}/access-codes/import', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'import'])->name('products.access-codes.import');
     Route::post('/products/{product}/access-codes', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'store'])->name('products.access-codes.store');
     Route::delete('/access-codes/{ebookAccessCode}', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'destroy'])->name('access-codes.destroy');
 });

@@ -15,8 +15,13 @@ class StoreEbookAccessCodeRequest extends FormRequest
     {
         return [
             'codes' => ['required', 'array', 'min:1'],
-            'codes.*' => ['required', 'string', 'max:255'],
+            'codes.*' => self::codeRules(),
         ];
+    }
+
+    public static function codeRules(): array
+    {
+        return ['required', 'string', 'max:255'];
     }
 
     public function messages(): array

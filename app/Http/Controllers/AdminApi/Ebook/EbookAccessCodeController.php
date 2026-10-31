@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AdminApi\Ebook;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Ebook\ImportEbookAccessCodesRequest;
 use App\Http\Requests\Admin\Ebook\StoreEbookAccessCodeRequest;
 use App\Models\EbookAccessCode;
 use App\Models\Product;
@@ -10,6 +11,8 @@ use App\Services\EbookAccessCodeService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class EbookAccessCodeController extends Controller
 {
@@ -58,6 +61,33 @@ class EbookAccessCodeController extends Controller
         return $this->success([
             'added_count' => count($added),
         ], 'messages.ebook.codes_added', 201);
+    }
+
+    public function import(ImportEbookAccessCodesRequest $request, Product $product): JsonResponse
+    {
+        if (! $product->is_e_copy) {
+            return $this->error(__('messages.ebook.not_ebook_product'), 422);
+        }
+
+        $summary = $this->ebookAccessCodeService->importCodes($product, $request->file('file'));
+
+        return $this->success($summary, 'messages.ebook.codes_imported');
+    }
+
+    public function importTemplate(Product $product): JsonResponse|StreamedResponse
+    {
+        if (! $product->is_e_copy) {
+            return $this->error(__('messages.ebook.not_ebook_product'), 422);
+        }
+
+        $spreadsheet = $this->ebookAccessCodeService->createImportTemplate();
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+            $spreadsheet->disconnectWorksheets();
+        }, 'ebook-access-codes-template.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
     public function destroy(EbookAccessCode $ebookAccessCode): JsonResponse
