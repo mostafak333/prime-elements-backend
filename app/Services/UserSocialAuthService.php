@@ -19,7 +19,7 @@ class UserSocialAuthService
     {
         if (! in_array($provider, $this->supportedProviders)) {
             throw ValidationException::withMessages([
-                'provider' => ["Provider '{$provider}' is not supported."],
+                'provider' => [__('messages.social.unsupported_provider', ['provider' => $provider])],
             ]);
         }
 
@@ -32,7 +32,7 @@ class UserSocialAuthService
 
         if (! $email) {
             throw ValidationException::withMessages([
-                'email' => ['Unable to retrieve email from the social provider.'],
+                'email' => [__('messages.social.email_unavailable')],
             ]);
         }
 
@@ -68,7 +68,7 @@ class UserSocialAuthService
 
             if ($user->status === 'blocked') {
                 throw ValidationException::withMessages([
-                    'email' => ['Your account has been blocked. Please contact support.'],
+                    'email' => [__('messages.auth.account_blocked')],
                 ]);
             }
 

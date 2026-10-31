@@ -25,14 +25,14 @@ class NewsletterController extends Controller
 
         $this->subscriptionService->subscribe($request->input('email'), $user);
 
-        return $this->success(null, 'Subscribed successfully.');
+        return $this->success(null, 'messages.newsletter.subscribed');
     }
 
     public function unsubscribe(UnsubscribeRequest $request): JsonResponse
     {
         $this->subscriptionService->unsubscribe($request->input('email'));
 
-        return $this->success(null, 'Subscription preference updated.');
+        return $this->success(null, 'messages.newsletter.unsubscribed');
     }
 
     private function resolveUser(): ?User

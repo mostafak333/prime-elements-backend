@@ -68,13 +68,13 @@ class CategoryService
     {
         if ($category->children()->exists()) {
             throw ValidationException::withMessages([
-                'category' => ['Cannot delete a category that has child categories.'],
+                'category' => [__('messages.category.has_children')],
             ]);
         }
 
         if ($category->products()->exists()) {
             throw ValidationException::withMessages([
-                'category' => ['Cannot delete a category that has products. Move or deactivate its products first.'],
+                'category' => [__('messages.category.has_products')],
             ]);
         }
 

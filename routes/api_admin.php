@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminApi\Admin\AdminController;
 use App\Http\Controllers\AdminApi\Admin\AdminRoleController;
 use App\Http\Controllers\AdminApi\Auth\AdminAuthController;
+use App\Http\Controllers\AdminApi\Bundle\BundleController;
 use App\Http\Controllers\AdminApi\Category\CategoryController;
 use App\Http\Controllers\AdminApi\DeliveryMethod\DeliveryMethodController;
 use App\Http\Controllers\AdminApi\Faq\FaqController;
@@ -39,6 +40,8 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::apiResource('titles', TitleController::class);
     Route::get('categories/select', [CategoryController::class, 'select']);
     Route::apiResource('categories', CategoryController::class);
+    Route::get('/products/import/template', [ProductController::class, 'importTemplate'])->name('products.import.template');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::apiResource('products', ProductController::class);
     Route::apiResource('delivery-methods', DeliveryMethodController::class);
     Route::apiResource('payment-methods', PaymentMethodController::class);
@@ -105,10 +108,29 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{id}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.update-status');
+    Route::get('/orders/{order}/invoice', [\App\Http\Controllers\OrderInvoiceController::class, 'download'])
+        ->name('admin.orders.invoice.download');
+    Route::get('/orders/{order}/invoice/view', [\App\Http\Controllers\OrderInvoiceController::class, 'view'])
+        ->name('admin.orders.invoice.view');
+
+    // =========================================================================
+    // BUNDLE MANAGEMENT
+    // =========================================================================
+    Route::apiResource('bundles', BundleController::class);
+    Route::put('/bundles/{bundle}/status', [BundleController::class, 'updateStatus'])->name('bundles.update-status');
 
     // =========================================================================
     // FAQ MANAGEMENT
     // =========================================================================
     Route::apiResource('faqs', FaqController::class);
     Route::put('/faqs/{faq}/status', [FaqController::class, 'updateStatus'])->name('faqs.update-status');
+
+    // =========================================================================
+    // EBOOK ACCESS CODES
+    // =========================================================================
+    Route::get('/products/{product}/access-codes', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'index'])->name('products.access-codes.index');
+    Route::get('/products/access-codes/import/template', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'importTemplate'])->name('products.access-codes.import.template');
+    Route::post('/products/{product}/access-codes/import', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'import'])->name('products.access-codes.import');
+    Route::post('/products/{product}/access-codes', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'store'])->name('products.access-codes.store');
+    Route::delete('/access-codes/{ebookAccessCode}', [\App\Http\Controllers\AdminApi\Ebook\EbookAccessCodeController::class, 'destroy'])->name('access-codes.destroy');
 });

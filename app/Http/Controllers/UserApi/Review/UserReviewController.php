@@ -27,7 +27,7 @@ class UserReviewController extends Controller
 
             return $this->success(
                 new UserReviewResource($review),
-                'Review submitted successfully.',
+                'messages.review.submitted',
                 201
             );
         } catch (ValidationException $e) {
@@ -50,6 +50,6 @@ class UserReviewController extends Controller
                 'current_page' => $reviews->currentPage(),
                 'last_page' => $reviews->lastPage(),
             ],
-        ], 'Reviews retrieved successfully.');
+        ], 'messages.review.retrieved');
     }
 }

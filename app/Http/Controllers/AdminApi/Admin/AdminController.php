@@ -25,14 +25,14 @@ class AdminController extends Controller
     {
         $authenticatedAdmin = auth()->user();
         if ($authenticatedAdmin->is_super === false) {
-            return $this->error('Only super admins can create new admin users.', 403);
+            return $this->error('messages.admin.only_super_admin_can_create', 403);
         }
         $admin = $this->adminService->createAdminInvitation($request->validated());
 
         return $this->success([
-            'message' => 'Admin invitation sent successfully',
+            'message' => __('messages.admin.invitation_sent'),
             'admin' => new AdminResource($admin),
-        ], 'Admin invitation sent successfully', 201);
+        ], 'messages.admin.invitation_sent', 201);
     }
 
     public function index(ListAdminsRequest $request): JsonResponse
@@ -50,7 +50,7 @@ class AdminController extends Controller
                 'current_page' => $users->currentPage(),
                 'last_page' => $users->lastPage(),
             ],
-        ], 'Users retrieved successfully.');
+        ], 'messages.admin.list_retrieved');
     }
 
     public function show(string $id): JsonResponse
@@ -58,12 +58,12 @@ class AdminController extends Controller
         $admin = Admin::find($id);
 
         if (! $admin) {
-            return $this->error('Admin not found.', 404);
+            return $this->error('messages.admin.not_found', 404);
         }
 
         return $this->success(
             new AdminResource($admin),
-            'Admin retrieved successfully.'
+            'messages.admin.retrieved'
         );
     }
 
@@ -74,17 +74,17 @@ class AdminController extends Controller
 
         // Check if user is super admin
         if (! $authenticatedAdmin || ! $authenticatedAdmin->is_super) {
-            return $this->error('Only super admins can update admin users.', 403);
+            return $this->error('messages.admin.only_super_admin_can_update', 403);
         }
 
         // Prevent super admin from demoting themselves
         if ($authenticatedAdmin->id === $admin->id) {
             if ($request->has('is_super') && $request->is_super === false) {
-                return $this->error('You cannot remove your own super admin privileges.', 403);
+                return $this->error('messages.admin.cannot_remove_own_super_privileges', 403);
             }
 
             if ($request->has('is_active') && $request->is_active === false) {
-                return $this->error('You cannot deactivate your own account.', 403);
+                return $this->error('messages.admin.cannot_deactivate_own_account', 403);
             }
         }
 
@@ -93,10 +93,10 @@ class AdminController extends Controller
 
             return $this->success(
                 new AdminResource($updatedAdmin),
-                'Admin updated successfully.'
+                'messages.admin.updated'
             );
         } catch (\Exception $e) {
-            return $this->error('Failed to update admin: '.$e->getMessage(), 500);
+            return $this->error('messages.admin.update_failed', 500, ['message' => $e->getMessage()]);
         }
     }
 
@@ -105,14 +105,14 @@ class AdminController extends Controller
         $admin = Admin::find($id);
 
         if (! $admin) {
-            return $this->error('Admin not found.', 404);
+            return $this->error('messages.admin.not_found', 404);
         }
 
         $updatedAdmin = $this->adminService->updateStatus($admin, $request->input('status'));
 
         return $this->success(
             new AdminResource($updatedAdmin),
-            'Admin status updated successfully.'
+            'messages.admin.status_updated'
         );
     }
 }

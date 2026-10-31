@@ -37,7 +37,7 @@ class RoleController extends Controller
                 'current_page' => $roles->currentPage(),
                 'last_page' => $roles->lastPage(),
             ],
-        ], 'Roles retrieved successfully.');
+        ], 'messages.role.retrieved');
     }
 
     public function store(CreateRoleRequest $request): JsonResponse
@@ -46,7 +46,7 @@ class RoleController extends Controller
 
         return $this->success(
             new RoleResource($role),
-            'Role created successfully.',
+            'messages.role.created',
             201
         );
     }
@@ -57,7 +57,7 @@ class RoleController extends Controller
 
         return $this->success(
             new RoleResource($role),
-            'Role retrieved successfully.'
+            'messages.role.retrieved_single'
         );
     }
 
@@ -67,7 +67,7 @@ class RoleController extends Controller
 
         return $this->success(
             new RoleResource($updatedRole),
-            'Role updated successfully.'
+            'messages.role.updated'
         );
     }
 
@@ -76,7 +76,7 @@ class RoleController extends Controller
         try {
             $this->roleService->delete($role);
 
-            return $this->success(null, 'Role deleted successfully.');
+            return $this->success(null, 'messages.role.deleted');
         } catch (ValidationException $e) {
             return $this->error($e->getMessage(), 422);
         }

@@ -14,13 +14,13 @@ class EnsureUserIsActive
         $user = $guard->user();
 
         if (! $user) {
-            return $this->deny('Unauthenticated.', 401);
+            return $this->deny('messages.auth.unauthenticated', 401);
         }
 
         if ($user->status === 'blocked') {
             $this->endSession($guard);
 
-            return $this->deny('Your account has been blocked. Please contact support.', 403);
+            return $this->deny('messages.auth.account_blocked', 403);
         }
 
         $tokenVersion = (int) $guard->payload()->get('token_version');
@@ -28,7 +28,7 @@ class EnsureUserIsActive
         if ($tokenVersion !== (int) $user->token_version) {
             $this->endSession($guard);
 
-            return $this->deny('Your session has been ended. Please log in again.', 401);
+            return $this->deny('messages.auth.session_ended', 401);
         }
 
         return $next($request);
@@ -47,7 +47,7 @@ class EnsureUserIsActive
     {
         return response()->json([
             'success' => false,
-            'message' => $message,
+            'message' => __($message),
         ], $status);
     }
 }

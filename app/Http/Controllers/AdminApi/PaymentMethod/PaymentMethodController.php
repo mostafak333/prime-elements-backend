@@ -37,7 +37,7 @@ class PaymentMethodController extends Controller
                 'per_page' => $paginatedData->perPage(),
                 'total' => $paginatedData->total(),
             ],
-        ], 'Payment methods retrieved successfully.');
+        ], 'messages.payment_method.retrieved');
     }
 
     public function store(StorePaymentMethodRequest $request): JsonResponse
@@ -46,7 +46,7 @@ class PaymentMethodController extends Controller
 
         return $this->success(
             new PaymentMethodResource($paymentMethod),
-            'Payment method created successfully.',
+            'messages.payment_method.created',
             201
         );
     }
@@ -55,7 +55,7 @@ class PaymentMethodController extends Controller
     {
         return $this->success(
             new PaymentMethodResource($paymentMethod),
-            'Payment method retrieved successfully.'
+            'messages.payment_method.retrieved_single'
         );
     }
 
@@ -70,7 +70,7 @@ class PaymentMethodController extends Controller
 
         return $this->success(
             new PaymentMethodResource($paymentMethod),
-            'Payment method updated successfully.'
+            'messages.payment_method.updated'
         );
     }
 
@@ -80,7 +80,7 @@ class PaymentMethodController extends Controller
 
         return $this->success(
             null,
-            'Payment method deleted successfully.'
+            'messages.payment_method.deleted'
         );
     }
 }

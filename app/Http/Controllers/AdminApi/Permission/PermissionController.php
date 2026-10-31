@@ -36,7 +36,7 @@ class PermissionController extends Controller
                 'current_page' => $permissions->currentPage(),
                 'last_page' => $permissions->lastPage(),
             ],
-        ], 'Permissions retrieved successfully.');
+        ], 'messages.permission.retrieved');
     }
 
     public function store(CreatePermissionRequest $request): JsonResponse
@@ -45,7 +45,7 @@ class PermissionController extends Controller
 
         return $this->success(
             new PermissionResource($permission),
-            'Permission created successfully.',
+            'messages.permission.created',
             201
         );
     }
@@ -55,7 +55,7 @@ class PermissionController extends Controller
         try {
             $this->permissionService->delete($permission);
 
-            return $this->success(null, 'Permission deleted successfully.');
+            return $this->success(null, 'messages.permission.deleted');
         } catch (ValidationException $e) {
             return $this->error($e->getMessage(), 422);
         }

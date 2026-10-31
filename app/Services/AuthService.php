@@ -20,7 +20,7 @@ class AuthService
 
         if (! $admin) {
             throw ValidationException::withMessages([
-                'token' => ['The invitation token is invalid or has expired.'],
+                'token' => [__('messages.auth.invitation_token_invalid')],
             ]);
         }
 
@@ -63,7 +63,7 @@ class AuthService
 
         if (! $admin) {
             throw ValidationException::withMessages([
-                'token' => ['The password reset token is invalid or has expired.'],
+                'token' => [__('messages.auth.password_reset_token_invalid')],
             ]);
         }
 
@@ -82,7 +82,7 @@ class AuthService
 
         if (! Hash::check($data['current_password'], $admin->password)) {
             throw ValidationException::withMessages([
-                'current_password' => ['The current password is incorrect.'],
+                'current_password' => [__('messages.auth.current_password_incorrect')],
             ]);
         }
 

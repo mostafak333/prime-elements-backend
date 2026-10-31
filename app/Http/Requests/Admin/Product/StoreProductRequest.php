@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin\Product;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreProductRequest extends FormRequest
 {
@@ -12,6 +13,11 @@ class StoreProductRequest extends FormRequest
     }
 
     public function rules(): array
+    {
+        return self::productRules();
+    }
+
+    public static function productRules(): array
     {
         return [
             // --------------------
@@ -26,11 +32,12 @@ class StoreProductRequest extends FormRequest
             'discount_percentage' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'discount_start_at' => ['nullable', 'date'],
             'discount_end_at' => ['nullable', 'date'],
-            'stock' => ['required', 'integer', 'min:0'],
+            'stock' => ['nullable', 'integer', 'min:0'],
             'status' => ['required', 'boolean'],
             'is_new_arrival' => ['required', 'boolean'],
             'is_best_seller' => ['required', 'boolean'],
             'is_e_copy' => ['required', 'boolean'],
+            'ebook_url' => ['nullable', 'url', 'max:2048'],
             'publisher' => ['required', 'string', 'max:255'],
 
             // --------------------
@@ -54,6 +61,29 @@ class StoreProductRequest extends FormRequest
             'detail.pages' => ['nullable', 'integer', 'min:1'],
             'detail.isbn' => ['nullable', 'string', 'max:50'],
             'detail.publication_date' => ['nullable', 'date'],
+        ];
+    }
+
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator) {
+            $isEbook = $this->boolean('is_e_copy');
+            if ($isEbook) {
+                if (empty($this->input('ebook_url'))) {
+                    $validator->errors()->add('ebook_url', __('validation.custom.ebook_url.required'));
+                }
+                if ($this->has('stock') && $this->input('stock') !== null && (int)$this->input('stock') != 0) {
+                    $validator->errors()->add('stock', __('messages.ebook.cannot_set_stock_for_ebook'));
+                }
+            }
+        });
+    }
+
+    public function messages(): array
+    {
+        return [
+            'ebook_url.required' => __('validation.custom.ebook_url.required'),
+            'ebook_url.url' => __('validation.custom.ebook_url.url'),
         ];
     }
 }

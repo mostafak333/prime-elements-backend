@@ -39,7 +39,7 @@ class TitleController extends Controller
 
         return $this->success(
             new TitleResource($title),
-            'Title created successfully',
+            'messages.title.created',
             201
         );
     }
@@ -62,7 +62,7 @@ class TitleController extends Controller
 
         return $this->success(
             new TitleResource($title),
-            'Title updated successfully'
+            'messages.title.updated'
         );
     }
 
@@ -73,11 +73,11 @@ class TitleController extends Controller
 
             return $this->success(
                 null,
-                'Title deleted successfully'
+                'messages.title.deleted'
             );
         } catch (ValidationException $e) {
             return $this->error(
-                'Cannot delete title because it is linked to categories',
+                'messages.title.cannot_delete',
                 422
             );
         }

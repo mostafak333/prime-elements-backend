@@ -60,7 +60,7 @@ class UpdateAdminRequest extends FormRequest
                         ->exists();
 
                     if (! $exists) {
-                        $fail("The role \"{$roleName}\" does not exist.");
+                        $fail(__('messages.admin.role_not_exists', ['role' => $roleName]));
                     }
                 }
             }],

@@ -25,7 +25,7 @@ class PermissionService
     {
         if ($permission->roles()->count() > 0) {
             throw ValidationException::withMessages([
-                'permission' => ['Cannot delete a permission that is assigned to roles.'],
+                'permission' => [__('messages.permission.assigned_to_roles')],
             ]);
         }
 

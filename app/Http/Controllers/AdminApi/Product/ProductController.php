@@ -3,23 +3,47 @@
 namespace App\Http\Controllers\AdminApi\Product;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Product\ImportProductsRequest;
 use App\Http\Requests\Admin\Product\StoreProductRequest;
 use App\Http\Requests\Admin\Product\UpdateProductRequest;
 use App\Http\Resources\Admin\ProductResource;
 use App\Models\Product;
 use App\Services\ProductService;
+use App\Services\ProductImportService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ProductController extends Controller
 {
     use ApiResponse;
 
     public function __construct(
-        protected ProductService $productService
+        protected ProductService $productService,
+        protected ProductImportService $productImportService
     ) {}
+
+    public function importTemplate(): StreamedResponse
+    {
+        $spreadsheet = $this->productImportService->createTemplate();
+
+        return response()->streamDownload(function () use ($spreadsheet) {
+            (new Xlsx($spreadsheet))->save('php://output');
+            $spreadsheet->disconnectWorksheets();
+        }, 'books-import-template.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    public function import(ImportProductsRequest $request): JsonResponse
+    {
+        $summary = $this->productImportService->import($request->file('file'));
+
+        return $this->success($summary, 'messages.product_import.completed');
+    }
 
     public function index(Request $request): JsonResponse
     {
@@ -37,7 +61,7 @@ class ProductController extends Controller
                 'per_page' => $products->perPage(),
                 'total' => $products->total(),
             ],
-        ], 'Products retrieved successfully.');
+        ], 'messages.product.retrieved');
     }
 
     public function store(StoreProductRequest $request): JsonResponse
@@ -46,7 +70,7 @@ class ProductController extends Controller
 
         return $this->success(
             new ProductResource($product),
-            'Product created successfully.',
+            'messages.product.created',
             201
         );
     }
@@ -59,7 +83,7 @@ class ProductController extends Controller
 
         return $this->success(
             new ProductResource($product),
-            'Product retrieved successfully.'
+            'messages.product.retrieved_single'
         );
     }
 
@@ -69,7 +93,7 @@ class ProductController extends Controller
 
         return $this->success(
             new ProductResource($product),
-            'Product updated successfully.'
+            'messages.product.updated'
         );
     }
 
@@ -80,11 +104,11 @@ class ProductController extends Controller
 
             return $this->success(
                 null,
-                'Product deleted successfully.'
+                'messages.product.deleted'
             );
         } catch (ValidationException $e) {
             $message = collect($e->errors())->flatten()->first()
-                ?? 'Cannot delete this product.';
+                ?? __('messages.product.cannot_delete');
 
             return $this->error(
                 $message,

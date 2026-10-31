@@ -67,4 +67,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function ebookAccessCodes()
+    {
+        return $this->hasMany(EbookAccessCode::class);
+    }
+
+    public function orderEbookCodes()
+    {
+        return $this->hasMany(OrderEbookCode::class);
+    }
 }

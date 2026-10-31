@@ -27,7 +27,7 @@ class CartController extends Controller
         return $this->success([
             'items' => CartResource::collection($cartItems),
             'summary' => $summary,
-        ], 'Cart retrieved successfully.');
+        ], 'messages.cart.retrieved');
     }
 
     public function store(StoreCartRequest $request): JsonResponse
@@ -36,7 +36,7 @@ class CartController extends Controller
 
         return $this->success(
             new CartResource($cartItem),
-            'Product added to cart successfully.',
+            'messages.cart.item_added',
             201
         );
     }
@@ -46,12 +46,12 @@ class CartController extends Controller
         $updated = $this->cartService->updateQuantity($cartItem, $request->input('quantity'));
 
         if ($updated === null) {
-            return $this->success(null, 'Cart item removed successfully.');
+            return $this->success(null, 'messages.cart.item_removed');
         }
 
         return $this->success(
             new CartResource($updated),
-            'Cart item updated successfully.'
+            'messages.cart.item_updated'
         );
     }
 
@@ -59,13 +59,13 @@ class CartController extends Controller
     {
         $this->cartService->remove($cartItem);
 
-        return $this->success(null, 'Cart item removed successfully.');
+        return $this->success(null, 'messages.cart.item_removed');
     }
 
     public function clear(): JsonResponse
     {
         $this->cartService->clear();
 
-        return $this->success(null, 'Cart cleared successfully.');
+        return $this->success(null, 'messages.cart.cleared');
     }
 }

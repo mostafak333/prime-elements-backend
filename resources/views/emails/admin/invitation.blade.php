@@ -1,17 +1,58 @@
 <!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body>
-<h2>Admin Invitation</h2>
-<p>Hello {{ $admin->name }},</p>
-<p>You have been invited to join the admin panel.</p>
-<p>Please set your password using the link below:</p>
-<p>
-    <a href="{{ config('app.frontend_admin_url') }}/admin/set-password?token={{ $token }}">
-        Set Your Password
-    </a>
-</p>
-<p>This link will expire in {{ $expirationMinutes }} minutes.</p>
-<p>If you did not expect this invitation, please ignore this email.</p>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Invitation - PrimeElements</title>
+</head>
+
+<body
+    style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #fcfbf7; color: #2c1654; margin: 0; padding: 30px;">
+
+    <div
+        style="max-width: 600px; margin: auto; background: #ffffff; padding: 40px; border: 1px solid #eae8df; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);">
+
+        <!-- Header / Logo Area -->
+        <div style="border-bottom: 2px solid #2c1654; padding-bottom: 20px; margin-bottom: 30px; text-align: center;">
+            <h2 style="color: #2c1654; margin: 0; font-size: 24px; font-weight: 800;">PrimeElements</h2>
+            <p style="font-size: 12px; color: #666; margin: 4px 0 0;">Admin Panel & Management</p>
+        </div>
+
+        <!-- Main Title & Greeting -->
+        <h2 style="color: #2c1654; font-size: 20px; margin-top: 0;">Admin Panel Invitation 🛡️</h2>
+        <p style="font-size: 14px; color: #444; line-height: 1.5;">Hello <strong>{{ $admin->name }}</strong>,</p>
+        <p style="font-size: 14px; color: #444; line-height: 1.5;">You have been invited to join the PrimeElements admin
+            panel. Please set your password by clicking the button below:</p>
+
+        <!-- Action Button -->
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ config('app.frontend_admin_url') }}/admin/set-password?token={{ $token }}"
+                style="background-color: #2c1654; color: #ffffff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-size: 14px; font-weight: bold; display: inline-block;">
+                Set Your Password
+            </a>
+        </div>
+
+        <!-- Info Notice -->
+        <div style="background: #fcfbf7; padding: 14px; border-radius: 8px; border: 1px solid #f0efeb; margin: 25px 0;">
+            <p style="font-size: 13px; color: #555; margin: 0; line-height: 1.4;">
+                This invitation link will expire in <strong>{{ $expirationMinutes }} minutes</strong>.
+            </p>
+        </div>
+
+        <p style="font-size: 13px; color: #666; margin-top: 30px; line-height: 1.4;">
+            If you did not expect this invitation or believe you received this by mistake, please ignore this email.
+        </p>
+
+        <!-- Footer -->
+        <div
+            style="margin-top: 40px; text-align: center; font-size: 12px; color: #777; border-top: 1px solid #eae8df; padding-top: 20px;">
+            <p style="margin: 0 0 5px;">PrimeElements Management System</p>
+            <p style="margin: 0;">© 2026 PrimeElements. All rights reserved.</p>
+        </div>
+
+    </div>
+
 </body>
+
 </html>

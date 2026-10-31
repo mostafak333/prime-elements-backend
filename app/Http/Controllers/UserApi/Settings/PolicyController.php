@@ -22,6 +22,6 @@ class PolicyController extends Controller
             'privacy_policy_ar' => $settings->privacy_policy_ar,
             'return_exchange_policy_en' => $settings->return_exchange_policy_en,
             'return_exchange_policy_ar' => $settings->return_exchange_policy_ar,
-        ], 'Policies retrieved successfully.');
+        ], 'messages.policy.retrieved');
     }
 }

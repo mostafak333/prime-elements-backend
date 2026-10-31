@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\UserApi\Auth\UserAuthController;
 use App\Http\Controllers\UserApi\Auth\UserSocialAuthController;
+use App\Http\Controllers\UserApi\Bundle\BundleController;
 use App\Http\Controllers\UserApi\Cart\CartController;
 use App\Http\Controllers\UserApi\Category\CategoryController;
 use App\Http\Controllers\UserApi\ContactUsController;
@@ -32,6 +33,7 @@ Route::get('products/{product}', [ProductController::class, 'show']);
 // Route::get('products/filter-options', [ProductController::class, 'filterOptions']);
 Route::get('reviews', [UserReviewController::class, 'index']);
 Route::get('faqs', [FaqController::class, 'index'])->name('faqs.index');
+Route::get('bundles/{token}', [BundleController::class, 'show'])->name('public.bundles.show');
 Route::get('policies', [PolicyController::class, 'index']);
 
 // =========================================================================
@@ -78,14 +80,17 @@ Route::group(['middleware' => ['auth:api-user', 'user.active']], function () {
     Route::delete('cart', [CartController::class, 'clear']);
     Route::delete('cart/{cart_item}', [CartController::class, 'destroy']);
 
+    Route::post('bundles/{token}/add-to-cart', [BundleController::class, 'addToCart'])
+        ->name('public.bundles.add-to-cart');
+
     Route::get('orders', [OrderController::class, 'index']);
     Route::post('orders', [OrderController::class, 'store']);
     Route::get('orders/{order}', [OrderController::class, 'show']);
     Route::patch('orders/{order}/cancel', [OrderController::class, 'cancel']);
+    Route::get('orders/{order}/invoice', [\App\Http\Controllers\OrderInvoiceController::class, 'download'])
+        ->name('orders.invoice.download');
+    Route::get('orders/{order}/invoice/view', [\App\Http\Controllers\OrderInvoiceController::class, 'view'])
+        ->name('orders.invoice.view');
 
     Route::post('reviews', [UserReviewController::class, 'store']);
 });
-
-Route::get('/ebook/download/{token}', function () {
-    return response()->json(['message' => 'Invalid or expired download link.'], 404);
-})->name('ebook.download');

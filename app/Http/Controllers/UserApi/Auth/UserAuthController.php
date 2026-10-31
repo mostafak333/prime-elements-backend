@@ -25,7 +25,7 @@ class UserAuthController extends Controller
         $user = $this->userAuthService->register($request->validated());
 
         return $this->success([
-            'message' => 'Registration successful. Please verify your email.',
+            'message' => __('messages.auth.registration_successful'),
             'user' => new UserResource($user),
         ], 201);
     }
@@ -36,7 +36,7 @@ class UserAuthController extends Controller
 
         if (! $token = auth()->guard('api-user')->attempt($credentials)) {
 
-            return $this->error('The provided credentials do not match our records.', 401);
+            return $this->error('messages.auth.credentials_invalid', 401);
         }
 
         $user = auth()->guard('api-user')->user();
@@ -44,16 +44,16 @@ class UserAuthController extends Controller
         if ($user->status === 'blocked') {
             auth()->guard('api-user')->logout();
 
-            return $this->error('Your account has been blocked. Please contact support.', 403);
+            return $this->error('messages.auth.account_blocked', 403);
         }
 
         $check = $this->userAuthService->checkEmailVerification($user);
         if ($check) {
-            return $this->error('email not verified, please verify your email before logging in.', 401);
+            return $this->error('messages.auth.email_not_verified', 401);
         }
 
         return $this->success([
-            'message' => 'Login successful',
+            'message' => __('messages.auth.login_successful'),
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => new UserResource($user),
@@ -65,7 +65,7 @@ class UserAuthController extends Controller
         auth()->guard('api-user')->logout();
 
         return $this->success([
-            'message' => 'User logged out successfully',
+            'message' => __('messages.auth.logout_successful'),
         ], 200);
     }
 
@@ -74,7 +74,7 @@ class UserAuthController extends Controller
         $this->userAuthService->verifyEmail($token);
 
         return $this->success([
-            'message' => 'Email verified successfully',
+            'message' => __('messages.auth.email_verified'),
         ], 200);
     }
 
@@ -83,7 +83,7 @@ class UserAuthController extends Controller
         $this->userAuthService->sendForgotPasswordEmail($request->validated());
 
         return $this->success([
-            'message' => 'If the email exists, a password reset link has been sent',
+            'message' => __('messages.auth.password_reset_link_sent'),
         ], 200);
     }
 
@@ -92,7 +92,7 @@ class UserAuthController extends Controller
         $this->userAuthService->resetPassword($request->validated());
 
         return $this->success([
-            'message' => 'Password reset successfully',
+            'message' => __('messages.auth.password_reset'),
         ], 200);
     }
 
@@ -101,7 +101,7 @@ class UserAuthController extends Controller
         $this->userAuthService->changePassword($request->validated());
 
         return $this->success([
-            'message' => 'Password changed successfully',
+            'message' => __('messages.auth.password_changed'),
         ], 200);
     }
 }

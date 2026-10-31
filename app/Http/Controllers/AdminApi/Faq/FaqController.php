@@ -37,7 +37,7 @@ class FaqController extends Controller
                 'per_page' => $paginatedData->perPage(),
                 'total' => $paginatedData->total(),
             ],
-        ], 'FAQs retrieved successfully.');
+        ], 'messages.faq.retrieved');
     }
 
     public function store(StoreFaqRequest $request): JsonResponse
@@ -46,7 +46,7 @@ class FaqController extends Controller
 
         return $this->success(
             new FaqResource($faq),
-            'FAQ created successfully.',
+            'messages.faq.created',
             201
         );
     }
@@ -55,7 +55,7 @@ class FaqController extends Controller
     {
         return $this->success(
             new FaqResource($faq),
-            'FAQ retrieved successfully.'
+            'messages.faq.retrieved_single'
         );
     }
 
@@ -68,7 +68,7 @@ class FaqController extends Controller
 
         return $this->success(
             new FaqResource($faq),
-            'FAQ updated successfully.'
+            'messages.faq.updated'
         );
     }
 
@@ -78,7 +78,7 @@ class FaqController extends Controller
 
         return $this->success(
             null,
-            'FAQ deleted successfully.'
+            'messages.faq.deleted'
         );
     }
 
@@ -91,7 +91,7 @@ class FaqController extends Controller
 
         return $this->success(
             new FaqResource($faq),
-            'FAQ status updated successfully.'
+            'messages.faq.status_updated'
         );
     }
 }
