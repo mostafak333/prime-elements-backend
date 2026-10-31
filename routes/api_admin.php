@@ -40,6 +40,8 @@ Route::group(['middleware' => ['auth:api-admin']], function () {
     Route::apiResource('titles', TitleController::class);
     Route::get('categories/select', [CategoryController::class, 'select']);
     Route::apiResource('categories', CategoryController::class);
+    Route::get('/products/import/template', [ProductController::class, 'importTemplate'])->name('products.import.template');
+    Route::post('/products/import', [ProductController::class, 'import'])->name('products.import');
     Route::apiResource('products', ProductController::class);
     Route::apiResource('delivery-methods', DeliveryMethodController::class);
     Route::apiResource('payment-methods', PaymentMethodController::class);

@@ -79,6 +79,21 @@ return [
         'referenced_by_orders' => 'Cannot delete a product that is referenced by orders. Deactivate it instead.',
     ],
 
+    'product_import' => [
+        'completed' => 'Book import completed.',
+        'invalid_file' => 'The uploaded file is not a readable XLSX workbook.',
+        'missing_books_sheet' => 'The workbook must contain a Books sheet.',
+        'invalid_headers' => 'The Books sheet headers do not match the downloadable template.',
+        'too_many_rows' => 'The workbook exceeds the maximum of :max book rows.',
+        'invalid_category' => 'Category ":category" does not match an existing category.',
+        'invalid_boolean' => 'Choose Enabled or Disabled.',
+        'invalid_discount_start_date' => 'Discount Start At must be a valid date in YYYY-MM-DD format.',
+        'invalid_discount_end_date' => 'Discount End At must be a valid date in YYYY-MM-DD format.',
+        'discount_end_before_start' => 'Discount End At must be on or after Discount Start At.',
+        'duplicate_isbn' => 'A book with ISBN ":isbn" already exists or was imported earlier in this file.',
+        'create_failed' => 'The book could not be created.',
+    ],
+
     'delivery_method' => [
         'retrieved' => 'Delivery methods retrieved successfully.',
         'retrieved_single' => 'Delivery method retrieved successfully.',

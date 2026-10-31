@@ -14,6 +14,11 @@ class StoreProductRequest extends FormRequest
 
     public function rules(): array
     {
+        return self::productRules();
+    }
+
+    public static function productRules(): array
+    {
         return [
             // --------------------
             // Product Core

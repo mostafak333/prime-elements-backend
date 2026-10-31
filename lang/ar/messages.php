@@ -79,6 +79,21 @@ return [
         'referenced_by_orders' => 'لا يمكن حذف منتج مرتبط بالطلبات. يرجى إلغاء تنشيطه بدلاً من ذلك.',
     ],
 
+    'product_import' => [
+        'completed' => 'اكتمل استيراد الكتب.',
+        'invalid_file' => 'الملف المرفوع ليس مصنف XLSX صالحاً للقراءة.',
+        'missing_books_sheet' => 'يجب أن يحتوي المصنف على ورقة باسم Books.',
+        'invalid_headers' => 'عناوين أعمدة ورقة Books لا تطابق القالب القابل للتنزيل.',
+        'too_many_rows' => 'يتجاوز المصنف الحد الأقصى البالغ :max كتاباً.',
+        'invalid_category' => 'الفئة ":category" غير موجودة.',
+        'invalid_boolean' => 'اختر مفعّل أو غير مفعّل.',
+        'invalid_discount_start_date' => 'يجب أن يكون تاريخ بدء الخصم صالحاً وبصيغة YYYY-MM-DD.',
+        'invalid_discount_end_date' => 'يجب أن يكون تاريخ انتهاء الخصم صالحاً وبصيغة YYYY-MM-DD.',
+        'discount_end_before_start' => 'يجب أن يكون تاريخ انتهاء الخصم في نفس تاريخ البدء أو بعده.',
+        'duplicate_isbn' => 'يوجد كتاب برقم ISBN ":isbn" بالفعل أو تم استيراده سابقاً في هذا الملف.',
+        'create_failed' => 'تعذر إنشاء الكتاب.',
+    ],
+
     'delivery_method' => [
         'retrieved' => 'تم استرجاع طرق التوصيل بنجاح.',
         'retrieved_single' => 'تم استرجاع طريقة التوصيل بنجاح.',

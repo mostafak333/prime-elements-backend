@@ -40,6 +40,7 @@ Legend:
 | API docs | `dedoc/scramble` `^0.13.28` |
 | Tests | PHPUnit `^12.5.12`, Laravel test helpers |
 | Formatting | Laravel Pint `^1.27` |
+| Excel import | PhpSpreadsheet `^5.2` |
 | Dev tooling | Laravel Pail, Collision, Faker, Mockery, Tinker |
 
 `composer.json` also references `laravel/pao`, which appears to be an internal or
@@ -514,6 +515,37 @@ deletes, unique `(bundle_id, product_id)`, index on `product_id`.
   cart/wishlist references, then soft-deletes the product.
 - Product image uploads accept `jpg`, `jpeg`, `png`, `webp` up to 5 MB.
 - E-book products require `ebook_url` and reject non-zero stock.
+- Product detail titles use the existing `product_details.title_en` and
+  `product_details.title_ar` fields. Bulk import treats both as optional text;
+  neither is related to the `titles` table.
+- Admin book import endpoints are `GET /api/admin/products/import/template`
+  and `POST /api/admin/products/import`; both use the existing `auth:api-admin`
+  middleware.
+- The generated XLSX template has these columns, in order:
+  `Category*`, `Title (English)`, `Title (Arabic)`, `Name (English)*`, `Name (Arabic)*`,
+  `Short Description (English)*`, `Short Description (Arabic)*`, `Price*`,
+  `Discount Percentage`, `Discount Start At`, `Discount End At`, `Stock`,
+  `Status*`, `New Arrival*`, `Best Seller*`, `E-Book*`, `E-Book URL`,
+  `Publisher*`, `Author`, `Detail Publisher`, `Language`, `Pages`, `ISBN`,
+  `Publication Date`, `Description (English)`, and `Description (Arabic)`.
+- Required fields are the starred columns; `E-Book URL` is additionally required
+  when `E-Book` is true. The template includes an instructions sheet and accepts
+  up to 5000 populated book rows. Images are not spreadsheet-import fields.
+- `Category` is the only related database record on a product. Its dropdown is
+  generated from existing category names and allows one selection; it is a
+  standard Excel validation list and is not searchable. Authors and publishers
+  are plain text fields, not database relationships.
+- `Status`, `New Arrival`, `Best Seller`, and `E-Book` use a hidden-list dropdown
+  with `Enabled` and `Disabled`; imports convert these to boolean values. Discount
+  start/end cells allow blank dates in `YYYY-MM-DD` format and imports reject
+  invalid dates or an end date earlier than the start date. Excel date validation
+  restricts values but does not guarantee a calendar popup.
+- Import validates each row using product creation rules and creates each valid
+  product through `ProductService`'s transaction. Row errors include the Excel
+  row number. The response includes total rows, successful imports, failed-row
+  count, and detailed failed rows. Exact duplicate ISBNs on non-deleted books
+  are rejected when an ISBN is supplied; the project had no earlier product
+  uniqueness rule.
 
 Catalog filters (`ProductService::getAllForUser`):
 
@@ -726,6 +758,7 @@ user's order returns `404` from the controller.
 | `PaymentMethodService` | Payment method CRUD |
 | `PermissionService` | Permission CRUD |
 | `ProductService` | Catalog filters, product CRUD, images/detail, deletion guards |
+| `ProductImportService` | Dynamic XLSX template and row-level admin book import |
 | `ReviewEligibilityService` | Delivered-order eligibility check |
 | `ReviewService` | Admin review listing/status |
 | `RoleService` | Role CRUD |
