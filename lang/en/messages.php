@@ -170,6 +170,9 @@ return [
         'bookstore' => 'Learning & Educational Bookstore',
         'footer' => 'Your trusted online bookstore for educational and general books.',
         'rights' => '© :year PrimeElements. All rights reserved.',
+        'unauthorized' => 'You are not authorized to access this invoice.',
+        'not_available' => 'This invoice is not available yet. It will be available once the order is confirmed.',
+
     ],
 
     'user' => [

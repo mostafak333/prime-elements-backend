@@ -74,11 +74,8 @@ class EbookAccessCodeController extends Controller
         return $this->success($summary, 'messages.ebook.codes_imported');
     }
 
-    public function importTemplate(Product $product): JsonResponse|StreamedResponse
+    public function importTemplate(): JsonResponse|StreamedResponse
     {
-        if (! $product->is_e_copy) {
-            return $this->error(__('messages.ebook.not_ebook_product'), 422);
-        }
 
         $spreadsheet = $this->ebookAccessCodeService->createImportTemplate();
 

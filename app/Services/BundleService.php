@@ -144,9 +144,12 @@ class BundleService
                 ]);
             }
 
-            $this->validateAvailability($bundle->items, $userId);
+            $availableItems = $this->getAvailableBundleItems(
+                $bundle->items,
+                $userId
+            );
 
-            foreach ($bundle->items as $item) {
+            foreach ($availableItems as $item) {
                 $this->cartService->add([
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
@@ -207,6 +210,31 @@ class BundleService
         }
     }
 
+
+    private function getAvailableBundleItems(Collection $items, int $userId): Collection
+    {
+        return $items->filter(function ($item) use ($userId) {
+            $product = $item->product;
+
+            if (! $product || ! $product->status) {
+                return false;
+            }
+
+            $existingQuantity = CartItem::where('user_id', $userId)
+                ->where('product_id', $product->id)
+                ->sum('quantity');
+
+            $requestedQuantity = $existingQuantity + $item->quantity;
+
+            if ($product->is_e_copy) {
+                $available = $this->ebookAccessCodeService->getAvailableCount($product);
+
+                return $requestedQuantity <= $available;
+            }
+
+            return $requestedQuantity <= $product->stock;
+        })->values();
+    }
     private function validateAvailability(Collection $items, int $userId): void
     {
         foreach ($items as $item) {
