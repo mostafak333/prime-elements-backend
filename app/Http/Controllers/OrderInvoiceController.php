@@ -34,28 +34,28 @@ class OrderInvoiceController extends Controller
         ]);
 
         $mpdf->SetDirectionality($isArabic ? 'rtl' : 'ltr');
-        $mpdf->SetTitle(($isArabic ? 'فاتورة' : 'Invoice').' '.$order->order_number);
+        $mpdf->SetTitle(($isArabic ? 'فاتورة' : 'Invoice') . ' ' . $order->order_number);
         $mpdf->SetAuthor('PrimeElements');
         $mpdf->SetCreator('PrimeElements');
         $mpdf->SetHTMLFooter(
             '<table style="width:100%;border-top:1px solid #e6e0f0;color:#7a7290;font-size:7pt;">'
-            .'<tr>'
-            .'<td style="padding-top:4px;text-align:'.($isArabic ? 'right' : 'left').';">PrimeElements</td>'
-            .'<td style="padding-top:4px;text-align:'.($isArabic ? 'left' : 'right').';">'
-            .($isArabic ? 'صفحة' : 'Page').' {PAGENO} / {nbpg}'
-            .'</td>'
-            .'</tr>'
-            .'</table>'
+                . '<tr>'
+                . '<td style="padding-top:4px;text-align:' . ($isArabic ? 'right' : 'left') . ';">PrimeElements</td>'
+                . '<td style="padding-top:4px;text-align:' . ($isArabic ? 'left' : 'right') . ';">'
+                . ($isArabic ? 'صفحة' : 'Page') . ' {PAGENO} / {nbpg}'
+                . '</td>'
+                . '</tr>'
+                . '</table>'
         );
 
         $mpdf->WriteHTML(view('invoices.order', ['order' => $order])->render());
 
-        $filename = 'invoice-'.$order->order_number.'.pdf';
+        $filename = 'invoice-' . $order->order_number . '.pdf';
         $pdf = $mpdf->Output($filename, Destination::STRING_RETURN);
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             'Content-Length' => (string) strlen($pdf),
             'Cache-Control' => 'private, max-age=0, must-revalidate',
         ]);
@@ -70,21 +70,26 @@ class OrderInvoiceController extends Controller
 
     private function authorizedOrder($orderId): Order
     {
-        $order = Order::with(['orderItems.product.detail', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user'])
-            ->findOrFail($orderId);
+        $order = Order::with([
+            'orderItems.product.detail',
+            'paymentMethod',
+            'deliveryMethod',
+            'addressDetail',
+            'user',
+        ])->findOrFail($orderId);
 
         if (Auth::guard('api-admin')->check()) {
-            // allow admin
+            // Admin is allowed.
         } elseif (Auth::guard('api-user')->check()) {
-            if ($order->user_id !== Auth::guard('api-user')->id()) {
-                abort(403);
+            if ($order->user_id != Auth::guard('api-user')->id()) {
+                abort(403, __('messages.invoice.unauthorized'));
             }
         } else {
-            abort(403);
+            abort(403, __('messages.invoice.not_available'));
         }
 
         if (! in_array($order->status, ['confirmed', 'out_for_delivery', 'delivered'], true)) {
-            abort(403);
+            abort(403, __('messages.invoice.not_available'));
         }
 
         return $order;
