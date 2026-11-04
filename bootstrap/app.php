@@ -27,6 +27,10 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(__DIR__.'/../routes/api_admin.php');
         },
     )
+    ->withBroadcasting(
+        __DIR__.'/../routes/channels.php',
+        ['prefix' => 'api', 'middleware' => ['api', 'auth:api-user', 'user.active']],
+    )
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('discounts:expire')->everyFiveMinutes();
     })

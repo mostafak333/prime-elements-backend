@@ -2,10 +2,13 @@
 
 namespace App\Services;
 
+use App\Events\UserNotificationCreated;
 use App\Models\AddressDetail;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Setting;
+use App\Models\User;
+use App\Notifications\OrderStatusNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -57,14 +60,51 @@ class OrderService
     public function updateStatus(Order $order, string $status): Order
     {
         $this->validateStatusTransition($order->status, $status);
+        $previousStatus = $order->status;
 
-        $order->update(['status' => $status]);
+        $updatedOrder = DB::transaction(function () use ($order, $status, $previousStatus) {
+            $order->update(['status' => $status]);
+
+            if ($order->wasChanged('status') && $previousStatus !== $status) {
+                $notificationData = [
+                    'user_id' => $order->user_id,
+                    'order_id' => $order->id,
+                    'order_reference' => $order->order_number,
+                    'status' => $status,
+                ];
+
+                DB::afterCommit(function () use ($notificationData) {
+                    $user = User::find($notificationData['user_id']);
+                    if (! $user) {
+                        return;
+                    }
+
+                    $notification = new OrderStatusNotification(
+                        $notificationData['order_id'],
+                        $notificationData['order_reference'],
+                        $notificationData['status']
+                    );
+                    $notification->id = (string) Str::uuid();
+                    $user->notifyNow($notification, ['database']);
+
+                    event(new UserNotificationCreated(
+                        $user->id,
+                        $notification->id,
+                        'order_status_changed',
+                        $notification->toDatabase($user),
+                        now()->toISOString()
+                    ));
+                });
+            }
+
+            return $order->fresh();
+        });
 
         if ($status === 'confirmed' && $this->hasEbookItems($order)) {
-            app(EbookDeliveryService::class)->deliverEbooks($order->fresh());
+            app(EbookDeliveryService::class)->deliverEbooks($updatedOrder);
         }
 
-        return $order->fresh()->load('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user');
+        return $updatedOrder->load('orderItems.product.images', 'paymentMethod', 'deliveryMethod', 'addressDetail', 'user');
     }
 
     private function hasEbookItems(Order $order): bool
